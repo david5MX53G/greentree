@@ -1,0 +1,31 @@
+@startuml
+abstract class ManagerSuperType {
+	{static} -logPrefix : String
+	+loadProperties() : boolean
+	+registerService(String) : boolean
+}
+
+class GreenTreeManager {
+    {static} -_instance : GreenTreeManager
+	-ciphertext : String
+	-factory : ServiceFactory
+	-token : Token
+	-tokenService : ITokenService
+	-GreenTreeManager() : GreenTreeManager
+	+getInstance() : GreenTreeManager
+	-logPrefix : String
+	+addBlock(String, RSAPublicKey, long, long) : boolean
+	+deregisterToken() : void
+	+getData(RSAPublicKey) : ArrayList<String>
+	+getPublicKey() : RSAPublicKey
+	+getTokenService() : ITokenService
+	+logOut() : void
+	+registerService(String) : void
+	+registerService(char[]) : void
+	+registerToken(RSAPublicKey, String) : boolean
+	+registerToken(String) : boolean
+	-registerTokenService() : boolean
+}
+
+GreenTreeManager --|> ManagerSuperType
+@enduml

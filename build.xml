@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+
+<!-- GreenTree Ant build file -->
+<!-- basedir project attribute is left at the default: . -->
+
+<project name="greentree" default="compile">
+	<property name="home" value="."/>
+	<property name="src.dir" value="${home}/src"/>
+	<property name="build.dir" value="${home}/build"/>
+	<property name="lib.dir" value="${home}/lib"/>
+	<property name="prop.dir" value="${home}/config/"/>
+	<property name="bin.dir" value="${home}/bin"/>
+	
+	<path id="classpath">
+		<fileset dir="${lib.dir}" >
+			<include name="*.jar" />
+		</fileset>
+		<pathelement location="${bin.dir}"/>
+	</path>
+	
+	<target name="init">
+		<mkdir dir="${bin.dir}"/>
+	</target>
+	
+	<target name="compile" depends="init">
+		<javac srcdir="${src.dir}" destdir="${bin.dir}">
+			<classpath refid="classpath"/>
+		</javac>
+	</target>
+	
+	<target name="runGreenTreeWithAnt">
+		<java classname="com.greentree.view.ViewDriver" fork="yes">
+			<classpath>
+				<path location="${build.dir}"/>
+			</classpath>
+		</java>
+	</target>
+
+	<target name="clean" description="Removes previous build">
+		<delete dir="${build.dir}"/>
+		<mkdir dir="${build.dir}"/>
+	</target>
+	
+	<target name="buildjar" depends="clean">
+		<jar jarfile="${build.dir}/greentree.jar">
+			<fileset dir="${basedir}">
+				<include name="config/*"/>
+			</fileset>
+			<fileset dir="${bin.dir}">
+				<include name="**/*.class"/>
+			</fileset>
+            <manifest>
+                <attribute name="Main-Class" value="com.greentree.view.ViewDriver"/>
+            </manifest>
+            <zipfileset excludes="META-INF/*.SF" src="${basedir}/lib/commons-codec-1.9.jar"/>
+		</jar>
+		<copy todir="${build.dir}">
+			<fileset dir="${basedir}">
+				<include name="config*/**/*"/>
+			</fileset>
+		</copy>
+	</target>
+	
+	<target name="testjar" depends="buildjar">
+		<java jar="${build.dir}/greentree.jar" fork="yes" dir="."/>
+	</target>
+</project>
