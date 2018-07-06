@@ -52,7 +52,7 @@ public class GreenTreeManager extends ManagerSuperType {
 	 * Stores the <code>{@link ITokenService}</code> for storing and retrieving 
 	 * <code>{@link Token}</code> objects 
 	 */
-	private ITokenService tokenService;
+	private ITokenService tokenService = null;
 	
 	/**
 	 * Stores the singleton instance of this class.
@@ -247,7 +247,7 @@ public class GreenTreeManager extends ManagerSuperType {
 	 *     does not have a <code>Token</code>
 	 */
 	public ArrayList<String> getData(RSAPublicKey key) throws GreenTreeManagerException {
-		ArrayList<String> stringData = new ArrayList<String>();
+		ArrayList<String> stringData = new ArrayList<>();
 		if (this.token == null) {
 			System.out.println("getData(Token token) throws TokenException because GreenTreeManager"
 				+ " missing token");
