@@ -2,7 +2,6 @@ package com.greentree.model.services.manager;
 
 import java.io.IOException;
 import java.util.Properties;
-import org.apache.log4j.PropertyConfigurator;
 
 /**
  * This class loads and provides access to {@link Properties} for business and service layers.
@@ -16,9 +15,6 @@ public class PropertyManager {
 	
 	/** default file for reading {@link java.util.Properties} */
 	private static final String PROPSPATH = "config/application.properties";
-        
-        /** default log4j config file */
-        private static final String LOG4JPATH = "config/log4j.properties";
 	
 	/**
 	 * Loads the static <code>{@link PropertyManager#properties}</code> variable from the given 
@@ -68,12 +64,4 @@ public class PropertyManager {
             }
             return properties.getProperty(propertyName);
 	}
-        
-        /**
-         * configures {@link org.apache.log4j.PropertyConfigurator} using the default properties 
-         * file defined in this class.
-         */
-        public static void configureLog4j() {
-            PropertyConfigurator.configure(LOG4JPATH);
-        }
 }
