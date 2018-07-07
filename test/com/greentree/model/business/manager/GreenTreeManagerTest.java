@@ -19,7 +19,10 @@ import org.junit.Test;
 
 import com.greentree.model.domain.Token;
 import com.greentree.model.services.exception.InvalidTokenException;
+import com.greentree.model.services.manager.PropertyManager;
 import java.io.IOException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This class has methods to test the <code>{@link GreentreeManager}</code> class.
@@ -36,23 +39,41 @@ public class GreenTreeManagerTest {
 
     /** Passphrase for managing <code>{@link Token}</code> objects. */
     private static final String PASS = "More pepper!";
+    
+    /** log4j logger for debug output */
+    Logger logger;
 
     /**
-     * ensures the manager, token service, and key of this test instance are
-     * built.
+     * setUp() ensures the manager, token service, and key of this test instance 
+     * are built.
+     * @throws java.io.IOException from {@link 
+     * PropertyManager#getProperty(java.lang.String)}
      */
     @Before
-    public void setUp() {
+    public void setUp() throws IOException {
+        /**
+         * "Since naming Loggers after their owning class is such a common 
+         * idiom, the convenience method LogManager.getLogger() is provided to 
+         * automatically use the calling class's fully qualified class name as 
+         * the Logger name." (Apache Software Foundation, "Log4j – Log4j 2 
+         * Architecture - Apache Log4j 2", "Retrieving Loggers" section).
+         */
+        logger = LogManager.getLogger();
+        logger.debug("logger configured");
+        
         if (GreenTreeManagerTest.manager == null) {
-                registerInstanceTest();
+            registerInstanceTest();
+            logger.debug("initialized private static GreenTreeManager manager");
         }
 
         if (GreenTreeManagerTest.manager.getTokenService() == null) {
-                registerServiceTest();
+            registerServiceTest();
+            logger.debug("GreenTreeManager getTokenService() completed successfully");
         }
 
         if (GreenTreeManagerTest.key == null) {
-                registerTokenTest();
+            registerTokenTest();
+            logger.debug("registerTokenTest() completed successfully");
         }
     }
 
@@ -61,7 +82,7 @@ public class GreenTreeManagerTest {
     public void loadPropertiesTest() {
             try {
                     GreenTreeManager.loadProperties();
-                    System.out.println("loadPropertiesTest() PASSED");
+                    logger.debug("loadPropertiesTest() PASSED");
             } catch (Exception e) {
                     fail("loadPropertiesTest() threw PropertyFileNotFoundException: " + e.getMessage());
             }
@@ -73,7 +94,7 @@ public class GreenTreeManagerTest {
         if (GreenTreeManagerTest.manager == null) {
             GreenTreeManagerTest.manager = GreenTreeManager.getInstance();
             assertTrue("registerInstanceTest() FAILED", GreenTreeManagerTest.manager != null);
-            System.out.println("registerInstanceTest() PASSED");
+            logger.debug("registerInstanceTest() PASSED");
         }
     }
 
@@ -84,7 +105,7 @@ public class GreenTreeManagerTest {
             try {
                     GreenTreeManagerTest.manager.registerService("TokenService");
                     assertTrue(GreenTreeManagerTest.manager.getTokenService() != null);
-                    System.out.println("registerServiceTest() PASSED");
+                    logger.debug("registerServiceTest() PASSED");
             } catch (AssertionError e) {
                     fail("registerServiceTest() " + e.getClass().getSimpleName() + 
                          e.getMessage());
@@ -100,7 +121,7 @@ public class GreenTreeManagerTest {
                     manager.registerToken(GreenTreeManagerTest.PASS);
                     GreenTreeManagerTest.key = manager.getPublicKey();
                     assertTrue(GreenTreeManagerTest.key != null);
-                    System.out.println("registerTokenTest() PASSED");
+                    logger.debug("registerTokenTest() PASSED");
             } catch (Exception e) {
                     fail("GreenTreeManager#registerToken threw: " + 
                          e.getClass().getSimpleName() + ": " + e.getMessage());
@@ -114,7 +135,7 @@ public class GreenTreeManagerTest {
         try {
             GreenTreeManagerTest.manager.logOut();
             assertTrue(true);
-            System.out.println("logOutTest() PASSED");
+            logger.debug("logOutTest() PASSED");
         } catch (InvalidTokenException | IOException e) {
             fail("logOutTest() " + e.getClass().getSimpleName() + ": " + e.getMessage());
         }
@@ -135,19 +156,19 @@ public class GreenTreeManagerTest {
         } catch (UnsupportedEncodingException | InvalidKeyException | NoSuchAlgorithmException | 
                  BadPaddingException | IllegalBlockSizeException | NoSuchPaddingException e) {
             fail("authTest() " + e.getClass().getSimpleName() + ": " + e.getMessage());
-            System.out.println("authTest() FAILED");
+            logger.debug("authTest() FAILED");
         }
 
         if (ciphertext != null) {
             try {
                 GreenTreeManagerTest.manager.registerToken(key, ciphertext);
                 assertTrue(GreenTreeManagerTest.manager.getPublicKey() instanceof RSAPublicKey);
-                System.out.println("authTest() PASSED");
+                logger.debug("authTest() PASSED");
             } catch (Exception e) {
                 fail("authTest() FAILED with " + e.getClass().getName() + ": " + e.getMessage());
             }
         } else {
-                fail("authTest() FAILED encrypting pass");
+            fail("authTest() FAILED encrypting pass");
         }
     }
 }
