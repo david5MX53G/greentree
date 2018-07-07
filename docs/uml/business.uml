@@ -1,8 +1,8 @@
 @startuml
 abstract class ManagerSuperType {
-	{static} -logPrefix : String
-	+loadProperties() : boolean
-	+registerService(String) : boolean
+    {static} -logPrefix : String
+    +loadProperties() : boolean
+    +registerService(String) : boolean
 }
 
 class GreenTreeManager {

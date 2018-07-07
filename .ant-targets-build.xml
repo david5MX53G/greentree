@@ -1,0 +1,7 @@
+buildjar
+clean
+compile
+init
+runGreenTreeWithAnt
+testjar
+uml
