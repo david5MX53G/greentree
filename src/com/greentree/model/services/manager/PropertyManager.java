@@ -2,6 +2,7 @@ package com.greentree.model.services.manager;
 
 import java.io.IOException;
 import java.util.Properties;
+import org.apache.log4j.PropertyConfigurator;
 
 /**
  * This class loads and provides access to {@link Properties} for business and service layers.
@@ -14,7 +15,10 @@ public class PropertyManager {
 	private static Properties properties;
 	
 	/** default file for reading {@link java.util.Properties} */
-	private static String propsPath = "config/application.properties";
+	private static final String PROPSPATH = "config/application.properties";
+        
+        /** default log4j config file */
+        private static final String LOG4JPATH = "config/log4j.properties";
 	
 	/**
 	 * Loads the static <code>{@link PropertyManager#properties}</code> variable from the given 
@@ -24,14 +28,14 @@ public class PropertyManager {
 	 * @throws IOException when no valid file is found at the given location
 	 */
 	public static void loadProperties(String filePath) throws IOException {
-		properties = new java.util.Properties();
-		try (java.io.FileInputStream file = new java.io.FileInputStream(filePath)) {
-			properties.load(file);
-		} catch (IOException e) {
-			String msg = "PropertyManager " + e.getClass().getSimpleName() + ": "
-		        + "new java.io.FileInputStream(" + filePath + ") :" + e.getMessage();
-			throw new IOException(msg);
-		}
+            properties = new java.util.Properties();
+            try (java.io.FileInputStream file = new java.io.FileInputStream(filePath)) {
+                    properties.load(file);
+            } catch (IOException e) {
+                    String msg = "PropertyManager " + e.getClass().getSimpleName() + ": "
+                    + "new java.io.FileInputStream(" + filePath + ") :" + e.getMessage();
+                    throw new IOException(msg);
+            }
 	}
 
 	/**
@@ -40,15 +44,14 @@ public class PropertyManager {
 	 * @throws IOException when the default file cannot be read
 	 */
 	public static void loadProperties() throws IOException {
-		properties = new java.util.Properties();
-		try (java.io.FileInputStream fis = new java.io.FileInputStream(propsPath)) {
-			properties.load(fis);
-		} catch ( IOException e) {
-			String msg = "PropertyManager:" + e.getClass().getSimpleName() + ": " + 
-		        properties.toString();
-			System.out.println(msg);
-			throw new IOException(msg);
-		}
+            properties = new java.util.Properties();
+            try (java.io.FileInputStream fis = new java.io.FileInputStream(PROPSPATH)) {
+                properties.load(fis);
+            } catch ( IOException e) {
+                String msg = "PropertyManager:" + e.getClass().getSimpleName() + ": " + 
+                properties.toString();
+                throw new IOException(msg);
+            }
 	}
 	
 	/**
@@ -60,9 +63,17 @@ public class PropertyManager {
 	 * @throws IOException when the default properties file fails to load
 	 */
 	public static String getProperty(String propertyName) throws IOException {
-		if (!(properties instanceof java.util.Properties)) {
-			loadProperties();
-		}
-		return properties.getProperty(propertyName);
+            if (!(properties instanceof java.util.Properties)) {
+                loadProperties();
+            }
+            return properties.getProperty(propertyName);
 	}
+        
+        /**
+         * configures {@link org.apache.log4j.PropertyConfigurator} using the default properties 
+         * file defined in this class.
+         */
+        public static void configureLog4j() {
+            PropertyConfigurator.configure(LOG4JPATH);
+        }
 }
