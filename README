@@ -1,0 +1,23 @@
+Greentree is a distributed, pseudonymous transaction system facilitating secure,
+ private transactions between mutually-unknown parties via token-based 
+identities on a token-controlled audit log that provides both privacy and trust 
+to system users.
+
+This project was started in Spring, 2018 for the MSSE_670 Java Programming class
+ from Regis University. 
+
+These are the root-level files:
+* README is for introductory overview and background
+* LICENSE describes copyright conditions
+* INSTALL explains build instructions
+* build.xml is the Apache Ant build script
+* export_ant.sh exports Linux / Unix environment variables for Apache Ant
+* set_ant.cmd sets Windows environment variables for Apache Ant
+
+These are the root-level directories:
+* "test" - Java classes for JUnit unit testing
+* "src" - Java class files
+* "nbproject" - auto-generated NetBeans project files
+* "lib" - necessary libraries for the compile CLASSPATH
+* "docs" - MS Word docs required by Regis University and UML diagrams
+* "config" - controls project logging and token file storage
