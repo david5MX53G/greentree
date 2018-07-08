@@ -7,6 +7,7 @@ instrumented the application with Log4j, using specific log statements and a con
 com.greentree.model.services.manager.PropertyManagerTest
 
 ## git log ##
+Sun Jul 8 12:16:46 2018 -0500 "moved docs outside project dir"
 Sun Jul 8 12:13:34 2018 -0500 "removed unused jar libs, updated build.xml testjar target to auto-compile, updated CHANGES"
 Sun Jul 8 11:58:02 2018 -0500 "updated set_ant.cmd and export_ant.sh to run Ant, renamed to build.sh and build.cmd, then updated README accordingly"
 Sun Jul 8 11:47:13 2018 -0500 "updated README to account for new CHANGES file"
