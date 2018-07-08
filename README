@@ -7,18 +7,18 @@ This project was started in Spring, 2018 for the MSSE_670 Java Programming class
  from Regis University. 
 
 These are the root-level files:
-* README is for introductory overview and background
-* LICENSE describes copyright conditions
-* INSTALL explains build instructions
-* CHANGES notes changes made during a specified period
+* build.cmd builds the project with build.xml using Apache Ant
+* build.sh builds the project with build.xml using Apache Ant 
 * build.xml is the Apache Ant build script
-* export_ant.sh exports Linux / Unix environment variables for Apache Ant
-* set_ant.cmd sets Windows environment variables for Apache Ant
+* CHANGES notes changes made during a specified period
+* INSTALL explains build instructions
+* LICENSE describes copyright conditions
+* README is for introductory overview and background
 
 These are the root-level directories:
-* "test" - Java classes for JUnit unit testing
-* "src" - Java class files
-* "nbproject" - auto-generated NetBeans project files
-* "lib" - necessary libraries for the compile CLASSPATH
-* "docs" - MS Word docs required by Regis University and UML diagrams
 * "config" - controls project logging and token file storage
+* "docs" - MS Word docs required by Regis University and UML diagrams
+* "lib" - necessary libraries for the compile CLASSPATH
+* "nbproject" - auto-generated NetBeans project files
+* "src" - Java class files
+* "test" - Java classes for JUnit unit testing
