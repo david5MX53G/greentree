@@ -1,0 +1,37 @@
+## summary ##
+downloaded and installed the latest version of Java SDK 1.6x, NetBeans and Log4j
+imported MSSE_670 application into NetBeans
+instrumented the application with Log4j, using specific log statements and a config file
+
+## new classes ##
+com.greentree.model.services.manager.PropertyManagerTest
+
+## git log ##
+Sun Jul 8 11:31:17 2018 -0500 "updated docs for week 1 submission"
+Sun Jul 8 11:30:16 2018 -0500 "ignore .swp files"
+Sat Jul 7 21:46:12 2018 -0500 "removed javadoc jars from project classpath since they did not load any javadoc content into NetBeans"
+Sat Jul 7 21:39:58 2018 -0500 "updated build.xml such that buildjar target works, though without logging"
+Sat Jul 7 21:24:50 2018 -0500 "updated classpath in build.xml to include log4j 2 libraries; compile target passes testing"
+Sat Jul 7 21:24:14 2018 -0500 "removed references to log4j-1.2 libraries in project classpath"
+Sat Jul 7 21:22:46 2018 -0500 "replaced System.out.println and System.err.println with log4j 2 throughout the application"
+Sat Jul 7 20:19:03 2018 -0500 "replaced System.out.println and System.err.println with log4j 2 logs"
+Sat Jul 7 19:44:10 2018 -0500 "replaced System.out.println with log4j in GreenTreeManager"
+Sat Jul 7 18:57:40 2018 -0500 "successfully implemented log4j 2 terminal log output in GreenTreeManagerTest"
+Sat Jul 7 18:56:52 2018 -0500 "updated project owner name"
+Sat Jul 7 18:56:36 2018 -0500 "replaced log4j2.properties with log4j2.xml"
+Sat Jul 7 17:31:31 2018 -0500 "updated project license in netbeans config"
+Sat Jul 7 17:30:17 2018 -0500 "added com.greentree.model.services.manager.PropertyManagerTest class"
+Sat Jul 7 17:29:05 2018 -0500 "removed log4j filename from application.properties and renamed log4j.properties to log4j2.properties for compatibility with log4j 2"
+Sat Jul 7 16:03:53 2018 -0500 "added log4j-api-2.11.0.jar to project classpath"
+Sat Jul 7 16:02:38 2018 -0500 "moved log4j config out of PropertyManager.java"
+Sat Jul 7 15:58:39 2018 -0500 "added log4j properties file to application properties"
+Sat Jul 7 12:54:54 2018 -0500 "added some comments to log4j.properties"
+Fri Jul 6 22:29:15 2018 -0500 "added plantuml.jar to library and classpath"
+Fri Jul 6 22:27:29 2018 -0500 "installed graphiz, updated build.xml with plantuml target, and tested target with output to docs/uml"
+Fri Jul 6 21:33:46 2018 -0500 "added config/log4j.properties with log4j config settings and updated com.greentree.model.services.manager.PropertyManager with members to load this file"
+Thu Jul 5 22:06:23 2018 -0500 "ignore private/, build/, and bin/"
+Thu Jul 5 22:02:58 2018 -0500 "minor fixes to GreenTreeManager and some includes for new libraries in project.properties"
+Thu Jul 5 21:57:01 2018 -0500 "added test/ classes; ApplicationTestSuite.java passes 30 tests successfully"
+Thu Jul 5 21:56:06 2018 -0500 "added log4j jar files, hamcrest-core-1.3.jar, and junit-4.12.jar to lib/"
+Wed Jul 4 15:21:20 2018 -0500 "updated config/application.properties for linux; added export_ant.sh for ant config on linux; netbeans did some stuff in nbproject/ that I do not understand; built and tested the project using ant"
+Tue Jul 3 21:26:08 2018 -0500 "initial commit of everything"
