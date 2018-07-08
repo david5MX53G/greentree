@@ -7,6 +7,10 @@ instrumented the application with Log4j, using specific log statements and a con
 com.greentree.model.services.manager.PropertyManagerTest
 
 ## git log ##
+Sun Jul 8 12:13:34 2018 -0500 "removed unused jar libs, updated build.xml testjar target to auto-compile, updated CHANGES"
+Sun Jul 8 11:58:02 2018 -0500 "updated set_ant.cmd and export_ant.sh to run Ant, renamed to build.sh and build.cmd, then updated README accordingly"
+Sun Jul 8 11:47:13 2018 -0500 "updated README to account for new CHANGES file"
+Sun Jul 8 11:45:45 2018 -0500 "added CHANGES doc"
 Sun Jul 8 11:31:17 2018 -0500 "updated docs for week 1 submission"
 Sun Jul 8 11:30:16 2018 -0500 "ignore .swp files"
 Sat Jul 7 21:46:12 2018 -0500 "removed javadoc jars from project classpath since they did not load any javadoc content into NetBeans"

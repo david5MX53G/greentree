@@ -17,7 +17,6 @@ These are the root-level files:
 
 These are the root-level directories:
 * "config" - controls project logging and token file storage
-* "docs" - MS Word docs required by Regis University and UML diagrams
 * "lib" - necessary libraries for the compile CLASSPATH
 * "nbproject" - auto-generated NetBeans project files
 * "src" - Java class files
