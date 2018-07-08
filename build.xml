@@ -16,7 +16,7 @@
     <!-- paths -->
     <path id="classpath">
         <fileset dir="${lib.dir}" >
-            <include name="*.jar" />
+            <include name="**/*.jar" />
         </fileset>
         <pathelement location="${bin.dir}"/>
     </path>
