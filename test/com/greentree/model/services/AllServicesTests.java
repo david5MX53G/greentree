@@ -4,6 +4,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import com.greentree.model.services.factory.ServiceFactoryTest;
+import com.greentree.model.services.manager.PropertyManagerTest;
 import com.greentree.model.services.tokenservice.FileSystemTokenServiceImplTest;
 
 /**
@@ -13,7 +14,8 @@ import com.greentree.model.services.tokenservice.FileSystemTokenServiceImplTest;
  *
  */
 @RunWith(Suite.class)
-@SuiteClasses({FileSystemTokenServiceImplTest.class, ServiceFactoryTest.class})
+@SuiteClasses({FileSystemTokenServiceImplTest.class, ServiceFactoryTest.class, 
+               PropertyManagerTest.class})
 public class AllServicesTests {
 
 }

@@ -1,6 +1,8 @@
 package com.greentree.model.services.manager;
 
 import java.io.IOException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
@@ -12,6 +14,9 @@ import org.junit.Test;
  */
 public class PropertyManagerTest {
     boolean loadPropertiesTest = false;
+    
+    /** log4j 2 logger */
+    Logger logger = LogManager.getLogger();
     
     /**
      * loadPropertiesTest() tests {@link PropertyManager#loadProperties()} and 
@@ -25,6 +30,7 @@ public class PropertyManagerTest {
         PropertyManager.loadProperties("config/application.properties");
         loadPropertiesTest = true;
         assertTrue(loadPropertiesTest);
+        logger.debug("loadPropertiesTest() PASSED");
     }
     
     /** 
@@ -42,5 +48,6 @@ public class PropertyManagerTest {
                    instanceof String);
         assertTrue(PropertyManager.getProperty("TokenFilesLocation")
                    instanceof String);
+        logger.debug("getPropertyTest() PASSED");
     }
 }
