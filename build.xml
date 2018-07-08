@@ -62,21 +62,23 @@
     <target name="buildjar" depends="clean">
         <jar jarfile="${build.dir}/greentree.jar">
             <fileset dir="${basedir}">
-                    <include name="config/*"/>
+                <include name="config/*"/>
             </fileset>
             <fileset dir="${bin.dir}">
-                    <include name="**/*.class"/>
+                <include name="**/*.class"/>
             </fileset>
             <manifest>
                 <attribute name="Main-Class" value="com.greentree.view.ViewDriver"/>
             </manifest>
-            <zipfileset excludes="META-INF/*.SF" src="${basedir}/lib/commons-codec-1.9.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${lib.dir}/commons-codec-1.9.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${lib.dir}/apache-log4j-2.11.0-bin/log4j-core-2.11.0.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${lib.dir}/apache-log4j-2.11.0-bin/log4j-api-2.11.0.jar"/>
         </jar>
-            <copy todir="${build.dir}">
-                <fileset dir="${basedir}">
-                    <include name="config*/**/*"/>
-                </fileset>
-            </copy>
+        <copy todir="${build.dir}">
+            <fileset dir="${basedir}">
+                <include name="config*/**/*"/>
+            </fileset>
+        </copy>
     </target>
 
     <target name="testjar" depends="buildjar">
