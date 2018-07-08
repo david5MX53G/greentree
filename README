@@ -10,6 +10,7 @@ These are the root-level files:
 * README is for introductory overview and background
 * LICENSE describes copyright conditions
 * INSTALL explains build instructions
+* CHANGES notes changes made during a specified period
 * build.xml is the Apache Ant build script
 * export_ant.sh exports Linux / Unix environment variables for Apache Ant
 * set_ant.cmd sets Windows environment variables for Apache Ant
