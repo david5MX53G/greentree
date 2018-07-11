@@ -29,38 +29,16 @@ public class RegisterController implements ActionListener {
     Logger logger = LogManager.getLogger();
 
     /**
-     * The <code>{@link com.greentree.view.RegisterJFrame}</code> object sending
-     * events to this {@link ActionListener}
-     */
-    private RegisterJFrame regJFrame;
-
-    /**
      * <code>{@link com.greentree.view.RegisterJFrame}</code> object sending
      * events to the {@link
      * ActionListener} of this {@link RegisterController}
      */
-    private RegisterJInternalFrame regJInternalFrame;
+    private final RegisterJInternalFrame regJInternalFrame;
 
     /**
      * Used for sending error messages and such to the user
      */
     private MessageDialog diag;
-
-    /**
-     * Registers handlers for the given <code>{@link RegisterJFrame}</code>
-     * <code>{@link JFrame}</code>
-     *
-     * @param jFrame <code>{@link RegisterJFrame}</code> object sending events
-     * to this controller
-     */
-    public RegisterController(RegisterJFrame jFrame) {
-        // save the argument to a class variable for future reference
-        this.regJFrame = jFrame;
-
-        // wire up listeners for the buttons
-        this.regJFrame.getCancelBtn().addActionListener(this);
-        this.regJFrame.getSubmitBtn().addActionListener(this);
-    }
 
     /**
      * builds a new {@link RegisterController} to handle events from the given <code>
@@ -89,7 +67,10 @@ public class RegisterController implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         logger.debug("actionPerformed(ActionEvent) " + e.getActionCommand());
 
-        // if this was registered with a RegisterJInternalFrame, use RegisterJInternalFrame methods
+        /** if this was registered with a RegisterJInternalFrame, use 
+         * RegisterJInternalFrame methods this is a holdover from the days when 
+         * RegisterJFrame existed, but it's still a good sanity check.
+         */
         if (this.regJInternalFrame instanceof RegisterJInternalFrame) {
             // fire the cancel button action when the cancel button is clicked
             if (e.getSource().equals(regJInternalFrame.getCancelBtn())) {
@@ -98,14 +79,6 @@ public class RegisterController implements ActionListener {
 
             // fire the submit button action when the submit button is clicked
             if ("Submit".equals(e.getActionCommand())) {
-                submitBtn_actionPerformed(e);
-            }
-        } // if this was constructed with a RegisterJFrame, use RegisterJFrame methods
-        else if (this.regJFrame instanceof RegisterJFrame) {
-            if (e.getSource().equals(regJFrame.getCancelBtn())) {
-                cancelButton_ActionPerformed(e);
-            }
-            if (e.getSource().equals(regJFrame.getSubmitBtn())) {
                 submitBtn_actionPerformed(e);
             }
         }
@@ -118,9 +91,9 @@ public class RegisterController implements ActionListener {
      * {@link RegisterJFrame#getPass()}.
      *
      * TODO: replace
-     * <code>{@link com.greentree.model.business.manager.GreenTreeManager#registerToken(String)}</code>
+     * {@link com.greentree.model.business.manager.GreenTreeManager#registerToken(String)}
      * with
-     * <code>{@link com.greentree.model.business.manager.GreenTreeManager#registerToken(char[])}</code>.
+     * {@link com.greentree.model.business.manager.GreenTreeManager#registerToken(char[])}
      *
      * @param e <code>{@link ActionEvent}</code> should be from <code>{@link
      * RegisterJFrame#getSubmitBtn()}</code> <code>JButton</code>
@@ -143,14 +116,12 @@ public class RegisterController implements ActionListener {
             return;
         }
 
-        if (this.regJFrame instanceof RegisterJFrame) {
-            success = manager.registerToken(new String(regJFrame.getPass()));
-        } else if (this.regJInternalFrame instanceof RegisterJInternalFrame) {
+        if (this.regJInternalFrame instanceof RegisterJInternalFrame) {
             success = manager.registerToken(new String(regJInternalFrame.getPass()));
         }
         if (!success) {
-            logger.debug("manager.registerToken(new String(newTokenJFrame.getPass())); "
-                + "was unsuccessful");
+            logger.debug("manager.registerToken(new "
+                + "String(newTokenJFrame.getPass())); was unsuccessful");
             new MessageDialog("Error", "failed to save new token");
             return;
         }
@@ -160,9 +131,7 @@ public class RegisterController implements ActionListener {
         JFileChooser fc = new JFileChooser();
         int chooserState;
 
-        if (this.regJFrame instanceof RegisterJFrame) {
-            chooserState = fc.showSaveDialog(this.regJFrame);
-        } else if (this.regJInternalFrame instanceof RegisterJInternalFrame) {
+        if (this.regJInternalFrame instanceof RegisterJInternalFrame) {
             chooserState = fc.showSaveDialog(this.regJInternalFrame);
         } else {
             logger.debug("JFileChooser failed to get a response");
@@ -189,17 +158,13 @@ public class RegisterController implements ActionListener {
             logger.debug("JFileChooser cancelled by user.");
         }
 
-        if (this.regJFrame instanceof RegisterJFrame) {
-            this.regJFrame.dispose();
-        } else if (this.regJInternalFrame instanceof RegisterJInternalFrame) {
+        if (this.regJInternalFrame instanceof RegisterJInternalFrame) {
             this.regJInternalFrame.dispose();
         }
     }
 
     private void cancelButton_ActionPerformed(ActionEvent ev) {
-        if (this.regJFrame instanceof RegisterJFrame) {
-            this.regJFrame.dispose();
-        } else if (this.regJInternalFrame instanceof RegisterJInternalFrame) {
+        if (this.regJInternalFrame instanceof RegisterJInternalFrame) {
             this.regJInternalFrame.dispose();
         }
         logger.debug("cancelButton_ActionPerformed(ActionEvent) PASSED");
