@@ -1,7 +1,5 @@
 package com.greentree.view;
 
-import com.greentree.view.authenticate.AuthController;
-import com.greentree.view.authenticate.AuthJFrame;
 import com.greentree.view.main.MainJFrameController;
 import com.greentree.view.main.MainJFrameDesktop;
 //import com.greentree.view.Main.MainJFrameContainer;
