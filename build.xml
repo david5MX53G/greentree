@@ -59,7 +59,7 @@
         <mkdir dir="${build.dir}"/>
     </target>
 
-    <target name="buildjar" depends="clean">
+    <target name="jar" depends="clean">
         <jar jarfile="${build.dir}/greentree.jar">
             <fileset dir="${basedir}">
                 <include name="config/*"/>
@@ -81,7 +81,7 @@
         </copy>
     </target>
 
-    <target name="testjar" depends="buildjar">
+    <target name="testjar" depends="jar">
         <java jar="${build.dir}/greentree.jar" fork="yes" dir="."/>
     </target>
 </project>
