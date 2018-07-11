@@ -14,6 +14,7 @@ import javax.swing.JFileChooser;
 import com.greentree.model.business.exception.GreenTreeManagerException;
 import com.greentree.model.business.manager.GreenTreeManager;
 import com.greentree.view.MessageDialog;
+import com.greentree.view.InternalMessageDiag;
 import com.greentree.view.addmsg.AddMsgJInternalController;
 import com.greentree.view.addmsg.AddMsgJInternalFrame;
 import com.greentree.view.authenticate.AuthJInternalController;
@@ -41,6 +42,7 @@ public class MainJFrameController implements ActionListener {
      * for sending error messages and such to the user
      */
     private MessageDialog diag;
+    private InternalMessageDiag msgdiag;
 
     /**
      * {@link GreenTreeManager} for managing data objects
@@ -213,9 +215,9 @@ public class MainJFrameController implements ActionListener {
                 } else {
                     msg = ex.getMessage();
                 }
-                diag = new MessageDialog(ex.getClass().getSimpleName(), "Error 0339: " + msg);
-                diag.setModal(true);
-                diag.setVisible(true);
+                msgdiag = 
+                    new InternalMessageDiag(ex.getClass().getSimpleName(), msg);
+                this.jFrameDesktop.add(msgdiag);
             }
         } else {
             logger.debug("Open command cancelled by user.");

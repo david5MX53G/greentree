@@ -26,8 +26,8 @@ public class AddMsgJInternalFrame extends JInternalFrame {
     Logger logger = LogManager.getLogger();
     
     /**
-     * Eclipse-generated serial number for extending
-     * <code>{@link java.io.Serializable}</code>
+     * Eclipse-generated serial number for extending {@link 
+     * java.io.Serializable}
      */
     private static final long serialVersionUID = 5145168338973715605L;
 
@@ -75,10 +75,10 @@ public class AddMsgJInternalFrame extends JInternalFrame {
      */
     public AddMsgJInternalFrame() {
         super("Add Message",
-            true, //resizable
-            true, //closable
-            true, //maximizable
-            true);//iconifiable
+              true, //resizable
+              true, //closable
+              true, //maximizable
+              true);//iconifiable
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         String logPfx = this.getClass().getSimpleName();
 
