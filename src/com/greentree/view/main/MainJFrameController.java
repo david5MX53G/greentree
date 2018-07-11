@@ -183,6 +183,7 @@ public class MainJFrameController implements ActionListener {
                 // get the active token and load the log for it
                 if (manager.registerToken(this.key, this.ciphertext)) {
                     Iterator<String> it = manager.getData(key).iterator();
+                    logger.debug("manager.getData(key).iterator() = " + it.toString());
 
                     // use LogJInternalFrame, if MainJFrameDesktop is active
                     if (this.jFrameDesktop instanceof MainJFrameDesktop) {
@@ -190,6 +191,7 @@ public class MainJFrameController implements ActionListener {
                         new LogJInternalController(iFrame);
                         iFrame.setVisible(true);
                         this.jFrameDesktop.add(iFrame);
+                        logger.debug("LogJInternalFrame added to jFrameDesktop");
                         try {
                             iFrame.setSelected(true);
                         } catch (java.beans.PropertyVetoException e) {
