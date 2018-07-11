@@ -1,4 +1,4 @@
-package com.greentree.view.Main;
+package com.greentree.view.main;
 
 import java.awt.Container;
 import java.awt.GridBagConstraints;

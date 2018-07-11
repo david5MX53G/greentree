@@ -1,4 +1,4 @@
-package com.greentree.view.Authenticate;
+package com.greentree.view.authenticate;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,7 +21,7 @@ import org.apache.commons.codec.binary.Base64;
 import com.greentree.model.business.manager.GreenTreeManager;
 import com.greentree.model.exception.InvalidPassException;
 import com.greentree.view.MessageDialog;
-import com.greentree.view.Main.MainJFrameController;
+import com.greentree.view.main.MainJFrameController;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

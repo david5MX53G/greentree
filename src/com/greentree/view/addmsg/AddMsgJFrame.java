@@ -1,4 +1,4 @@
-package com.greentree.view.AddMsg;
+package com.greentree.view.addmsg;
 
 import java.awt.Container;
 import java.awt.GridBagConstraints;

@@ -1,4 +1,4 @@
-package com.greentree.view.ViewLog;
+package com.greentree.view.viewlog;
 
 import java.awt.Container;
 import java.awt.GridBagConstraints;
@@ -6,7 +6,6 @@ import java.awt.GridBagLayout;
 import java.util.Iterator;
 
 import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
@@ -16,18 +15,15 @@ import javax.swing.JTextArea;
  * "https://docs.oracle.com/javase/tutorial/uiswing/examples/components/TextDemoProject/src/components/TextDemo.java">
  * TextDemo.java</a>).
  * 
- * TODO: add a close button!!
- * 
  * @author david.dietrich
  *
  */
-public class LogJInternalFrame extends JInternalFrame {
+public class LogJFrame extends JFrame {
 	/**
 	 * Eclipse has generated this <code>long</code> so the class can implement <code>{@link 
 	 * java.io.Serializable}</code>
 	 */
-	private static final long serialVersionUID = 6660852051586605385L;
-
+	private static final long serialVersionUID = 7689145917555800441L;
 	
 	/** {@link Container} which holds all other elements in this {@link JFrame} */
 	Container cPane = getContentPane();
@@ -38,7 +34,7 @@ public class LogJInternalFrame extends JInternalFrame {
     JTextArea textArea = new JTextArea(20, 20);
 
     /**
-     * provides scrolling for <code>{@link LogJInternalFrame#textArea}</code>
+     * provides scrolling for <code>{@link LogJFrame#textArea}</code>
      */
     JScrollPane scrollPane = new JScrollPane(textArea);
     
@@ -49,18 +45,14 @@ public class LogJInternalFrame extends JInternalFrame {
 	GridBagLayout gBagL = new GridBagLayout();
 
     /**
-     * Spawns a new {@link LogJInternalFrame} which renders all <code>String</code> objects in the 
+     * Spawns a new {@link LogJFrame} which renders all <code>String</code> objects in the 
      * given <code>Iterator</code> in a JFrame.
      * 
      * @param it {@link Iterator}<{@link String}> displays its contents in the {@link 
-     *     LogJInternalFrame#textArea}
+     *     LogJFrame#textArea}
      */
-    public LogJInternalFrame(Iterator<String> it) {
-    	super("Log Messages",
-  	          true, //resizable
-  	          true, //closable
-  	          true, //maximizable
-  	          true);//iconifiable
+    public LogJFrame(Iterator<String> it) {
+    	super("Log Messages");
     	this.setDefaultCloseOperation(HIDE_ON_CLOSE);
     	
     	// set up container layout and constraints

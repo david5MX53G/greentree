@@ -1,4 +1,4 @@
-package com.greentree.view.Register;
+package com.greentree.view.register;
 
 import java.awt.Container;
 import java.awt.GridBagConstraints;
@@ -6,21 +6,27 @@ import java.awt.GridBagLayout;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 
 /**
- * This provides the UI for creating new {@link com.greentree.model.domain.Token} objects.
- *  
+ * {@link JInternalFrame} for registering new {@link com.greentree.domain.model.Token} objects
+ * from within the {@link MainJFrameDesktop}.
+ * 
  * @author david.dietrich
  *
  */
-public class RegisterJFrame extends JFrame {
-	/**
-	 * Eclipse generated this <code>{@link long}</code> value so the class can extend <code>{@link 
-	 * java.io.Serializable}</code> 
+public class RegisterJInternalFrame extends JInternalFrame {
+	/** Eclipse generated this long for extending {@link JInternalFrame} */
+	private static final long serialVersionUID = -4684132667378900155L;
+	
+	/** 
+	 * These are used to position this {@link JInternalFrame} using <code>setLocation(int, int)
+	 * </code>
 	 */
-	private static final long serialVersionUID = 1051409773964860401L;
+	static int openFrameCount = 0;
+    static final int xOffset = 30, yOffset = 30;
 	
 	/**
 	 * These are the fields to gather input for registering a new <code>{@link com.greentree.model.
@@ -30,14 +36,21 @@ public class RegisterJFrame extends JFrame {
 	private JPasswordField passFld = new JPasswordField(20);
 	private JButton submitBtn = new JButton("Submit");
 	private JButton cancelBtn = new JButton("Cancel");
-	
-	/**
-	 * Creates a <code>{@link JFrame}</code> with fields to call <code>{@link com.greentree.model.
-	 * business.manager.GreenTreeManager#registerToken(String)}</code>
-	 */
-	public RegisterJFrame() {
-		super("New Token");
-		// layout JFrame and JComponent objects
+
+    /**
+     * constructs a new {@link RegisterJInternalFrame}
+     */
+    public RegisterJInternalFrame() {
+        super("Register", 
+              true, //resizable
+              true, //closable
+              true, //maximizable
+              true);//iconifiable
+        
+        // EXIT_ON_CLOSE would kill the parent window; we don't want that
+		// setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
+        // layout JFrame and JComponent objects
 		Container cntnr = getContentPane();
 		GridBagLayout layout = new GridBagLayout();
 		cntnr.setLayout(layout);
@@ -67,10 +80,10 @@ public class RegisterJFrame extends JFrame {
 		cnst.gridy = 1;
 		cntnr.add(cancelBtn, cnst);
 		
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        // Set the window's size and location.
 		pack();
-		setVisible(true);
-	}
+        setLocation(xOffset*openFrameCount, yOffset*openFrameCount);
+    }
 
 	/** 
 	 * This should close the <code>{@link RegisterJFrame}</code> <code>{@link JFrame}</code>

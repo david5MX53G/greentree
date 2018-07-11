@@ -1,4 +1,4 @@
-package com.greentree.view.Register;
+package com.greentree.view.register;
 
 import java.awt.Container;
 import java.awt.GridBagConstraints;
@@ -6,27 +6,21 @@ import java.awt.GridBagLayout;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 
 /**
- * {@link JInternalFrame} for registering new {@link com.greentree.domain.model.Token} objects
- * from within the {@link MainJFrameDesktop}.
- * 
+ * This provides the UI for creating new {@link com.greentree.model.domain.Token} objects.
+ *  
  * @author david.dietrich
  *
  */
-public class RegisterJInternalFrame extends JInternalFrame {
-	/** Eclipse generated this long for extending {@link JInternalFrame} */
-	private static final long serialVersionUID = -4684132667378900155L;
-	
-	/** 
-	 * These are used to position this {@link JInternalFrame} using <code>setLocation(int, int)
-	 * </code>
+public class RegisterJFrame extends JFrame {
+	/**
+	 * Eclipse generated this <code>{@link long}</code> value so the class can extend <code>{@link 
+	 * java.io.Serializable}</code> 
 	 */
-	static int openFrameCount = 0;
-    static final int xOffset = 30, yOffset = 30;
+	private static final long serialVersionUID = 1051409773964860401L;
 	
 	/**
 	 * These are the fields to gather input for registering a new <code>{@link com.greentree.model.
@@ -36,21 +30,14 @@ public class RegisterJInternalFrame extends JInternalFrame {
 	private JPasswordField passFld = new JPasswordField(20);
 	private JButton submitBtn = new JButton("Submit");
 	private JButton cancelBtn = new JButton("Cancel");
-
-    /**
-     * constructs a new {@link RegisterJInternalFrame}
-     */
-    public RegisterJInternalFrame() {
-        super("Register", 
-              true, //resizable
-              true, //closable
-              true, //maximizable
-              true);//iconifiable
-        
-        // EXIT_ON_CLOSE would kill the parent window; we don't want that
-		// setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-
-        // layout JFrame and JComponent objects
+	
+	/**
+	 * Creates a <code>{@link JFrame}</code> with fields to call <code>{@link com.greentree.model.
+	 * business.manager.GreenTreeManager#registerToken(String)}</code>
+	 */
+	public RegisterJFrame() {
+		super("New Token");
+		// layout JFrame and JComponent objects
 		Container cntnr = getContentPane();
 		GridBagLayout layout = new GridBagLayout();
 		cntnr.setLayout(layout);
@@ -80,10 +67,10 @@ public class RegisterJInternalFrame extends JInternalFrame {
 		cnst.gridy = 1;
 		cntnr.add(cancelBtn, cnst);
 		
-        // Set the window's size and location.
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		pack();
-        setLocation(xOffset*openFrameCount, yOffset*openFrameCount);
-    }
+		setVisible(true);
+	}
 
 	/** 
 	 * This should close the <code>{@link RegisterJFrame}</code> <code>{@link JFrame}</code>

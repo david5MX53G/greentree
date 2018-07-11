@@ -1,4 +1,4 @@
-package com.greentree.view.ViewLog;
+package com.greentree.view.viewlog;
 
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;

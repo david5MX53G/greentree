@@ -1,4 +1,4 @@
-package com.greentree.view.Authenticate;
+package com.greentree.view.authenticate;
 
 import java.awt.Container;
 import java.awt.GridBagConstraints;

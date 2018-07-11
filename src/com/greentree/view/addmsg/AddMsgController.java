@@ -1,4 +1,4 @@
-package com.greentree.view.AddMsg;
+package com.greentree.view.addmsg;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,27 +14,24 @@ import javax.swing.JFileChooser;
 
 import com.greentree.model.business.manager.GreenTreeManager;
 import com.greentree.view.MessageDialog;
-import com.greentree.view.Main.MainJFrameController;
+import com.greentree.view.main.MainJFrameController;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * <code>AddMsgJInternalController</code> consumes events from the {@link 
- * AddMsgJFrame}.
+ * consumes events from the {@link AddMsgJFrame}.
  *
  * @author david.dietrich
  *
  */
-public class AddMsgJInternalController implements ActionListener {
-    /** 
-     * {@link org.apache.logging.log4j.Logger} is for logging logs to the log
-     */
+public class AddMsgController implements ActionListener {
+    /** {@link org.apache.logging.log4j.Logger} logger */
     Logger logger = LogManager.getLogger();
-    
+
     /**
      * {@link AddMsgJFrame} sending events to this controller
      */
-    private AddMsgJInternalFrame iFrame;
+    private AddMsgJFrame addMsgJFrame;
 
     /**
      * for sending error messages and such to the user
@@ -44,7 +41,7 @@ public class AddMsgJInternalController implements ActionListener {
     /**
      * {@link GreenTreeManager} for managing data objects
      */
-    private final GreenTreeManager manager = GreenTreeManager.getInstance();
+    private GreenTreeManager manager = GreenTreeManager.getInstance();
 
     /**
      * {@link AddMsgJFrame} sends events to this controller
@@ -57,32 +54,33 @@ public class AddMsgJInternalController implements ActionListener {
     private RSAPublicKey toKey;
 
     /**
-     * @param iFrame {@link AddMsgJFrame} sends events to this
-     * {@link AddMsgJInternalController}
+     * @param jFrame {@link AddMsgJFrame} sends events to this
+     * {@link AddMsgController}
      * @param main {@link MainJFrameController} which provides the active
      * session key
      */
-    public AddMsgJInternalController(AddMsgJInternalFrame iFrame, MainJFrameController main) {
+    public AddMsgController(AddMsgJFrame jFrame, MainJFrameController main) {
         if (main.getKey() == null) {
-            logger.error("must be authenticated first");
+            logger.debug("error 0957: must be authenticated first");
             diag = new MessageDialog("Error 0957", "must be authenticated first");
             diag.setVisible(true);
+            this.addMsgJFrame.dispose();
         } else {
-            this.iFrame = iFrame;
+            this.addMsgJFrame = jFrame;
             this.mainCtrl = main;
-            iFrame.getKeyBtn().addActionListener(this);
-            iFrame.getSubmitBtn().addActionListener(this);
+            addMsgJFrame.getKeyBtn().addActionListener(this);
+            addMsgJFrame.getSubmitBtn().addActionListener(this);
             logger.debug("initialized");
         }
     }
 
     @Override
     public void actionPerformed(ActionEvent aev) {
-        if (aev.getSource().equals(iFrame.getKeyBtn())) {
+        if (aev.getSource().equals(addMsgJFrame.getKeyBtn())) {
             keyBtnAction();
         };
 
-        if (aev.getSource().equals(iFrame.getSubmitBtn())) {
+        if (aev.getSource().equals(addMsgJFrame.getSubmitBtn())) {
             submitBtnAction();
         };
     }
@@ -95,11 +93,11 @@ public class AddMsgJInternalController implements ActionListener {
         String diagTitle = null;
         String diagText = null;
         GregorianCalendar expires = new GregorianCalendar();
-        String msg = this.iFrame.getMsgFld();
+        String msg = this.addMsgJFrame.getMsgFld();
         boolean success;
 
-        if (this.iFrame.getHours() > 0) {
-            expires.add(GregorianCalendar.HOUR, this.iFrame.getHours());
+        if (this.addMsgJFrame.getHours() > 0) {
+            expires.add(GregorianCalendar.HOUR, this.addMsgJFrame.getHours());
         } else {
             new MessageDialog("Error", "invalid time input");
         }
@@ -133,7 +131,7 @@ public class AddMsgJInternalController implements ActionListener {
         JFileChooser fc = new JFileChooser();
 
         // prompt for a file and store the resulting return state
-        int returnVal = fc.showOpenDialog(iFrame);
+        int returnVal = fc.showOpenDialog(this.addMsgJFrame);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fc.getSelectedFile();
             logger.debug("opening " + file.getName());

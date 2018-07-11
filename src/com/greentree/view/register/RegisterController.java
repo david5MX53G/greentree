@@ -1,4 +1,4 @@
-package com.greentree.view.Register;
+package com.greentree.view.register;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
