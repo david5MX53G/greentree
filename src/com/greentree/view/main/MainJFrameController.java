@@ -14,19 +14,12 @@ import javax.swing.JFileChooser;
 import com.greentree.model.business.exception.GreenTreeManagerException;
 import com.greentree.model.business.manager.GreenTreeManager;
 import com.greentree.view.MessageDialog;
-import com.greentree.view.addmsg.AddMsgController;
-import com.greentree.view.addmsg.AddMsgJFrame;
 import com.greentree.view.addmsg.AddMsgJInternalController;
 import com.greentree.view.addmsg.AddMsgJInternalFrame;
-import com.greentree.view.authenticate.AuthController;
-import com.greentree.view.authenticate.AuthJFrame;
 import com.greentree.view.authenticate.AuthJInternalController;
 import com.greentree.view.authenticate.AuthJInternalFrame;
 import com.greentree.view.register.RegisterController;
-import com.greentree.view.register.RegisterJFrame;
 import com.greentree.view.register.RegisterJInternalFrame;
-import com.greentree.view.viewlog.LogController;
-import com.greentree.view.viewlog.LogJFrame;
 import com.greentree.view.viewlog.LogJInternalController;
 import com.greentree.view.viewlog.LogJInternalFrame;
 import org.apache.logging.log4j.LogManager;
@@ -39,12 +32,6 @@ import org.apache.logging.log4j.Logger;
  *
  */
 public class MainJFrameController implements ActionListener {
-
-    /**
-     * {@link MainJFrameContainer} sending events to this controller
-     */
-    private MainJFrameContainer jFrameContainer;
-
     /**
      * {@link MainJFrameContainer} sending events to this controller
      */
@@ -76,31 +63,6 @@ public class MainJFrameController implements ActionListener {
     Logger logger = LogManager.getLogger();
 
     /**
-     * Registers handlers for the given <code>{@link MainJFrameContainer}</code>
-     *
-     * @param jFrame - <code>AuthJFrame</code> object that will receive handlers
-     * from this
-     */
-    public MainJFrameController(MainJFrameContainer jFrame) {
-        this.jFrameContainer = jFrame;
-        String msg;
-
-        // wire up listeners for the buttons in the JFrame
-        jFrame.getAuthJButton().addActionListener(this);
-        jFrame.getLogJButton().addActionListener(this);
-        jFrame.getMsgJButton().addActionListener(this);
-        jFrame.getRegJButton().addActionListener(this);
-
-        if (!manager.registerService("TokenService")) {
-            msg = "manager.registerService(\"TokenService\") was unsuccessful";
-            logger.debug(msg);
-            diag = new MessageDialog("Error 0338", msg);
-        } else {
-            logger.debug("manager and listeners registered");
-        }
-    }
-
-    /**
      * constructs a new {@link MainJFrameController} with listeners attached to
      * the menu items of the given {@link MainJFrameDesktop}.
      *
@@ -130,35 +92,13 @@ public class MainJFrameController implements ActionListener {
     /**
      * spawns a new JFrame appropriate to the
      * {@link MainJFrameContainer} {@link JButton} pressed
+     * @param aev {@link ActionEvent} used to decide which method(s) to invoke
      */
     @Override
     public void actionPerformed(ActionEvent aev) {
         logger.debug("actionPerformed(ActionEvent) " + aev.getActionCommand());
-
-        if (this.jFrameContainer instanceof MainJFrameContainer) {
-            // spawn an authentication JFrame, if the login button was pressed
-            if (aev.getSource().equals(jFrameContainer.getAuthJButton())) {
-                logger.debug("new AuthJFrame()");
-                new AuthController(new AuthJFrame(), this);
-            };
-
-            // spawn a view log JFrame, if the view log button was pressed
-            if (aev.getSource().equals(jFrameContainer.getLogJButton())) {
-                logButton_action(aev);
-            };
-
-            // spawn a new message JFrame, if the new message button was pressed
-            if (aev.getSource().equals(jFrameContainer.getMsgJButton())) {
-                logger.debug("new AddMsgController(new AddMsgJFrame());");
-                new AddMsgController(new AddMsgJFrame(), this);
-            };
-
-            // spawn a new key registration JFrame, if the register button was pressed
-            if (aev.getSource().equals(jFrameContainer.getRegJButton())) {
-                logger.debug("new RegisterController(new RegisterJFrame());");
-                new RegisterController(new RegisterJFrame());
-            }
-        } else if (this.jFrameDesktop instanceof MainJFrameDesktop) {
+        
+        if (this.jFrameDesktop instanceof MainJFrameDesktop) {
             // add a RegisterJInternalFrame to the JDesktopPane on the register menu item action
             if ("reg".equals(aev.getActionCommand())) {
                 logger.debug("new RegisterJInternalFrame();");
@@ -169,10 +109,11 @@ public class MainJFrameController implements ActionListener {
                 try {
                     iFrame.setSelected(true);
                 } catch (java.beans.PropertyVetoException e) {
+                    logger.error("failed on iFrame.setSelected(true)");
                 }
             }
 
-            // add a RegisterJInternalFrame to the JDesktopPane on the register menu item action
+            // add a AuthJInternalFrame to the JDesktopPane on the auth menu item action
             if ("auth".equals(aev.getActionCommand())) {
                 logger.debug("new AuthJInternalFrame();");
                 AuthJInternalFrame iFrame = new AuthJInternalFrame();
@@ -185,12 +126,12 @@ public class MainJFrameController implements ActionListener {
                 }
             }
 
-            // add a RegisterJInternalFrame to the JDesktopPane on the register menu item action
+            // add invoke the logButton_action method on the "log" menu action command
             if ("log".equals(aev.getActionCommand())) {
                 logButton_action(aev);
             }
 
-            // add a new AddMsgJInternalFrame to the JDesktopPane on the new msg menu item action
+            // add a new AddMsgJInternalFrame to the JDesktopPane on the "new" menu item action
             if ("new".equals(aev.getActionCommand())) {
                 logger.debug("new AddMsgJInternalController;");
                 AddMsgJInternalFrame iFrame = new AddMsgJInternalFrame();
@@ -203,7 +144,7 @@ public class MainJFrameController implements ActionListener {
                 }
             }
         } else {
-            logger.debug("missing JFrame;");
+            logger.error("MainJFrameDesktop not found");
         }
     }
 
@@ -223,9 +164,7 @@ public class MainJFrameController implements ActionListener {
         int returnVal;
 
         // prompt for a file and store the resulting return state
-        if (this.jFrameContainer instanceof MainJFrameContainer) {
-            returnVal = fc.showOpenDialog(jFrameContainer);
-        } else if (this.jFrameDesktop instanceof MainJFrameDesktop) {
+        if (this.jFrameDesktop instanceof MainJFrameDesktop) {
             returnVal = fc.showOpenDialog(jFrameDesktop);
         } else {
             logger.debug("could not get state from JFileChooser");
@@ -245,11 +184,8 @@ public class MainJFrameController implements ActionListener {
                 if (manager.registerToken(this.key, this.ciphertext)) {
                     Iterator<String> it = manager.getData(key).iterator();
 
-                    // use LogJFrame, if MainJFrameContainer is active
-                    if (this.jFrameContainer instanceof MainJFrameContainer) {
-                        new LogController(new LogJFrame(it));
-                    } // use LogJInternalFrame, if MainJFrameDesktop is active
-                    else if (this.jFrameDesktop instanceof MainJFrameDesktop) {
+                    // use LogJInternalFrame, if MainJFrameDesktop is active
+                    if (this.jFrameDesktop instanceof MainJFrameDesktop) {
                         LogJInternalFrame iFrame = new LogJInternalFrame(it);
                         new LogJInternalController(iFrame);
                         iFrame.setVisible(true);
