@@ -41,7 +41,6 @@ public class MainJFrameController implements ActionListener {
     /**
      * for sending error messages and such to the user
      */
-    private MessageDialog diag;
     private InternalMessageDiag msgdiag;
 
     /**
@@ -85,7 +84,9 @@ public class MainJFrameController implements ActionListener {
         if (!manager.registerService("TokenService")) {
             String msg = "manager.registerService(\"TokenService\") was unsuccessful";
             logger.debug(msg);
-            diag = new MessageDialog("Error 0927", msg);
+            msgdiag = 
+                    new InternalMessageDiag("Error", msg);
+            this.jFrameDesktop.add(msgdiag);
         } else {
             logger.debug("manager and listeners registered");
         }
