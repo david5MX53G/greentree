@@ -7,7 +7,7 @@ import org.junit.runners.Suite.SuiteClasses;
 /**
  * This aggregates JUnit test cases for <code>{@link com.greentree.model.domain}</code>.
  * 
- * @author David Dietrich
+ * @author david5MX53G
  *
  */
 @RunWith(Suite.class)

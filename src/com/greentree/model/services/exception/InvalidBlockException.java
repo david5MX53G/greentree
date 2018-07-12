@@ -6,7 +6,7 @@ package com.greentree.model.services.exception;
 /**
  * This should be thrown when a <code>{@link Block}</code> fails to validate.
  * 
- * @author David Dietrich
+ * @author david5MX53G
  *
  */
 public class InvalidBlockException extends Exception {
