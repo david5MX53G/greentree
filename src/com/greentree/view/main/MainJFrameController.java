@@ -29,7 +29,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * consumes events from the {@link MainJFrameContainer}
  *
- * @author david.dietrich
+ * @author david5MX53G
  *
  */
 public class MainJFrameController implements ActionListener {

@@ -13,7 +13,7 @@ import org.apache.logging.log4j.LogManager;
 /**
  * This class has methods for testing the <code>{@link Token}</code> class.
  *
- * @author david.dietrich
+ * @author david5MX53G
  */
 public class TokenTest {
     /** log4j 2 logger */

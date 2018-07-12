@@ -6,7 +6,7 @@ import java.util.Properties;
 /**
  * This class loads and provides access to {@link Properties} for business and service layers.
  * 
- * @author david.dietrich
+ * @author david5MX53G
  *
  */
 public class PropertyManager {

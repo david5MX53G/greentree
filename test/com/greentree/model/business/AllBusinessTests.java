@@ -20,7 +20,7 @@ import com.greentree.model.business.manager.GreenTreeManagerTest;
  * -Dprop_location="C:\Users\david\Documents\eclipse-workspace\GreenTree\config\application
  * .properties"
  * 
- * @author david.dietrich
+ * @author david5MX53G
  *
  */
 @RunWith(Suite.class)

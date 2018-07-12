@@ -9,7 +9,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * Defines handlers for <code>{@link LogJFrame}</code>
  *
- * @author david.dietrich
+ * @author david5MX53G
  *
  */
 public class LogJInternalController implements ComponentListener {

@@ -19,7 +19,7 @@ import org.apache.logging.log4j.Logger;
  * "https://tinyurl.com/y7tuzl77">Creating Your First Blockchain with Java. Part
  * 1.</a>
  *
- * @author david.dietrich
+ * @author david5MX53G
  * @see com.greentree.model.domain.User
  * @see com.greentree.model.domain.Claim
  */

@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Logger;
  * <code>AddMsgJInternalController</code> consumes events from the {@link 
  * AddMsgJFrame}.
  *
- * @author david.dietrich
+ * @author david5MX53G
  *
  */
 public class AddMsgJInternalController implements ActionListener {

@@ -14,11 +14,9 @@ import javax.swing.JDialog;
 import javax.swing.JTextArea;
 
 /**
- * Spawns a simple <code>{@link JDialog}</code> for giving the user error messages, and so forth. 
- * This code borrows heavily from <code>{@link com.fleetrental.model.view.MessageDialog}</code> by
- * Mike.Prasad.
+ * Spawns a simple <code>{@link JDialog}</code> for giving the user error messages, and so forth.
  * 
- * @author david.dietrich
+ * @author david5MX53G
  *
  */
 public class MessageDialog extends JDialog implements ActionListener {

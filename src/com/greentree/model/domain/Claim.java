@@ -15,7 +15,7 @@ import java.util.Date;
  * Web Token (JWT)</a> standard, but does not include any encryption features. This class serves 
  * only as the basis of the GreenTree access control system.
  * 
- * @author david.dietrich
+ * @author david5MX53G
  * @see com.greentree.model.domain.ClaimTest
  * @see com.greentree.model.domain.Block
  * @see com.greentree.model.domain.User

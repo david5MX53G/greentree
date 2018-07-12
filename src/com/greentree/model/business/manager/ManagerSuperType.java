@@ -10,7 +10,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * provides behavior for getting <code>{@link IService}</class> objects.
  *
- * @author david.dietrich
+ * @author david5MX53G
  *
  */
 public abstract class ManagerSuperType {

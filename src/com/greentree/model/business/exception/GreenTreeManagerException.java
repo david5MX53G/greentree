@@ -4,7 +4,7 @@ package com.greentree.model.business.exception;
  * used by {@link com.greentree.model.business.manager.GreenTreeManager} to throw {@link Exception}
  * objects. 
  * 
- * @author david.dietrich
+ * @author david5MX53G
  *
  */
 public class GreenTreeManagerException extends Exception {

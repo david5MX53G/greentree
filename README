@@ -3,9 +3,6 @@ Greentree is a distributed, pseudonymous transaction system facilitating secure,
 identities on a token-controlled audit log that provides both privacy and trust 
 to system users.
 
-This project was started in Spring, 2018 for the MSSE_670 Java Programming class
- from Regis University. 
-
 These are the root-level files:
 * build.cmd builds the project with build.xml using Apache Ant
 * build.sh builds the project with build.xml using Apache Ant 

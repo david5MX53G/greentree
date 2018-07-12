@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
  * This defines methods for testing the
  * <code>{@link FileSystemTokenService}</code> class.
  *
- * @author david.dietrich
+ * @author david5MX53G
  *
  */
 public class FileSystemTokenServiceImplTest {

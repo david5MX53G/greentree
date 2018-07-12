@@ -16,7 +16,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * provides the interface for adding a message to the active {@link Token}
  *
- * @author david.dietrich
+ * @author david5MX53G
  *
  */
 public class AddMsgJInternalFrame extends JInternalFrame {

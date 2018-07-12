@@ -15,7 +15,7 @@ import com.greentree.model.services.exception.InvalidTokenException;
  * This is the separated interface class used for saving and loading <code>{@link Token}</code> 
  * objects from storage services as defined by implementation classes.
  * 
- * @author david.dietrich
+ * @author david5MX53G
  *
  */
 public interface ITokenService extends IService {

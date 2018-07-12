@@ -18,7 +18,7 @@ import javax.swing.JTextArea;
  * 
  * TODO: add a close button!!
  * 
- * @author david.dietrich
+ * @author david5MX53G
  *
  */
 public class LogJInternalFrame extends JInternalFrame {

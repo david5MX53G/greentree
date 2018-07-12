@@ -31,7 +31,7 @@ import org.apache.logging.log4j.Logger;
  * <code>{@link Token}</code> objects with associated <code>{@link Block}</code> and 
  * <code>{@link Claim}</code> objects.
  * 
- * @author david.dietrich
+ * @author david5MX53G
  *
  */
 public class GreenTreeManager extends ManagerSuperType {

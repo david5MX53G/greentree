@@ -36,7 +36,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  *
- * @author david.dietrich
+ * @author david5MX53G
  */
 public class InternalMessageDiag extends JInternalFrame implements ActionListener {
     /** 

@@ -14,7 +14,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * This {@link JInternalFrame} is used to authenticate with an existing key.
  *
- * @author david.dietrich
+ * @author david5MX53G
  *
  */
 public class AuthJInternalFrame extends JInternalFrame {

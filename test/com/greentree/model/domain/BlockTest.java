@@ -9,7 +9,7 @@ import org.junit.Test;
 /**
  * This class defines methods for testing the <code>{@link Block}</code> class.
  * 
- * @author david.dietrich
+ * @author david5MX53G
  *
  */
 public class BlockTest {

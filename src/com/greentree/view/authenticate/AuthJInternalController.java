@@ -28,7 +28,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * This handles events from the {@link AuthJInternalFrame} class.
  *
- * @author david.dietrich
+ * @author david5MX53G
  *
  */
 public class AuthJInternalController implements ActionListener {

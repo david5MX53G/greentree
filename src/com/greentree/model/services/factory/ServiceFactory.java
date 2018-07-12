@@ -10,7 +10,7 @@ import com.greentree.model.services.exception.ServiceLoadException;
 /**
  * Defines methods for returning <code>com.greentree.model.services</code> implementation objects.
  * 
- * @author david.dietrich
+ * @author david5MX53G
  *
  */
 public class ServiceFactory {

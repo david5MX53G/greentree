@@ -10,7 +10,7 @@ import org.junit.Test;
  * PropertyManagerTest tests the {@link 
  * com.greentree.model.services.manager.PropertyManager} class.
  * 
- * @author david.dietrich
+ * @author david5MX53G
  */
 public class PropertyManagerTest {
     boolean loadPropertiesTest = false;

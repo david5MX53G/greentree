@@ -8,7 +8,7 @@ import com.greentree.view.main.MainJFrameDesktop;
  * Loads an instance of <code>{@link AuthJFrame}</code> and adds it to a <code>
  * {@link AuthController}</code>.
  *
- * @author david.dietrich
+ * @author david5MX53G
  *
  */
 public class ViewDriver {

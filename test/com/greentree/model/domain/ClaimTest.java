@@ -17,7 +17,7 @@ import org.apache.logging.log4j.LogManager;
 /**
  * This defines methods for testing the <code>{@link Claim}</code> class.
  * 
- * @author david.dietrich
+ * @author david5MX53G
  *
  */
 public class ClaimTest {

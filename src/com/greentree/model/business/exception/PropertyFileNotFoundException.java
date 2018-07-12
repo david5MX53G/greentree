@@ -4,7 +4,7 @@ package com.greentree.model.business.exception;
  * This <code>{@link Exception}</code> is used by the <code>{@link PropertyManager}</code> when it
  * has problems loading the <code>{@link Properties}</code> object.
  * 
- * @author david.dietrich
+ * @author david5MX53G
  *
  */
 public class PropertyFileNotFoundException extends Exception {

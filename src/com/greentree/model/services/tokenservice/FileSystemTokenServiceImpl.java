@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
  * after the hashcode of the <code>
  * {@link RSAPublicKey}</code> for the <code>Token</code>.
  *
- * @author david.dietrich
+ * @author david5MX53G
  *
  */
 public class FileSystemTokenServiceImpl implements ITokenService {

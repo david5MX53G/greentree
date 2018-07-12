@@ -3,7 +3,7 @@ package com.greentree.model.exception;
 /**
  * This <code>{@link Exception}</code> class is thrown when a given passphrase is invalid.
  * 
- * @author david.dietrich
+ * @author david5MX53G
  *
  */
 public class InvalidPassException extends Exception {

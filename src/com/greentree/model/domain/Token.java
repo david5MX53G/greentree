@@ -31,7 +31,7 @@ import org.apache.logging.log4j.Logger;
  * java-asymmetric-cryptography-example/">Java – Asymmetric Cryptography
  * example</a>.
  *
- * @author david.dietrich
+ * @author david5MX53G
  */
 public class Token implements Serializable {
     /** 

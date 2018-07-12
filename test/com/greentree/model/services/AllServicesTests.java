@@ -10,7 +10,7 @@ import com.greentree.model.services.tokenservice.FileSystemTokenServiceImplTest;
 /**
  * This aggregates JUnit test cases for <code>{@link com.greentree.model.services}</code>.
  * 
- * @author david.dietrich
+ * @author david5MX53G
  *
  */
 @RunWith(Suite.class)

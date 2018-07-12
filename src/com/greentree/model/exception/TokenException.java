@@ -8,7 +8,7 @@ import org.apache.logging.log4j.Logger;
  * various <code>{@link Exception}</code> types so that code invoking
  * <code>Token</code> methods only need handle one class.
  *
- * @author david.dietrich
+ * @author david5MX53G
  *
  */
 public class TokenException extends Exception {/** 

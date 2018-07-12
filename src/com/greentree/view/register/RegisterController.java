@@ -18,7 +18,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * Provides handlers for <code>{@link RegisterJFrame}</code>
  *
- * @author david.dietrich
+ * @author david5MX53G
  *
  */
 public class RegisterController implements ActionListener {

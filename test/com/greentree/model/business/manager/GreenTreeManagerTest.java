@@ -27,7 +27,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * This class has methods to test the <code>{@link GreentreeManager}</code> class.
  * 
- * @author david.dietrich
+ * @author david5MX53G
  *
  */
 public class GreenTreeManagerTest {

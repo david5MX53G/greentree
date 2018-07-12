@@ -15,7 +15,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * provides options to register, authenticate, view a log, and add a message.
  *
- * @author david.dietrich
+ * @author david5MX53G
  *
  */
 public class MainJFrameDesktop extends JFrame {

@@ -14,7 +14,7 @@ import javax.swing.JPasswordField;
  * {@link JInternalFrame} for registering new {@link com.greentree.domain.model.Token} objects
  * from within the {@link MainJFrameDesktop}.
  * 
- * @author david.dietrich
+ * @author david5MX53G
  *
  */
 public class RegisterJInternalFrame extends JInternalFrame {

@@ -7,7 +7,7 @@ package com.greentree.model.services.exception;
  * This is used to handle <code>{@link Exception}</code> objects thrown in the 
  * <code>{@link ServiceFactory}</code> class.
  * 
- * @author david.dietrich
+ * @author david5MX53G
  *
  */
 @SuppressWarnings("serial")

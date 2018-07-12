@@ -7,7 +7,7 @@ package com.greentree.model.services.exception;
  * This <code>Exception</code> should be thrown when <code>{@link Token#validate()}</code> returns
  * false. 
  * 
- * @author david.dietrich
+ * @author david5MX53G
  *
  */
 public class InvalidTokenException extends Exception {
