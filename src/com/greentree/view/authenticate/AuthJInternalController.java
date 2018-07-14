@@ -20,8 +20,8 @@ import org.apache.commons.codec.binary.Base64;
 
 import com.greentree.model.business.manager.GreenTreeManager;
 import com.greentree.model.exception.InvalidPassException;
-import com.greentree.view.MessageDialog;
 import com.greentree.view.main.MainJFrameController;
+import javax.swing.JOptionPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,16 +37,11 @@ public class AuthJInternalController implements ActionListener {
      * {@link AuthJInternalFrame} sending events to this controller
      */
     AuthJInternalFrame iFrame;
-    
-    /** 
+
+    /**
      * {@link org.apache.logging.log4j.Logger} is for logging logs to the log
      */
     Logger logger = LogManager.getLogger();
-
-    /**
-     * Used for sending error messages and such to the user
-     */
-    MessageDialog diag;
 
     /**
      * This is used for retrieving the active authentication token
@@ -110,7 +105,12 @@ public class AuthJInternalController implements ActionListener {
         if (!GreenTreeManager.loadProperties()) {
             msg = "missing properties file";
             logger.debug(msg);
-            new MessageDialog("Error", msg);
+            JOptionPane.showInternalMessageDialog(
+                this.mainController.getDesktop().getDesktopPane(),
+                msg,
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+            );
         }
 
         try {
@@ -126,11 +126,21 @@ public class AuthJInternalController implements ActionListener {
                 if (manager.registerToken(mainController.getKey(),
                     mainController.getCiphertext())) {
                     logger.debug("manager.registerToken(this.key, ciphertext) PASSED");
-                    diag = new MessageDialog("Success", "Login successful");
+                    JOptionPane.showInternalMessageDialog(
+                        this.mainController.getDesktop().getDesktopPane(),
+                        "Login successful",
+                        "Success",
+                        JOptionPane.INFORMATION_MESSAGE
+                    );
                     iFrame.dispose();
                 } else {
                     logger.debug("manager.registerToken(this.key, ciphertext) FAILED");
-                    diag = new MessageDialog("Error", "login failed");
+                    JOptionPane.showInternalMessageDialog(
+                        this.mainController.getDesktop().getDesktopPane(),
+                        "Login failed",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE
+                    );
                 }
             } else {
                 throw new InvalidPassException("TokenPromptController encrypted pass is null");
@@ -138,9 +148,12 @@ public class AuthJInternalController implements ActionListener {
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException
             | IllegalBlockSizeException | BadPaddingException | InvalidPassException ex) {
             logger.debug(ex.getMessage());
-            diag = new MessageDialog(ex.getClass().getName(), "error encrypting pass with key");
-            diag.setModal(true);
-            diag.setVisible(true);
+            JOptionPane.showInternalMessageDialog(
+                this.mainController.getDesktop().getDesktopPane(),
+                "error encrypting pass with key",
+                ex.getClass().getName(),
+                JOptionPane.ERROR_MESSAGE
+            );
         }
     }
 
@@ -168,9 +181,12 @@ public class AuthJInternalController implements ActionListener {
                 logger.debug("RSAPublicKey successfully parsed by TokenPromptController");
             } catch (IOException | ClassNotFoundException ex) {
                 logger.debug(ex.getMessage());
-                diag = new MessageDialog(ex.getClass().getName(), "invalid RSAPublicKey file");
-                diag.setModal(true);
-                diag.setVisible(true);
+                JOptionPane.showInternalMessageDialog(
+                    this.mainController.getDesktop().getDesktopPane(),
+                    "invalid RSAPublicKey file",
+                    ex.getClass().getName(),
+                    JOptionPane.ERROR_MESSAGE
+                );
             }
         } else {
             logger.debug("JFileChooser not approved");
