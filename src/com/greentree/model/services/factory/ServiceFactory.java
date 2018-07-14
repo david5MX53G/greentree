@@ -2,7 +2,6 @@ package com.greentree.model.services.factory;
 
 import java.io.IOException;
 
-import com.greentree.model.services.factory.ServiceFactory;
 import com.greentree.model.services.manager.PropertyManager;
 import com.greentree.model.services.IService;
 import com.greentree.model.services.exception.ServiceLoadException;
