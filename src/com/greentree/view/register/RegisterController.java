@@ -11,7 +11,8 @@ import java.security.interfaces.RSAPublicKey;
 import javax.swing.JFileChooser;
 
 import com.greentree.model.business.manager.GreenTreeManager;
-import com.greentree.view.MessageDialog;
+import javax.swing.JDesktopPane;
+import javax.swing.JOptionPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,11 +35,11 @@ public class RegisterController implements ActionListener {
      * ActionListener} of this {@link RegisterController}
      */
     private final RegisterJInternalFrame regJInternalFrame;
-
+    
     /**
-     * Used for sending error messages and such to the user
+     * this {@link JDesktopPane} is used to display warnings, errors, info, etc.
      */
-    private MessageDialog diag;
+    private final JDesktopPane mainDesktop;
 
     /**
      * builds a new {@link RegisterController} to handle events from the given <code>
@@ -47,10 +48,11 @@ public class RegisterController implements ActionListener {
      * @param iFrame {@link RegisterJInternalFrame} sending events to this
      * controller
      */
-    public RegisterController(RegisterJInternalFrame iFrame) {
+    public RegisterController(RegisterJInternalFrame iFrame, JDesktopPane mainDesktop) {
         this.regJInternalFrame = iFrame;
         this.regJInternalFrame.getCancelBtn().addActionListener(this);
         this.regJInternalFrame.getSubmitBtn().addActionListener(this);
+        this.mainDesktop = mainDesktop;
         logger.debug("RegisterController(RegisterJInternalFrame iFrame) PASSED");
     }
 
@@ -106,13 +108,23 @@ public class RegisterController implements ActionListener {
         if (!GreenTreeManager.loadProperties()) {
             msg = "failed to load properties file";
             logger.debug(msg);
-            new MessageDialog("Error", msg);
+            JOptionPane.showInternalMessageDialog(
+                mainDesktop,
+                msg,
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+            );
         }
 
         success = manager.registerService("TokenService");
         if (!success) {
             logger.debug("manager.registerService(\"TokenService\"); was unsuccessful");
-            new MessageDialog("Error", "failed getting storage input/output");
+            JOptionPane.showInternalMessageDialog(
+                mainDesktop,
+                "failed getting storage input/output",
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+            );
             return;
         }
 
@@ -122,7 +134,12 @@ public class RegisterController implements ActionListener {
         if (!success) {
             logger.debug("manager.registerToken(new "
                 + "String(newTokenJFrame.getPass())); was unsuccessful");
-            new MessageDialog("Error", "failed to save new token");
+            JOptionPane.showInternalMessageDialog(
+                mainDesktop,
+                "failed to save new token",
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+            );
             return;
         }
 
@@ -148,11 +165,14 @@ public class RegisterController implements ActionListener {
                 = new ObjectOutputStream(new FileOutputStream(filePath))) {
                 out.writeObject(key);
             } catch (IOException ex) {
-                logger.debug("writing to file "
-                    + filePath + ": " + ex.getMessage());
-                diag = new MessageDialog(ex.getClass().getName(), "error 0517");
-                diag.setModal(true);
-                diag.setVisible(true);
+                msg = "writing to file " + filePath + ": " + ex.getMessage();
+                logger.debug(msg);
+                JOptionPane.showInternalMessageDialog(
+                    mainDesktop,
+                    msg,
+                    ex.getClass().getName(),
+                    JOptionPane.ERROR_MESSAGE
+                );
             }
         } else {
             logger.debug("JFileChooser cancelled by user.");

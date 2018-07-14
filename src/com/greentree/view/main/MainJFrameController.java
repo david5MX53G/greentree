@@ -111,7 +111,9 @@ public class MainJFrameController implements ActionListener {
             if ("reg".equals(aev.getActionCommand())) {
                 logger.debug("new RegisterJInternalFrame();");
                 RegisterJInternalFrame iFrame = new RegisterJInternalFrame();
-                new RegisterController(iFrame);
+                new RegisterController(
+                    iFrame, this.jFrameDesktop.getDesktopPane()
+                );
                 iFrame.setVisible(true);
                 this.jFrameDesktop.add(iFrame);
                 try {

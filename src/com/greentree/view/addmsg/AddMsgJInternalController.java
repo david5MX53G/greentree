@@ -150,7 +150,7 @@ public class AddMsgJInternalController implements ActionListener {
             this.mainCtrl.getDesktop().getDesktopPane(),
             diagText,
             diagTitle,
-            JOptionPane.ERROR_MESSAGE
+            JOptionPane.INFORMATION_MESSAGE
         );
     }
 
