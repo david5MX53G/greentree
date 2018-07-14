@@ -13,8 +13,6 @@ import javax.swing.JFileChooser;
 
 import com.greentree.model.business.exception.GreenTreeManagerException;
 import com.greentree.model.business.manager.GreenTreeManager;
-import com.greentree.view.MessageDialog;
-import com.greentree.view.InternalMessageDiag;
 import com.greentree.view.addmsg.AddMsgJInternalController;
 import com.greentree.view.addmsg.AddMsgJInternalFrame;
 import com.greentree.view.authenticate.AuthJInternalController;
@@ -23,6 +21,7 @@ import com.greentree.view.register.RegisterController;
 import com.greentree.view.register.RegisterJInternalFrame;
 import com.greentree.view.viewlog.LogJInternalController;
 import com.greentree.view.viewlog.LogJInternalFrame;
+import javax.swing.JOptionPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,15 +32,11 @@ import org.apache.logging.log4j.Logger;
  *
  */
 public class MainJFrameController implements ActionListener {
+
     /**
      * {@link MainJFrameContainer} sending events to this controller
      */
-    private MainJFrameDesktop jFrameDesktop;
-
-    /**
-     * for sending error messages and such to the user
-     */
-    private InternalMessageDiag msgdiag;
+    private final MainJFrameDesktop jFrameDesktop;
 
     /**
      * {@link GreenTreeManager} for managing data objects
@@ -58,10 +53,16 @@ public class MainJFrameController implements ActionListener {
      */
     private String ciphertext;
 
-    /** 
+    /**
      * {@link org.apache.logging.log4j.Logger} is for logging logs to the log
      */
     Logger logger = LogManager.getLogger();
+
+    /**
+     * {@link AddMsgJInternalController} used for storing new messages on the
+     * {@link Block} chain of the active {@link Token}.
+     */
+    private AddMsgJInternalController msgController;
 
     /**
      * constructs a new {@link MainJFrameController} with listeners attached to
@@ -84,9 +85,12 @@ public class MainJFrameController implements ActionListener {
         if (!manager.registerService("TokenService")) {
             String msg = "manager.registerService(\"TokenService\") was unsuccessful";
             logger.debug(msg);
-            msgdiag = 
-                    new InternalMessageDiag("Error", msg);
-            this.jFrameDesktop.add(msgdiag);
+            JOptionPane.showInternalMessageDialog(
+                this.jFrameDesktop.getDesktopPane(),
+                msg,
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+            );
         } else {
             logger.debug("manager and listeners registered");
         }
@@ -95,12 +99,13 @@ public class MainJFrameController implements ActionListener {
     /**
      * spawns a new JFrame appropriate to the
      * {@link MainJFrameContainer} {@link JButton} pressed
+     *
      * @param aev {@link ActionEvent} used to decide which method(s) to invoke
      */
     @Override
     public void actionPerformed(ActionEvent aev) {
         logger.debug("actionPerformed(ActionEvent) " + aev.getActionCommand());
-        
+
         if (this.jFrameDesktop instanceof MainJFrameDesktop) {
             // add a RegisterJInternalFrame to the JDesktopPane on the register menu item action
             if ("reg".equals(aev.getActionCommand())) {
@@ -138,7 +143,7 @@ public class MainJFrameController implements ActionListener {
             if ("new".equals(aev.getActionCommand())) {
                 logger.debug("new AddMsgJInternalController;");
                 AddMsgJInternalFrame iFrame = new AddMsgJInternalFrame();
-                new AddMsgJInternalController(iFrame, this);
+                this.msgController = new AddMsgJInternalController(iFrame, this);
                 iFrame.setVisible(true);
                 this.jFrameDesktop.add(iFrame);
                 try {
@@ -201,10 +206,20 @@ public class MainJFrameController implements ActionListener {
                         }
                     } // this should seriously never happen...
                     else {
-                        new MessageDialog("Error", "failed to get parent window");
+                        JOptionPane.showInternalMessageDialog(
+                            this.jFrameDesktop.getDesktopPane(),
+                            "failed to get parent window",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE
+                        );
                     }
                 } else {
-                    new MessageDialog("Error", "failed to register authentication token");
+                    JOptionPane.showInternalMessageDialog(
+                        this.jFrameDesktop.getDesktopPane(),
+                        "failed to register authentication token",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE
+                    );
                 }
             } // the manager will throw an exception if it doesn't have a token registered yet
             catch (IOException | ClassNotFoundException
@@ -216,9 +231,12 @@ public class MainJFrameController implements ActionListener {
                 } else {
                     msg = ex.getMessage();
                 }
-                msgdiag = 
-                    new InternalMessageDiag(ex.getClass().getSimpleName(), msg);
-                this.jFrameDesktop.add(msgdiag);
+                JOptionPane.showInternalMessageDialog(
+                    this.jFrameDesktop.getDesktopPane(),
+                    msg,
+                    ex.getClass().getSimpleName(),
+                    JOptionPane.ERROR_MESSAGE
+                );
             }
         } else {
             logger.debug("Open command cancelled by user.");
@@ -253,5 +271,12 @@ public class MainJFrameController implements ActionListener {
      */
     public void setKey(RSAPublicKey key) {
         this.key = key;
+    }
+
+    /**
+     * @return {@link MainJFrameDesktop} which sends events to this controller
+     */
+    public MainJFrameDesktop getDesktop() {
+        return this.jFrameDesktop;
     }
 }

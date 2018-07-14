@@ -13,33 +13,29 @@ import java.util.InputMismatchException;
 import javax.swing.JFileChooser;
 
 import com.greentree.model.business.manager.GreenTreeManager;
-import com.greentree.view.MessageDialog;
 import com.greentree.view.main.MainJFrameController;
+import javax.swing.JOptionPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * <code>AddMsgJInternalController</code> consumes events from the {@link 
+ * <code>AddMsgJInternalController</code> consumes events from the {@link
  * AddMsgJFrame}.
  *
  * @author david5MX53G
  *
  */
 public class AddMsgJInternalController implements ActionListener {
-    /** 
+
+    /**
      * {@link org.apache.logging.log4j.Logger} is for logging logs to the log
      */
     Logger logger = LogManager.getLogger();
-    
+
     /**
      * {@link AddMsgJFrame} sending events to this controller
      */
     private AddMsgJInternalFrame iFrame;
-
-    /**
-     * for sending error messages and such to the user
-     */
-    private MessageDialog diag;
 
     /**
      * {@link GreenTreeManager} for managing data objects
@@ -62,11 +58,17 @@ public class AddMsgJInternalController implements ActionListener {
      * @param main {@link MainJFrameController} which provides the active
      * session key
      */
-    public AddMsgJInternalController(AddMsgJInternalFrame iFrame, MainJFrameController main) {
+    public AddMsgJInternalController(
+        AddMsgJInternalFrame iFrame, MainJFrameController main
+    ) {
         if (main.getKey() == null) {
+            JOptionPane.showInternalMessageDialog(
+                main.getDesktop().getDesktopPane(),
+                "must be authenticated first",
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+            );
             logger.error("must be authenticated first");
-            diag = new MessageDialog("Error 0957", "must be authenticated first");
-            diag.setVisible(true);
         } else {
             this.iFrame = iFrame;
             this.mainCtrl = main;
@@ -101,19 +103,39 @@ public class AddMsgJInternalController implements ActionListener {
         if (this.iFrame.getHours() > 0) {
             expires.add(GregorianCalendar.HOUR, this.iFrame.getHours());
         } else {
-            new MessageDialog("Error", "invalid time input");
+            JOptionPane.showInternalMessageDialog(
+                this.mainCtrl.getDesktop().getDesktopPane(),
+                "invalid time input",
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+            );
         }
 
         success = manager.registerService("TokenService");
         if (!success) {
-            new MessageDialog("Error", "failed to register storage service");
+            JOptionPane.showInternalMessageDialog(
+                this.mainCtrl.getDesktop().getDesktopPane(),
+                "failed to register storage service",
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+            );
         }
 
         try {
             if (!manager.registerToken(mainCtrl.getKey(), mainCtrl.getCiphertext())) {
-                new MessageDialog("Error", "failed to retrieve authenticated token");
+                JOptionPane.showInternalMessageDialog(
+                    this.mainCtrl.getDesktop().getDesktopPane(),
+                    "failed to retrieve authenticated token",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+                );
             } else if (!manager.addBlock(msg, toKey, new Date().getTime(), expires.getTimeInMillis())) {
-                new MessageDialog("Error", "failed to add message");
+                JOptionPane.showInternalMessageDialog(
+                    this.mainCtrl.getDesktop().getDesktopPane(),
+                    "failed to add message",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+                );
             } else {
                 logger.debug("added message, '" + msg + "'");
                 diagTitle = "Success";
@@ -124,9 +146,12 @@ public class AddMsgJInternalController implements ActionListener {
             diagTitle = ex.getClass().getSimpleName();
             diagText = ex.getMessage();
         }
-        diag = new MessageDialog(diagTitle, diagText);
-        diag.setModal(true);
-        diag.setVisible(true);
+        JOptionPane.showInternalMessageDialog(
+            this.mainCtrl.getDesktop().getDesktopPane(),
+            diagText,
+            diagTitle,
+            JOptionPane.ERROR_MESSAGE
+        );
     }
 
     private void keyBtnAction() {

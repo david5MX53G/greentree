@@ -33,8 +33,7 @@ public class MainJFrameDesktop extends JFrame {
 
     /**
      * {@link JDesktopPane} that contains {@link JInternalFrame} objects added
-     * by {@Link
-     * MainJFrameController}
+     * by {@link MainJFrameController}
      */
     JDesktopPane dkPane = new JDesktopPane();
 
@@ -69,6 +68,13 @@ public class MainJFrameDesktop extends JFrame {
         logger.debug("instantiated successfully");
     }
 
+    /**
+     * @return {@link JDesktopPane} contained by this object
+     */
+    public JDesktopPane getDesktopPane() {
+        return this.dkPane;
+    }
+    
     /**
      * @return {@link JMenuItem} "New" for adding new messages
      */
