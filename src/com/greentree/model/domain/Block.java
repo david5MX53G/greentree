@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.TreeSet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,7 +24,7 @@ import org.apache.logging.log4j.Logger;
  * @see com.greentree.model.domain.User
  * @see com.greentree.model.domain.Claim
  */
-public class Block implements Serializable {
+public class Block implements Serializable, Comparable {
     /** 
      * {@link org.apache.logging.log4j.Logger} is for logging logs to the log
      */
@@ -305,5 +306,54 @@ public class Block implements Serializable {
             logger.error(e.getMessage());
             throw new RuntimeException(e);
         }
+    }
+
+    /** 
+     * 
+     * @param o the {@link Block} which is either less than, equal, or greater 
+     * than this
+     * @return "-1" if the given <code>Block</code> is among the set of those to
+     *  which this refers as a {@link Block#referee); "0" if the given <code>
+     * Block</code> is this; "1" if neither -1 nor 0 are true
+     */
+    @Override
+    public int compareTo(Object o) {
+        int result;
+        Block that = (Block) o;
+        logger.debug("This Block: " + this.getHash());
+        logger.debug("Parameter Block: " + that.getHash());
+        
+        if (this.equals(that)) {
+            result = 0;
+            logger.debug("The Blocks are the same.");
+        } else {
+            HashSet<Block> referees = new HashSet<>();
+            Block current = this.getReferee();
+            while (!current.equals(Block.ROOT)) {
+                referees.add(current);
+                current = current.getReferee();
+            }
+            
+            referees.add(current);
+            logger.debug(
+                "This Block has " + String.valueOf(referees.size()) 
+                    + " referees"
+            );
+            
+            if (referees.contains(that)) {
+                result = -1;
+                logger.debug(
+                    "Parameter Block is among the set of Blocks to which this "
+                        + "Block refers."
+                );
+            } else {
+                result = 1;
+                logger.debug(
+                    "Parameter Block is not among the set of Blocks to which "
+                        + "this Block refers."
+                );
+            }
+        }
+        return result;
     }
 }
