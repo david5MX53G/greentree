@@ -62,7 +62,7 @@ public class Token implements Serializable {
     /**
      * contains a list of all <code>{@link Block}</code> objects issued by this
      */
-    private ArrayList<Block> blockChain = new ArrayList<Block>();
+    private ArrayList<Block> blockChain = new ArrayList<>();
 
     /**
      * Creates a new <code>Token</code> instance with a 2048-bit RSA

@@ -168,29 +168,34 @@ public class GreenTreeManager extends ManagerSuperType {
      * @return {@link boolean} for success (true) or failure (false)
      */
     public boolean registerToken(RSAPublicKey key, String ciphertext) {
-        String msg;
-
         boolean success = registerService("TokenService");
+        log.debug(
+            "registerService(\"TokenServce\") returned "
+            + String.valueOf(success)
+        );
         if (!success) {
-            msg = "registerService(\"TokenService\") FAILED";
-            log.debug(msg);
+            log.debug("registerService(\"TokenService\") FAILED");
         } else {
             try {
                 this.token = this.tokenService.selectToken(key);
                 if (this.token == null) {
-                    log.debug("getTokenService().selectToken(key) failed");
+                    log.error("getTokenService().selectToken(key) FAILED");
                 } else if (token.checkPassphrase(ciphertext)) {
+                    log.debug("token.checkPassphrase(ciphertext) is true");
                     this.ciphertext = ciphertext;
-                    token.addBlock("authenticated at " + new Date().toString(), ciphertext);
+                    token.addBlock(
+                        "authenticated at " + new Date().toString(), ciphertext
+                    );
                     tokenService.commit(token);
                     success = true;
                 } else {
-                    log.debug("passphrase not valid for given key");
+                    log.debug("token.checkPassphrase(ciphertext) is false");
+                    success = false;
                 }
-            } catch (InvalidKeyException | NoSuchAlgorithmException | InvalidKeySpecException
-                | IOException | InvalidTokenException e) {
-                msg = e.getClass().getName() + ": " + e.getMessage();
-                log.debug(msg);
+            } catch (InvalidKeyException | NoSuchAlgorithmException
+                | InvalidKeySpecException | IOException
+                | InvalidTokenException e) {
+                log.debug(e.getClass().getName() + ": " + e.getMessage());
                 success = false;
             }
         }
