@@ -1,4 +1,0 @@
-run the app with happy and exception cases to see if the logs give all the details needed to isolate the issue
-incorporate the use of collections in the application
-update/create JUnit test(s) for the component(s) using collection(s)
-refactor confirmation messages (e.g., "Login successful") and error messages as JInternalFrame objects

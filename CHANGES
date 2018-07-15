@@ -1,43 +1,34 @@
 ## Summary
-downloaded and installed the latest version of Java SDK 1.6x, NetBeans and Log4j  
-imported MSSE_670 application into NetBeans  
-instrumented the application with Log4j, using specific log statements and a config file  
+incorporated the use of collections by using HashSet<Block> in Block#compareTo(Object)  
+implemented JUnit test cases for the new compareTo(Object) method  
+renamed packages to be lower case so as to conform with Java coding standards  
+replaced all custom message dialogs with the Java built-in class JOptionPane  
+tested the invalid password use case and updated presentation layer to ensure this resulted in an error dialog  
+stubbed out a "BlockChain" class  
   
 ## New Classes
-com.greentree.model.services.manager.PropertyManagerTest  
-  
-## Git Log
-Sun Jul 8 12:16:46 2018 -0500 "moved docs outside project dir"  
-Sun Jul 8 12:13:34 2018 -0500 "removed unused jar libs, updated build.xml testjar target to auto-compile, updated CHANGES"  
-Sun Jul 8 11:58:02 2018 -0500 "updated set_ant.cmd and export_ant.sh to run Ant, renamed to build.sh and build.cmd, then updated README accordingly"  
-Sun Jul 8 11:47:13 2018 -0500 "updated README to account for new CHANGES file"  
-Sun Jul 8 11:45:45 2018 -0500 "added CHANGES doc"  
-Sun Jul 8 11:31:17 2018 -0500 "updated docs for week 1 submission"  
-Sun Jul 8 11:30:16 2018 -0500 "ignore .swp files"  
-Sat Jul 7 21:46:12 2018 -0500 "removed javadoc jars from project classpath since they did not load any javadoc content into NetBeans"  
-Sat Jul 7 21:39:58 2018 -0500 "updated build.xml such that buildjar target works, though without logging"  
-Sat Jul 7 21:24:50 2018 -0500 "updated classpath in build.xml to include log4j 2 libraries; compile target passes testing"  
-Sat Jul 7 21:24:14 2018 -0500 "removed references to log4j-1.2 libraries in project classpath"  
-Sat Jul 7 21:22:46 2018 -0500 "replaced System.out.println and System.err.println with log4j 2 throughout the application"  
-Sat Jul 7 20:19:03 2018 -0500 "replaced System.out.println and System.err.println with log4j 2 logs"  
-Sat Jul 7 19:44:10 2018 -0500 "replaced System.out.println with log4j in GreenTreeManager"  
-Sat Jul 7 18:57:40 2018 -0500 "successfully implemented log4j 2 terminal log output in GreenTreeManagerTest"  
-Sat Jul 7 18:56:52 2018 -0500 "updated project owner name"  
-Sat Jul 7 18:56:36 2018 -0500 "replaced log4j2.properties with log4j2.xml"  
-Sat Jul 7 17:31:31 2018 -0500 "updated project license in netbeans config"  
-Sat Jul 7 17:30:17 2018 -0500 "added com.greentree.model.services.manager.PropertyManagerTest class"  
-Sat Jul 7 17:29:05 2018 -0500 "removed log4j filename from application.properties and renamed log4j.properties to log4j2.properties for compatibility with log4j 2"  
-Sat Jul 7 16:03:53 2018 -0500 "added log4j-api-2.11.0.jar to project classpath"  
-Sat Jul 7 16:02:38 2018 -0500 "moved log4j config out of PropertyManager.java"  
-Sat Jul 7 15:58:39 2018 -0500 "added log4j properties file to application properties"  
-Sat Jul 7 12:54:54 2018 -0500 "added some comments to log4j.properties"  
-Fri Jul 6 22:29:15 2018 -0500 "added plantuml.jar to library and classpath"  
-Fri Jul 6 22:27:29 2018 -0500 "installed graphiz, updated build.xml with plantuml target, and tested target with output to docs/uml"  
-Fri Jul 6 21:33:46 2018 -0500 "added config/log4j.properties with log4j config settings and updated com.greentree.model.services.manager.PropertyManager with members to load this file"  
-Thu Jul 5 22:06:23 2018 -0500 "ignore private/, build/, and bin/"  
-Thu Jul 5 22:02:58 2018 -0500 "minor fixes to GreenTreeManager and some includes for new libraries in project.properties"  
-Thu Jul 5 21:57:01 2018 -0500 "added test/ classes; ApplicationTestSuite.java passes 30 tests successfully"  
-Thu Jul 5 21:56:06 2018 -0500 "added log4j jar files, hamcrest-core-1.3.jar, and junit-4.12.jar to lib/"  
-Wed Jul 4 15:21:20 2018 -0500 "updated config/application.properties for linux; added export_ant.sh for ant config on linux; netbeans did some stuff in nbproject/ that I do not understand; built and tested the project using ant"  
-Tue Jul 3 21:26:08 2018 -0500 "initial commit of everything"  
+com.greentree.model.domain.BlockChain  
 
+## Git Log
+Sun Jul 15 15:43:21 2018 -0500 "stubbed out BlockChain class; this should eventually replace and consolidate all the individual ArrayList<Block> members of the Token class"  
+Sun Jul 15 15:26:20 2018 -0500 "implemented Comparable in Block class by overriding compareTo(Object) using HashSet<Block>"  
+Sun Jul 15 10:51:46 2018 -0500 "fixed the regression whereby invalid passphrases resulted in "success" messaging"  
+Sat Jul 14 17:01:41 2018 -0500 "fixed formatting in GreenTreeManager class code"  
+Sat Jul 14 16:58:09 2018 -0500 "minor changes to LogJInternalFrame"  
+Fri Jul 13 22:40:44 2018 -0500 "finished replacing MessageDialog class with JOptionPane"  
+Fri Jul 13 22:30:15 2018 -0500 "refactored AuthJInternalController to use JOptionPane"  
+Fri Jul 13 22:24:52 2018 -0500 "removed unused InternalMessageDiag class; this has been replaced by JOptionPane"  
+Fri Jul 13 22:20:54 2018 -0500 "updated AddMsgJInternalController, MainJFrameController, and MainJFrameDesktop to replace custom InternalMessageDialog with Java built-in JOptionPane"  
+Fri Jul 13 22:06:57 2018 -0500 "removed extraneous import from ServiceFactory"  
+Wed Jul 11 21:30:44 2018 -0500 "more updates for github"  
+Wed Jul 11 21:22:22 2018 -0500 "made some changes for public github repo"  
+Wed Jul 11 21:13:12 2018 -0500 "implemented jinternalframe for messag diags in MainJFrameController"  
+Wed Jul 11 21:07:15 2018 -0500 "Initial commit"  
+Wed Jul 11 13:19:31 2018 -0500 "added class InternalMessageDiag and implemented it once in MainJFrameController"  
+Wed Jul 11 13:15:39 2018 -0500 "renamed buildjar to jar since netbeans was expecting the latter"  
+Wed Jul 11 12:46:35 2018 -0500 "removed AddMsgController, AddMsgJFrame, AuthController, AuthJFrame since JInternaFrame implementations are now in place"  
+Wed Jul 11 12:42:02 2018 -0500 "removed RegisterJFrame class since this was replaced by RegisterJInternalFrame"  
+Wed Jul 11 12:32:02 2018 -0500 "removed unused LogController and LogJFrame classes in favor of LogJInternalController and LogJInternalFrame"  
+Wed Jul 11 12:17:48 2018 -0500 "removed unused MainJFrameContainer class in favor of MainJFrameDesktop"  
+Wed Jul 11 11:53:06 2018 -0500 "renamed packages to be lower case so as to conform with Java coding standards"  
+Mon Jul 9 19:10:03 2018 -0500 "fixed netbeans project classpath to include moved log4j jars"  
