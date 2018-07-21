@@ -23,9 +23,6 @@ import com.greentree.model.services.exception.ServiceLoadException;
 import com.greentree.model.services.factory.ServiceFactory;
 import com.greentree.model.services.tokenservice.ITokenService;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 /**
  * GreenTreeManager defines methods used by the presentation layer to manage
  * <code>{@link Token}</code> objects with associated <code>{@link Block}</code>
@@ -35,14 +32,7 @@ import org.apache.logging.log4j.Logger;
  *
  */
 public class GreenTreeManager extends ManagerSuperType {
-
-    /**
-     * log4j.properties
-     */
-    static Logger log = LogManager.getLogger();
-
-    /** <code>{@link ServiceFactory}</code> for building services.
-     */
+    /** <code>{@link ServiceFactory}</code> for building services. */
     private final ServiceFactory factory = ServiceFactory.getInstance();
 
     /**
@@ -74,8 +64,8 @@ public class GreenTreeManager extends ManagerSuperType {
     }
 
     /**
-     * Instantiates a new <code>{@link GreenTreeManager}</code> instance using
-     * the Singleton Design Pattern.
+     * Instantiates a new {@link GreenTreeManager} instance using the Singleton 
+     * Design Pattern.
      *
      * @return the <code>GreenTreeManager</code> Singleton instance
      */
@@ -94,14 +84,14 @@ public class GreenTreeManager extends ManagerSuperType {
      * fails to load
      */
     private boolean registerTokenService() {
-        Boolean success = false;
+        boolean success = false;
         try {
             this.tokenService = (ITokenService) factory.getService(ITokenService.NAME);
             success = true;
         } catch (ServiceLoadException e) {
             String msg = "ServiceFactory failed to get " + ITokenService.NAME + ": "
                 + e.getMessage();
-            log.debug(this.getClass().getSimpleName() + ": "
+            LOGGER.debug(this.getClass().getSimpleName() + ": "
                 + e.getClass().getSimpleName() + ": " + msg);
         }
         return success;
@@ -118,7 +108,7 @@ public class GreenTreeManager extends ManagerSuperType {
     public boolean registerToken(String plaintext) {
         boolean success = this.registerService("TokenService");
         if (!success) {
-            log.debug("error this.registerService(\"TokenService\")");
+            LOGGER.debug("error this.registerService(\"TokenService\")");
         } else {
             try {
                 this.token = new Token(plaintext);
@@ -127,7 +117,7 @@ public class GreenTreeManager extends ManagerSuperType {
                 getTokenService().commit(this.token);
                 success = true;
             } catch (TokenException | InvalidTokenException | IOException e) {
-                log.debug(this.getClass().getSimpleName() + ": "
+                LOGGER.debug(this.getClass().getSimpleName() + ": "
                     + e.getClass().getSimpleName() + ": " + e.getMessage());
             }
         }
@@ -169,19 +159,19 @@ public class GreenTreeManager extends ManagerSuperType {
      */
     public boolean registerToken(RSAPublicKey key, String ciphertext) {
         boolean success = registerService("TokenService");
-        log.debug(
+        LOGGER.debug(
             "registerService(\"TokenServce\") returned "
             + String.valueOf(success)
         );
         if (!success) {
-            log.debug("registerService(\"TokenService\") FAILED");
+            LOGGER.debug("registerService(\"TokenService\") FAILED");
         } else {
             try {
                 this.token = this.tokenService.selectToken(key);
                 if (this.token == null) {
-                    log.error("getTokenService().selectToken(key) FAILED");
+                    LOGGER.error("getTokenService().selectToken(key) FAILED");
                 } else if (token.checkPassphrase(ciphertext)) {
-                    log.debug("token.checkPassphrase(ciphertext) is true");
+                    LOGGER.debug("token.checkPassphrase(ciphertext) is true");
                     this.ciphertext = ciphertext;
                     token.addBlock(
                         "authenticated at " + new Date().toString(), ciphertext
@@ -189,13 +179,13 @@ public class GreenTreeManager extends ManagerSuperType {
                     tokenService.commit(token);
                     success = true;
                 } else {
-                    log.debug("token.checkPassphrase(ciphertext) is false");
+                    LOGGER.debug("token.checkPassphrase(ciphertext) is false");
                     success = false;
                 }
             } catch (InvalidKeyException | NoSuchAlgorithmException
                 | InvalidKeySpecException | IOException
                 | InvalidTokenException e) {
-                log.debug(e.getClass().getName() + ": " + e.getMessage());
+                LOGGER.debug(e.getClass().getName() + ": " + e.getMessage());
                 success = false;
             }
         }
@@ -215,7 +205,7 @@ public class GreenTreeManager extends ManagerSuperType {
             if (!success) {
                 String msg
                     = this.getClass().getSimpleName() + ": registerTokenService() failed";
-                log.debug(msg);
+                LOGGER.debug(msg);
             } else {
                 success = true;
             }
@@ -273,7 +263,7 @@ public class GreenTreeManager extends ManagerSuperType {
     public ArrayList<String> getData(RSAPublicKey key) throws GreenTreeManagerException {
         ArrayList<String> stringData = new ArrayList<>();
         if (this.token == null) {
-            log.debug("getData(Token token) throws TokenException because GreenTreeManager"
+            LOGGER.debug("getData(Token token) throws TokenException because GreenTreeManager"
                 + " missing token");
             throw new GreenTreeManagerException(954, "current token missing or invalid", null);
         } else {
@@ -303,7 +293,7 @@ public class GreenTreeManager extends ManagerSuperType {
             } catch (InvalidKeyException | NoSuchAlgorithmException | InvalidKeySpecException
                 | IOException e) {
                 String msg = e.getClass().getName() + ": " + e.getMessage();
-                log.debug("GreenTreeManager.getData(RSAPublicKey key) throws " + msg);
+                LOGGER.debug("GreenTreeManager.getData(RSAPublicKey key) throws " + msg);
                 throw new GreenTreeManagerException(950, msg, e);
             }
         }
@@ -340,11 +330,11 @@ public class GreenTreeManager extends ManagerSuperType {
             this.token.addBlock(data, this.ciphertext, claim);
             getTokenService().commit(this.token);
 
-            log.debug("getTokenService().commit(this.token) PASSED");
+            LOGGER.debug("getTokenService().commit(this.token) PASSED");
             success = true;
         } catch (InvalidKeyException | NoSuchAlgorithmException | InvalidKeySpecException
             | IOException | InvalidTokenException e) {
-            log.debug(this.getClass().getSimpleName() + ": " + e.getClass().getName()
+            LOGGER.debug(this.getClass().getSimpleName() + ": " + e.getClass().getName()
                 + ": " + e.getMessage());
             success = false;
         }

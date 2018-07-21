@@ -17,7 +17,7 @@ public abstract class ManagerSuperType {
     /** 
      * {@link org.apache.logging.log4j.Logger} is for logging logs to the log
      */
-    private static Logger LOGGER = LogManager.getLogger();
+    protected static Logger LOGGER = LogManager.getLogger();
 
     /**
      * static initializer block for getting <code>{@link Properties}</code>
@@ -25,15 +25,6 @@ public abstract class ManagerSuperType {
     static {
         ManagerSuperType.loadProperties();
     }
-
-    /**
-     * Loads a <code>{@link IService}</code> object based on the given command.
-     *
-     * @param name identifies the <code>IService</code> to load
-     * @return {@link boolean} indicating whether {@link IService} registration
-     * was successful
-     */
-    public abstract boolean registerService(String name);
 
     /**
      * This is simply a wrapper for {@link PropertyManager#loadProperties()}
@@ -54,4 +45,13 @@ public abstract class ManagerSuperType {
         }
         return success;
     }
+
+    /**
+     * Loads a <code>{@link IService}</code> object based on the given command.
+     *
+     * @param name identifies the <code>IService</code> to load
+     * @return {@link boolean} indicating whether {@link IService} registration
+     * was successful
+     */
+    public abstract boolean registerService(String name);
 }
