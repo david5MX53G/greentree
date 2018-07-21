@@ -26,10 +26,9 @@ public class TokenTest {
     Token token0;
     Token token1;
     Token token2;
-
+    
     /**
-     * @throws TokenException when <code>{@link Token}</code> when
-     * <code>{@link Token}</code> fails to build
+     * This ensures we have {@link Token} objects for the test cases.
      */
     @Before
     public void setUp() {
@@ -122,26 +121,6 @@ public class TokenTest {
             assertTrue("testValidate() FAILED", token0.validate());
             logger.debug("testValidate() PASSED");
         } catch (AssertionError | TokenException e) {
-            logger.error(e.getMessage());
-        }
-    }
-
-    /**
-     * Tests that a call to the <code>{@link Token}</code> constructor returns
-     * <code>False</code> given invalid input.
-     */
-    @Test
-    public void testNotValidate() {
-        Token tk = new Token();
-        try {
-            try {
-                assertFalse("testNotValidate() FAILED: invalidate token validated successfully",
-                    tk.validate());
-            } catch (TokenException e) {
-                fail("testNotValidate() Failed: " + e.getMessage());
-            }
-            logger.debug("testNotValidate() PASSED");
-        } catch (AssertionError e) {
             logger.error(e.getMessage());
         }
     }

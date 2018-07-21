@@ -79,8 +79,10 @@ public class Token implements Serializable {
         try {
             keyGen = KeyPairGenerator.getInstance("RSA");
         } catch (NoSuchAlgorithmException e) {
-            String msg = "NoSuchAlgorithmException thrown by KeyPairGenerator: " + e.getMessage();
-            throw new TokenException(msg, new Exception());
+            String msg = 
+                "NoSuchAlgorithmException thrown by KeyPairGenerator: " + 
+                e.getMessage();
+            throw new TokenException(msg, new Exception(), this.logger);
         }
         keyGen.initialize(2048);
         KeyPair pair = keyGen.genKeyPair();
@@ -89,13 +91,6 @@ public class Token implements Serializable {
         this.blockChain.add(Block.ROOT);
         this.addBlock("token instantiated at " + new Date().toString(),
             this.encrypt(this.passphrase));
-    }
-
-    /**
-     * Creates a bogus <code>{@link Token}</code> object that will not validate.
-     */
-    public Token() {
-
     }
 
     /**
@@ -157,7 +152,7 @@ public class Token implements Serializable {
             | IllegalBlockSizeException | BadPaddingException
             | UnsupportedEncodingException e) {
             String msg = e.getClass().getName() + " TokenException: " + e.getMessage();
-            throw new TokenException(msg, new Exception());
+            throw new TokenException(msg, this.logger);
         }
         return ciphertext;
     }

@@ -23,26 +23,29 @@
  */
 package com.greentree.model.services.tokenservice;
 
+import com.greentree.model.business.exception.TokenServiceException;
 import com.greentree.model.domain.Token;
 import com.greentree.model.exception.TokenException;
-import com.greentree.model.services.exception.InvalidTokenException;
-import com.greentree.model.services.manager.PropertyManager;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
+import java.io.ObjectOutputStream;
 import java.security.interfaces.RSAPublicKey;
-import java.security.spec.InvalidKeySpecException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.logging.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
+ * This class provides the {@link java.sql} implementation necessary to
+ * serialize and deserialize {@link com.greentree.model.domain.Token} from a
+ * database.
+ * 
+ * TODO: stop using the BLOB field type; storing binary data in the database 
+ * will drive your DBA up the wall for reasons including, but not limited to, 
+ * the fact that this data cannot be easily ported from one DBMS to another.
  *
  * @author david5MX53G
  */
@@ -60,50 +63,93 @@ public class JDBCTokenServiceImpl implements ITokenService {
      * @param token {@link com.greentree.model.domain.Token} to be stored in the
      * database via JDBC
      *
-     * @throws InvalidTokenException when the <code>Token</code> given for
-     * storage is not found
+     * @return boolean indicating success or failure
      *
-     * @throws IOException when the database cannot be reached
+     * @throws TokenServiceException when the <code>Token</code> given for
+     * storage is not found, or when the database connection and/or statement(s)
+     * get in trouble.
      */
     @Override
-    public void commit(Token token) throws InvalidTokenException, IOException {
+    public boolean commit(Token token) throws TokenServiceException {
+        boolean valid;
         try {
-            if (token.validate() == false) {
-                throw new InvalidTokenException(
-                    "The given Token does not validate",
-                    new Exception());
-            } else {
-                String keyId = this.getKeyId(token.getPublicKey());
-                Connection conn = this.getConn();
-
-                if (conn != null) {
-                    String sql = "INSERT INTO token (key, token) VALUES (?, ?)";
-                    PreparedStatement stmt = conn.prepareStatement(sql);
-                    stmt.setString(1, keyId);
-
-                    /**
-                     * TODO: figure out the MySQL equivalent of...
-                     * ObjectOutputStream out = new ObjectOutputStream(new
-                     * FileOutputStream(filename)); out.writeObject(token);
-                     */
-                    stmt.executeUpdate();
-                } else {
-                    LOGGER.error(
-                        "Fetching the db connection failed miserably."
+            valid = token.validate();
+            if (valid) {
+                byte[] byteArray = null;
+                LOGGER.debug("Token is valid");
+                // serialize the Token to a byte[]
+                try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+                    ObjectOutputStream out = new ObjectOutputStream(bos);
+                    out.writeObject(token);
+                    out.flush();
+                    byteArray = bos.toByteArray();
+                    LOGGER.debug("byte[] created from token");
+                } catch (IOException e) {
+                    valid = false;
+                    throw new TokenServiceException(
+                        "ByteArrayOutputStream error",
+                        LOGGER
                     );
                 }
+
+                // serialize the byte[] as an InputStream
+                if (byteArray != null) {
+                    try (
+                        ByteArrayInputStream boas
+                        = new ByteArrayInputStream(byteArray)) {
+                        LOGGER.debug("ByteArrayInputStream created from Token");
+
+                        // insert the InputStream into the database
+                        try (Connection conn = this.getConn()) {
+                            LOGGER.debug("JDBC Connection acquired");
+                            conn.setAutoCommit(false);
+
+                            /**
+                             * Positional params are used here to avoid breaking
+                             * the INSERT when the column names change.
+                             */
+                            String sql =
+                                "INSERT INTO token VALUES (?, ?)";
+
+                            PreparedStatement stmt = conn.prepareStatement(sql);
+                            LOGGER.debug(
+                                "PreparedStatement initialized: " + sql
+                            );
+
+                            stmt.setString(
+                                1, this.getKeyId(token.getPublicKey())
+                            );
+
+                            LOGGER.debug("PreparedStatement setString done");
+                            stmt.setBinaryStream(2, boas);
+
+                            LOGGER.debug(
+                                "PreparedStatement setBinaryStream done"
+                            );
+
+                            stmt.executeUpdate();
+                            LOGGER.debug(
+                                "PreparedStatement executeUpdate() done"
+                            );
+
+                            conn.commit();
+
+                            LOGGER.debug("token committed to database");
+                        }
+                    }
+                }
+            } else {
+                valid = false;
+                throw new TokenException("Token param did not validate");
             }
-        } catch (TokenException e) {
-
-            String msg
-                = "Token commit threw " + e.getClass().getName() + ": "
-                + e.getMessage();
-
-            LOGGER.error(msg);
-            throw new InvalidTokenException(msg, new Exception());
-        } catch (SQLException ex) {
-            LOGGER.error(ex.getMessage());
+        } catch (TokenException | SQLException | IOException ex) {
+            valid = false;
+            throw new TokenServiceException(
+                ex.getClass().getSimpleName() + " " + ex.getMessage(),
+                LOGGER
+            );
         }
+        return valid;
     }
 
     /**
@@ -116,15 +162,10 @@ public class JDBCTokenServiceImpl implements ITokenService {
      * @return <code>Token</code> corresponding with the given <code>
      * RSAPublicKey</code>
      *
-     * @throws InvalidKeyException when the <code>key</code> param is bad
-     * @throws NoSuchAlgorithmException when the crypto system barfs
-     * @throws InvalidKeySpecException also when the crypto system barfs
-     * @throws IOException when the <code>DriverManager</code> has trouble
-     * connecting with the database
+     * @throws TokenServiceException
      */
     @Override
-    public Token selectToken(RSAPublicKey key) throws InvalidKeyException,
-        NoSuchAlgorithmException, InvalidKeySpecException, IOException {
+    public Token selectToken(RSAPublicKey key) throws TokenServiceException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -150,20 +191,24 @@ public class JDBCTokenServiceImpl implements ITokenService {
      *
      * @return {@link java.sql.Connection} to the database
      */
-    private Connection getConn() {
+    private Connection getConn() throws SQLException {
         /**
          * This identifies the database to use for storing and retrieving
          * {@link com.greentree.model.domain.Token} objects. TODO: pull this
          * value from the .properties file
+         * 
+         * TODO: set server timezone a a key/value pair in java.util.Properties
+         * passed to DriverManager.getConnection() or Driver.connect() as 
+         * desecribed in connector-j-reference-configuration-properties.html
          */
-        String url = "jdbc:mysql://localhost:3306/greentree";
-
+        String url = "jdbc:mysql://localhost:3306/greentree?serverTimezone=UTC";
+        
         /**
          * This identifies the user for connecting with the database. This user
          * needs read/write access to the database. TODO: pull this value from
          * the .properties file
          */
-        String userid = "mysqlsample";
+        String userid = "ITokenService";
 
         /**
          * This is used to authenticate the user against the database. TODO:
@@ -175,20 +220,11 @@ public class JDBCTokenServiceImpl implements ITokenService {
          * This stores the JDBC connection object for storing and retrieving {@link
          * com.greentree.model.domain.Token} objects from the database.
          */
-        Connection connection = null;
+        DriverManager.registerDriver(new com.mysql.cj.jdbc.Driver());
+        LOGGER.debug("Registering MySQL Driver successful");
 
-        try {
-            DriverManager.registerDriver(new com.mysql.cj.jdbc.Driver());
-            LOGGER.debug("Registering MySQL Driver successful");
-
-            connection = DriverManager.getConnection(url, userid, password);
-            LOGGER.debug("Retrieving MySQL connection successful");
-        } catch (SQLException e) {
-            LOGGER.error(
-                "Could not load and register JDBC driver or connect to database."
-            );
-            LOGGER.error(e.getMessage());
-        }
-        return connection;
+        Connection conn = DriverManager.getConnection(url, userid, password);
+        LOGGER.debug("Retrieving MySQL connection successful");
+        return conn;
     }
 }

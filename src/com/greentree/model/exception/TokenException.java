@@ -1,6 +1,5 @@
 package com.greentree.model.exception;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
@@ -11,11 +10,7 @@ import org.apache.logging.log4j.Logger;
  * @author david5MX53G
  *
  */
-public class TokenException extends Exception {/** 
-     * {@link org.apache.logging.log4j.Logger} is for logging logs to the log
-     */
-    Logger logger = LogManager.getLogger();
-
+public class TokenException extends Exception {
     /**
      * Auto-generated value for implementing <code>{@link Serializable}</code>
      */
@@ -27,9 +22,30 @@ public class TokenException extends Exception {/**
      * @param msg describes what went wrong in human terms
      * @param err <code>{@link Throwable}</code> object passed to the
      * <code>{@link Exception}</code> constructor
+     * @param logger {@link org.apache.logging.log4j.Logger} for log messaging
      */
-    public TokenException(String msg, Throwable err) {
+    public TokenException(String msg, Throwable err, Logger logger) {
         super(msg, err);
+        logger.error(err.getClass().getSimpleName() + " " + msg);
+    }
+
+    /**
+     * This constructor assumes that logging is done elsewhere
+     * @param msg {@link String} for debugging
+     */
+    public TokenException(String msg) {
+        super(msg);
+    }
+
+    /**
+     * 
+     * @param msg {@link String} used for logging and the Exception(String) 
+     * constructor
+     * 
+     * @param logger {@link org.apache.logging.log4j.Logger} for debug output
+     */
+    public TokenException(String msg, Logger logger) {
+        super(msg);
         logger.error(msg);
     }
 }

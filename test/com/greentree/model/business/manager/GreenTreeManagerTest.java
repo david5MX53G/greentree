@@ -1,5 +1,6 @@
 package com.greentree.model.business.manager;
 
+import com.greentree.model.business.exception.TokenServiceException;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -18,7 +19,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.greentree.model.domain.Token;
-import com.greentree.model.services.exception.InvalidTokenException;
 import com.greentree.model.services.manager.PropertyManager;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
@@ -136,7 +136,7 @@ public class GreenTreeManagerTest {
             GreenTreeManagerTest.manager.logOut();
             assertTrue(true);
             logger.debug("logOutTest() PASSED");
-        } catch (InvalidTokenException | IOException e) {
+        } catch (TokenServiceException e) {
             fail("logOutTest() " + e.getClass().getSimpleName() + ": " + e.getMessage());
         }
 

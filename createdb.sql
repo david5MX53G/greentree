@@ -1,4 +1,4 @@
-/*
+/* 
  * The MIT License
  *
  * Copyright 2018 david5MX53G.
@@ -21,51 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.greentree.model.business.manager;
-
-import com.greentree.model.services.factory.ServiceFactory;
 
 /**
- * This class provides methods for registering the GreenTree data access object 
- * (DAO).
- * 
- * @author david5MX53G
+ * Author:  david5MX53G
+ * Created: Jul 21, 2018
  */
-public class DAOManager {
-    /**
-     * Stores the singleton instance of this class.
-     */
-    private static DAOManager _instance;
-    
-    /**
-     * {@link ServiceFactory} for building DOAServices.
-     */
-    private final ServiceFactory factory = ServiceFactory.getInstance(); 
-    
-    /**
-     * private constructor for the DOAManager Singleton
-     */
-    private DAOManager() {}
-    
-    /**
-     * @return the {@link DAOManager} Singleton
-     */
-    public static DAOManager getInstance() {
-        if (_instance == null) {
-            _instance = new DAOManager();
-        }
-        return _instance;
-    }
-    
-    
-    
-    /**
-     * 
-     * @return {@link 
-     */
-    private boolean registerDAOService() {
-        boolean result = false;
-        
-        return result;
-    }
-}
+
+/**
+ * This script sets up the database, user(s), credentials, and tables needed for 
+ * the GreenTree application.
+ */
+
+CREATE DATABASE greentree;
+USE greentree;
+
+-- creds and tables for the ITokenService interface classes
+CREATE USER 'ITokenService'@'localhost' 
+    IDENTIFIED BY 'SSBhbSB0aGUgZXZlci1saXZpbmcgd29tYmF0Lg==';
+
+GRANT ALL ON greentree.token TO 'ITokenService'@'localhost';
+CREATE TABLE token (keyId VARCHAR(24), token BLOB);

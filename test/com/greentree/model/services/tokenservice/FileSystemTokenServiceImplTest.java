@@ -1,19 +1,15 @@
 package com.greentree.model.services.tokenservice;
 
+import com.greentree.model.business.exception.TokenServiceException;
 import static org.junit.Assert.*;
 
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPublicKey;
-import java.security.spec.InvalidKeySpecException;
 import org.junit.Test;
 
 import com.greentree.model.domain.Token;
 import com.greentree.model.exception.TokenException;
-import com.greentree.model.services.exception.InvalidTokenException;
 import com.greentree.model.services.exception.ServiceLoadException;
 import com.greentree.model.services.factory.ServiceFactory;
-import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -41,7 +37,7 @@ public class FileSystemTokenServiceImplTest {
         } catch (ServiceLoadException e) {
             String msg = e.getClass().getName() + " in static init block of "
                 + "FileSystemTokenServiceImplTest: " + e.getMessage();
-            LOGGER.debug(msg);
+            LOGGER.error(msg);
         }
 
         try {
@@ -49,7 +45,7 @@ public class FileSystemTokenServiceImplTest {
         } catch (TokenException e) {
             String msg = e.getClass().getName() + " in static init block of "
                 + "FileSystemTokenServiceImplTest: " + e.getMessage();
-            LOGGER.debug(msg);
+            LOGGER.error(msg);
         }
 
     }
@@ -63,8 +59,8 @@ public class FileSystemTokenServiceImplTest {
         try {
             service.commit(token);
             LOGGER.debug("commit(token) test PASSED");
-        } catch (IOException | InvalidTokenException e) {
-            fail(e.getClass().getSimpleName() + ": " + e.getMessage());
+        } catch (TokenServiceException e) {
+            fail("testCommit() FAILED: " + e.getMessage());
         }
     }
 
@@ -77,8 +73,8 @@ public class FileSystemTokenServiceImplTest {
         // commit token
         try {
             service.commit(token);
-        } catch (InvalidTokenException | IOException e) {
-            fail(e.getClass().getSimpleName() + ": " + e.getMessage());
+        } catch (TokenServiceException e) {
+            fail(e.getMessage());
         }
 
         // get public key and delete token
@@ -88,10 +84,12 @@ public class FileSystemTokenServiceImplTest {
         // re-build token from commit using public key
         try {
             token = service.selectToken(key);
-        } catch (IOException | InvalidKeyException | NoSuchAlgorithmException
-            | InvalidKeySpecException e) {
-            fail("selectToken(RSAPublicKey) FAILED: " + e.getClass().getName() + ": "
-                + e.getMessage());
+        } catch (TokenServiceException e) {
+            fail(
+                "selectToken(RSAPublicKey) FAILED: " 
+                    + e.getClass().getName() + ": "
+                    + e.getMessage()
+            );
         }
 
         try {
