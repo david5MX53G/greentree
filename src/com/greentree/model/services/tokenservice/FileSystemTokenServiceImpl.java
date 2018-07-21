@@ -62,12 +62,15 @@ public class FileSystemTokenServiceImpl implements ITokenService {
     }
 
     /**
-     * retrieves the full path to a unique filename, suitable for file IO.
-     *
-     * @throws IOException when
-     * PropertyManager.getProperty("TokenFilesLocation") fails
-     */
-    @Override
+    * The filename of a <code>{@link RSAPublicKey}</code> allows us to save and restore the 
+    * <code>{@link Token}</code> of the given <code>RSAPublicKey</code> from file IO. The 
+    * <code>{@link Java.util.Properties}</code> file is expected to have a key named "
+    * TokenFilesLocation".
+    * 
+    * @param key used to generate the filename
+    * @return the unique, consistent filename of this <code>RSAPublicKey</code>
+    * @throws IOException when the {@link Properties} file does not load
+    */
     public String getFilename(RSAPublicKey key) throws IOException {
         String filename = String.valueOf(key.getModulus());
         filename = filename.substring(0, 9) + filename.substring(filename.length() - 9);

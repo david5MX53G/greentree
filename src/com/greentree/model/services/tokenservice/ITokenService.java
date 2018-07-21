@@ -49,17 +49,4 @@ public interface ITokenService extends IService {
 	 */
 	public Token selectToken(RSAPublicKey key) throws InvalidKeyException, 
 	NoSuchAlgorithmException, InvalidKeySpecException, IOException;
-
-	/**
-	 * The filename of a <code>{@link RSAPublicKey}</code> allows us to save and restore the 
-	 * <code>{@link Token}</code> of the given <code>RSAPublicKey</code> from file IO. The 
-	 * <code>{@link Java.util.Properties}</code> file is expected to have a key named "
-	 * TokenFilesLocation".
-	 * 
-	 * @param key used to generate the filename
-	 * @return the unique, consistent filename of this <code>RSAPublicKey</code>
-	 * @throws PropertyFileNotFoundException when the <code>{@link Properties}</code> file fails
-	 * @throws IOException when the {@link Properties} file does not load
-	 */
-	String getFilename(RSAPublicKey key) throws IOException;
 }
