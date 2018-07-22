@@ -78,7 +78,7 @@ public class FileSystemTokenServiceImpl implements ITokenService {
     public String getFilename(RSAPublicKey key) throws IOException {
         String filename = String.valueOf(key.getModulus());
         filename = filename.substring(0, 9) + filename.substring(filename.length() - 9);
-        filename = PropertyManager.getProperty("TokenFilesLocation") + "\\" + filename + ".token";
+        filename = PropertyManager.getProperty("TokenFilesLocation") + "/" + filename + ".token";
         return filename;
     }
 

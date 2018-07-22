@@ -24,20 +24,35 @@ public class FileSystemTokenServiceImplTest {
     /** log4j 2 logger */
     static final Logger LOGGER = LogManager.getLogger();
 
+    /**
+     * This {@link Token} variable will be committed and read from file system 
+     * storage.
+     */
     private static Token token;
+    
+    /**
+     * This {@link ITokenService} will be used to store and retrieve the Token.
+     */
     private static ITokenService service;
+    
+    /**
+     * This is used to instantiate a new FileSystemTokenServiceImpl instance 
+     * using a Class type erasure rather than the Class type specified in the 
+     * application properties file.
+     */
+    private static final String CLASSNAME = 
+        "com.greentree.model.services.tokenservice.FileSystemTokenServiceImpl";
 
     /**
      * static initializer block for static variables
      */
-    static {
-        ServiceFactory factory = ServiceFactory.getInstance();
+    static {        
         try {
-            service = (ITokenService) factory.getService("ITokenService");
-        } catch (ServiceLoadException e) {
-            String msg = e.getClass().getName() + " in static init block of "
-                + "FileSystemTokenServiceImplTest: " + e.getMessage();
-            LOGGER.error(msg);
+            Class<?> classy = Class.forName(CLASSNAME);
+            service = (ITokenService) classy.newInstance();
+        } catch (ClassNotFoundException | InstantiationException
+            | IllegalAccessException ex) {
+            fail(ex.getClass().getSimpleName() + " " + ex.getMessage());
         }
 
         try {

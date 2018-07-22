@@ -26,7 +26,6 @@ package com.greentree.model.services.tokenservice;
 import com.greentree.model.business.exception.TokenServiceException;
 import com.greentree.model.domain.Token;
 import com.greentree.model.exception.TokenException;
-import static com.greentree.model.services.tokenservice.FileSystemTokenServiceImplTest.LOGGER;
 import java.security.interfaces.RSAPublicKey;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
