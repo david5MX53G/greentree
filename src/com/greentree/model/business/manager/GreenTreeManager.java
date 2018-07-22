@@ -9,13 +9,12 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 
-import com.greentree.model.business.exception.GreenTreeManagerException;
-import com.greentree.model.business.exception.TokenServiceException;
+import com.greentree.model.exception.TokenServiceException;
 import com.greentree.model.domain.Block;
 import com.greentree.model.domain.Claim;
 import com.greentree.model.domain.Token;
 import com.greentree.model.exception.TokenException;
-import com.greentree.model.services.exception.ServiceLoadException;
+import com.greentree.model.exception.ServiceLoadException;
 import com.greentree.model.services.factory.ServiceFactory;
 import com.greentree.model.services.tokenservice.ITokenService;
 
