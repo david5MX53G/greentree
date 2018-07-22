@@ -38,6 +38,7 @@ import java.security.interfaces.RSAPublicKey;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -78,9 +79,10 @@ public class JDBCTokenServiceImpl implements ITokenService {
         try {
             valid = token.validate();
             if (valid) {
-                byte[] byteArray = null;
                 LOGGER.debug("Token is valid");
+
                 // serialize the Token to a byte[]
+                byte[] byteArray = null;
                 try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
                     ObjectOutputStream out = new ObjectOutputStream(bos);
                     out.writeObject(token);
@@ -95,53 +97,60 @@ public class JDBCTokenServiceImpl implements ITokenService {
                     );
                 }
 
-                // serialize the byte[] as an InputStream
+                // serialize the byte[] in an InputStream
                 if (byteArray != null) {
                     try (
                         ByteArrayInputStream boas
                         = new ByteArrayInputStream(byteArray)) {
                         LOGGER.debug("ByteArrayInputStream created from Token");
 
-                        // insert the InputStream into the database
                         try (JdbcConnection conn = this.getConn()) {
                             LOGGER.debug("JDBC Connection acquired");
                             conn.setAutoCommit(false);
 
-                            /**
-                             * Positional params are used here to avoid breaking
-                             * the INSERT when the column names change.
-                             */
-                            String sql
-                                = "INSERT INTO token (keyId, token) VALUES (?, ?)";
+                            // create a new keyId, if none exists
+                            String sqlIns
+                                = "INSERT INTO token (keyId) VALUES (?) "
+                                + "ON DUPLICATE KEY UPDATE keyId=keyId";
 
                             try (JdbcPreparedStatement stmt
-                                = (JdbcPreparedStatement) conn.prepareStatement(sql)) {
-                                LOGGER.debug(
-                                    "PreparedStatement initialized: " + sql
-                                );
+                                = (JdbcPreparedStatement) conn.prepareStatement(sqlIns)) {
 
                                 stmt.setString(
                                     1, this.getKeyId(token.getPublicKey())
                                 );
+                                
+                                stmt.executeUpdate();
 
-                                LOGGER.debug(
-                                    "PreparedStatement setString done"
-                                );
+                                conn.commit();
+                            }
+                            
+                            LOGGER.debug(
+                                "keyId upsert complete " 
+                                    + String.valueOf(
+                                        this.getKeyId(token.getPublicKey())
+                                    )
+                            );
 
-                                stmt.setBinaryStream(2, boas);
+                            // update the new key record with Token binary
+                            String sqlUpd
+                                = "UPDATE token SET token = ? "
+                                + "WHERE keyId = ?";
 
-                                LOGGER.debug(
-                                    "PreparedStatement setBinaryStream done"
+                            try (JdbcPreparedStatement stmt
+                                = (JdbcPreparedStatement) conn.prepareStatement(sqlUpd)) {
+                                stmt.setBinaryStream(1, boas);
+
+                                stmt.setString(
+                                    2, this.getKeyId(token.getPublicKey())
                                 );
 
                                 stmt.executeUpdate();
-                                LOGGER.debug(
-                                    "PreparedStatement executeUpdate() done"
-                                );
+
+                                conn.commit();
                             }
 
-                            conn.commit();
-                            LOGGER.debug("token committed to database");
+                            LOGGER.debug("token binary upsert complete");
                         }
                     }
                 }
@@ -176,6 +185,7 @@ public class JDBCTokenServiceImpl implements ITokenService {
     public Token selectToken(RSAPublicKey key) throws TokenServiceException {
         Token token = null;
         String keyId = this.getKeyId(key);
+        LOGGER.debug("fetching token KeyId " + keyId);
 
         try (JdbcConnection conn = this.getConn()) {
             LOGGER.debug("Connection initialized");
@@ -192,11 +202,11 @@ public class JDBCTokenServiceImpl implements ITokenService {
                 while (rs.next()) {
                     byte[] st = (byte[]) rs.getObject(1);
                     LOGGER.debug("byte[] initialized");
-                    
+
                     try (ByteArrayInputStream baip
                         = new ByteArrayInputStream(st)) {
                         LOGGER.debug("ByteArrayInputStream initialized");
-                        
+
                         try (ObjectInputStream ois
                             = new ObjectInputStream(baip)) {
                             token = (Token) ois.readObject();
@@ -232,7 +242,7 @@ public class JDBCTokenServiceImpl implements ITokenService {
      * TODO: move this into a SQL Connection manager class
      *
      * @return {@link java.sql.Connection} to the database
-     * @throws {@link IOException} when the {@link PropertyManager} is unable to 
+     * @throws {@link IOException} when the {@link PropertyManager} is unable to
      * read necessary values from the properties file
      */
     private JdbcConnection getConn() throws SQLException, IOException {

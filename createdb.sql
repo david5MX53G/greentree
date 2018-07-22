@@ -40,4 +40,4 @@ CREATE USER 'ITokenService'@'localhost'
     IDENTIFIED BY 'SSBhbSB0aGUgZXZlci1saXZpbmcgd29tYmF0Lg==';
 
 GRANT ALL ON greentree.token TO 'ITokenService'@'localhost';
-CREATE TABLE token (keyId VARCHAR(24), token BLOB);
+CREATE TABLE token (keyId VARCHAR(24) PRIMARY KEY, token BLOB);

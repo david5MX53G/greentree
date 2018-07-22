@@ -24,7 +24,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class RegisterController implements ActionListener {
 
-    /** 
+    /**
      * {@link org.apache.logging.log4j.Logger} is for logging logs to the log
      */
     Logger logger = LogManager.getLogger();
@@ -35,7 +35,7 @@ public class RegisterController implements ActionListener {
      * ActionListener} of this {@link RegisterController}
      */
     private final RegisterJInternalFrame regJInternalFrame;
-    
+
     /**
      * this {@link JDesktopPane} is used to display warnings, errors, info, etc.
      */
@@ -69,8 +69,9 @@ public class RegisterController implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         logger.debug("actionPerformed(ActionEvent) " + e.getActionCommand());
 
-        /** if this was registered with a RegisterJInternalFrame, use 
-         * RegisterJInternalFrame methods this is a holdover from the days when 
+        /**
+         * if this was registered with a RegisterJInternalFrame, use
+         * RegisterJInternalFrame methods this is a holdover from the days when
          * RegisterJFrame existed, but it's still a good sanity check.
          */
         if (this.regJInternalFrame instanceof RegisterJInternalFrame) {
@@ -101,84 +102,56 @@ public class RegisterController implements ActionListener {
      * RegisterJFrame#getSubmitBtn()}</code> <code>JButton</code>
      */
     private void submitBtn_actionPerformed(ActionEvent ev) {
-        String msg = null;
-        boolean success = false;
+        String msg;
         // initialize the GreenTreeManager Singleton
         GreenTreeManager manager = GreenTreeManager.getInstance();
-        if (!GreenTreeManager.loadProperties()) {
-            msg = "failed to load properties file";
-            logger.debug(msg);
+        logger.debug("GreenTreeManager initialized");
+
+        // register GreenTreeManager Token
+        if (!manager.registerToken(new String(regJInternalFrame.getPass()))) {
+            logger.debug("GreenTreeManager.registerToken(String) failed");
+
             JOptionPane.showInternalMessageDialog(
                 mainDesktop,
-                msg,
+                "Failed to save new token",
                 "Error",
                 JOptionPane.ERROR_MESSAGE
             );
-        }
+        } 
 
-        success = manager.registerService("TokenService");
-        if (!success) {
-            logger.debug("manager.registerService(\"TokenService\"); was unsuccessful");
-            JOptionPane.showInternalMessageDialog(
-                mainDesktop,
-                "failed getting storage input/output",
-                "Error",
-                JOptionPane.ERROR_MESSAGE
-            );
-            return;
-        }
+        // return RSAPublicKey for user to save and use in future auth events
+        else {
+            logger.debug("GreenTreeManager.registerToken(String) succeeded");
+            RSAPublicKey key = manager.getPublicKey();
+            JFileChooser fc = new JFileChooser();
+            int chooserState;
 
-        if (this.regJInternalFrame instanceof RegisterJInternalFrame) {
-            success = manager.registerToken(new String(regJInternalFrame.getPass()));
-        }
-        if (!success) {
-            logger.debug("manager.registerToken(new "
-                + "String(newTokenJFrame.getPass())); was unsuccessful");
-            JOptionPane.showInternalMessageDialog(
-                mainDesktop,
-                "failed to save new token",
-                "Error",
-                JOptionPane.ERROR_MESSAGE
-            );
-            return;
-        }
-
-        // return the public key for the user to save and use in future authentication
-        RSAPublicKey key = manager.getPublicKey();
-        JFileChooser fc = new JFileChooser();
-        int chooserState;
-
-        if (this.regJInternalFrame instanceof RegisterJInternalFrame) {
             chooserState = fc.showSaveDialog(this.regJInternalFrame);
-        } else {
-            logger.debug("JFileChooser failed to get a response");
-            return;
-        }
 
-        if (chooserState == JFileChooser.APPROVE_OPTION) {
-            File file = fc.getSelectedFile();
-            String filePath = file.getAbsolutePath();
-            logger.debug("Saving to: " + filePath + ".");
+            if (chooserState == JFileChooser.APPROVE_OPTION) {
+                File file = fc.getSelectedFile();
+                String filePath = file.getAbsolutePath();
+                logger.debug("Saving to: " + filePath + ".");
 
-            // write the public key to the file chosen by the user in the JFileChooser
-            try (ObjectOutputStream out
-                = new ObjectOutputStream(new FileOutputStream(filePath))) {
-                out.writeObject(key);
-            } catch (IOException ex) {
-                msg = "writing to file " + filePath + ": " + ex.getMessage();
-                logger.debug(msg);
-                JOptionPane.showInternalMessageDialog(
-                    mainDesktop,
-                    msg,
-                    ex.getClass().getName(),
-                    JOptionPane.ERROR_MESSAGE
-                );
+                // write the public key to the file chosen by the user
+                try (ObjectOutputStream out
+                    = new ObjectOutputStream(new FileOutputStream(filePath))) {
+                    out.writeObject(key);
+                } catch (IOException ex) {                    
+                    logger.debug("FileOutputStream(" + filePath + ") " 
+                        + ex.getMessage());
+                    
+                    JOptionPane.showInternalMessageDialog(
+                        mainDesktop,
+                        "Failed saving to filesystem",
+                        ex.getClass().getName(),
+                        JOptionPane.ERROR_MESSAGE
+                    );
+                }
+            } else {
+                logger.debug("JFileChooser cancelled by user.");
             }
-        } else {
-            logger.debug("JFileChooser cancelled by user.");
-        }
 
-        if (this.regJInternalFrame instanceof RegisterJInternalFrame) {
             this.regJInternalFrame.dispose();
         }
     }
@@ -189,5 +162,4 @@ public class RegisterController implements ActionListener {
         }
         logger.debug("cancelButton_ActionPerformed(ActionEvent) PASSED");
     }
-
 }

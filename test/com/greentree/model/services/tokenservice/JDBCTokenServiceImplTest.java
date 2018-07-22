@@ -45,13 +45,6 @@ public class JDBCTokenServiceImplTest {
      * This logs messages using {@link org.apache.logging.log4j.Logger}.
      */
     protected static final Logger LOGGER = LogManager.getLogger();
-
-    /**
-     * This {@link com.greentree.model.domain.Token} will be sent for storage to
-     * {@link com.greentree.model.services.tokenservice.JDBCTokenServiceImpl}.
-     */
-    private static Token token;
-
     /**
      * This {@link com.greentree.model.services.tokenservice.ITokenService}
      * stores the
@@ -62,8 +55,6 @@ public class JDBCTokenServiceImplTest {
 
     private static final String CLASSNAME = 
         "com.greentree.model.services.tokenservice.JDBCTokenServiceImpl";
-    
-    private static RSAPublicKey key;
 
     /**
      * This static initializer block sets up static variables for testing. The
@@ -83,15 +74,6 @@ public class JDBCTokenServiceImplTest {
             | IllegalAccessException ex) {
             fail(ex.getClass().getSimpleName() + " " + ex.getMessage());
         }
-
-        try {
-            token = new Token("My name is Alice.");
-            LOGGER.debug("Token initialized");
-        } catch (TokenException e) {
-            String msg = e.getClass().getName() + " in static init block of "
-                + "JDBCTokenServiceImplTest: " + e.getMessage();
-            fail(msg);
-        }
     }
 
     /**
@@ -102,10 +84,22 @@ public class JDBCTokenServiceImplTest {
      */
     @Test
     public void testCommit()
-        throws AssertionError, TokenServiceException, TokenException {
+        throws AssertionError, TokenServiceException, TokenException {        
+        Token token = new Token("Ase's Death by Edvard Grieg");
+        LOGGER.debug("Token 0 initialized");
+        
+        // insert initial Token record
         assertTrue(
             "service.commit(token) returned false", service.commit(token)
         );
+        
+        // update previous Token record
+        assertTrue(
+            "service.commit(token) returned false", service.commit(token)
+        );
+        
+        // TODO: validate the db has only one record for the Token
+        
         LOGGER.debug("commit(token) test PASSED");
     }
     
@@ -119,8 +113,10 @@ public class JDBCTokenServiceImplTest {
     @Test
     public void testSelectToken() throws TokenServiceException, TokenException, 
         AssertionError {
+        Token token = new Token("Turandot, Act III by Giacomo Puccini");
+        LOGGER.debug("Token initialized");
         service.commit(token);
-        key = token.getPublicKey();
+        RSAPublicKey key = token.getPublicKey();
         token = null; // ohnoes, no more Token?!
         token = service.selectToken(key); // No worries, we can get it back!
         assertTrue("selectToken(RSAPublicKey) FAILED", token.validate());

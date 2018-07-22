@@ -35,13 +35,14 @@ public abstract class ManagerSuperType {
      * fails
      */
     public static boolean loadProperties() {
-        boolean success = false;
+        boolean success;
         try {
             PropertyManager.loadProperties();
             success = true;
         } catch (IOException e) {
             String msg = e.getClass().getSimpleName() + ": " + e.getMessage();
             LOGGER.debug(msg);
+            success = false;
         }
         return success;
     }

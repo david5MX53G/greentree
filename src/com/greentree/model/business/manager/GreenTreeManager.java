@@ -56,10 +56,10 @@ public class GreenTreeManager extends ManagerSuperType {
     private static GreenTreeManager _instance;
 
     /**
-     * constructs the Singleton instance of <code>GreenTreeManager</code>
+     * constructs the Singleton instance of <code>GreenTreeManager</code>. This 
+     * triggers the static init block in {@link ManagerSuperType}.
      */
-    private GreenTreeManager() {
-    }
+    private GreenTreeManager() {}
 
     /**
      * Instantiates a new {@link GreenTreeManager} instance using the Singleton
@@ -104,23 +104,24 @@ public class GreenTreeManager extends ManagerSuperType {
      * @return boolean indicates whether the method was successful or not
      */
     public boolean registerToken(String plaintext) {
-        boolean success = this.registerService("TokenService");
-        if (!success) {
-            LOGGER.debug("error this.registerService(\"TokenService\")");
-        } else {
-            try {
-                this.token = new Token(plaintext);
-                this.getTokenService().commit(token);
-                this.ciphertext = token.encrypt(plaintext);
-                getTokenService().commit(this.token);
-                success = true;
-            } catch (TokenException | TokenServiceException e) {
-                LOGGER.error(
-                    e.getClass().getSimpleName() + ": "
-                    + e.getMessage()
-                );
-            }
+        boolean success;
+
+        if (this.tokenService == null) {
+            this.registerService("TokenService");
         }
+
+        try {
+            this.token = new Token(plaintext);
+            success = this.getTokenService().commit(this.token);
+            this.ciphertext = token.encrypt(plaintext);
+        } catch (TokenException | TokenServiceException e) {
+            LOGGER.error(
+                e.getClass().getSimpleName() + ": "
+                + e.getMessage()
+            );
+            success = false;
+        }
+        
         return success;
     }
 
