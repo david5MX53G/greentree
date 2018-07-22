@@ -23,6 +23,7 @@
  */
 package com.greentree.model.business.exception;
 
+import java.sql.SQLException;
 import org.apache.logging.log4j.Logger;
 
 /**
@@ -66,5 +67,20 @@ public class TokenServiceException extends Exception {
     public TokenServiceException(String msg, Logger logger) {
         super(msg);
         logger.error(msg);
+    }
+
+    /**
+     * ...yet another way to throw {@link TokenServiceException}.
+     * 
+     * @param message {@link String} for logging
+     * @param logger {@link org.apache.logging.log4j.Logger} for writing the msg
+     * @param ex {@link Throwable} for logging the original {@link Exception} 
+     * class name
+     */
+    public TokenServiceException(
+        String message, Logger logger, Throwable ex
+    ) {
+        super(ex.getClass().getSimpleName() + " " + ex.getMessage());
+        logger.error(ex.getMessage());
     }
 }

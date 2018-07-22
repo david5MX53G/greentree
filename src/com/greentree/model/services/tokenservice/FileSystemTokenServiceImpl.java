@@ -33,6 +33,7 @@ public class FileSystemTokenServiceImpl implements ITokenService {
     /**
      * overrides {@link ITokenService#commit(Token)}
      *
+     * @return boolean to indicate success or failure
      * @throws com.greentree.model.business.exception.TokenServiceException 
      * when the input {@link com.greentree.model.domain.Token} does not validate
      */

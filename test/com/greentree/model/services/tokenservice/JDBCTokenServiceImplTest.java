@@ -26,9 +26,12 @@ package com.greentree.model.services.tokenservice;
 import com.greentree.model.business.exception.TokenServiceException;
 import com.greentree.model.domain.Token;
 import com.greentree.model.exception.TokenException;
+import static com.greentree.model.services.tokenservice.FileSystemTokenServiceImplTest.LOGGER;
+import java.security.interfaces.RSAPublicKey;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import org.junit.Test;
 
 /**
@@ -60,6 +63,8 @@ public class JDBCTokenServiceImplTest {
 
     private static final String CLASSNAME = 
         "com.greentree.model.services.tokenservice.JDBCTokenServiceImpl";
+    
+    private static RSAPublicKey key;
 
     /**
      * This static initializer block sets up static variables for testing. The
@@ -77,22 +82,21 @@ public class JDBCTokenServiceImplTest {
             service = (ITokenService) classy.newInstance();
         } catch (ClassNotFoundException | InstantiationException
             | IllegalAccessException ex) {
-            LOGGER.error("Class<?> failed to instantiate " + CLASSNAME);
-            LOGGER.error(ex.getClass().getSimpleName() + " " + ex.getMessage());
+            fail(ex.getClass().getSimpleName() + " " + ex.getMessage());
         }
 
         try {
             token = new Token("My name is Alice.");
+            LOGGER.debug("Token initialized");
         } catch (TokenException e) {
             String msg = e.getClass().getName() + " in static init block of "
-                + "FileSystemTokenServiceImplTest: " + e.getMessage();
-            LOGGER.error(msg);
+                + "JDBCTokenServiceImplTest: " + e.getMessage();
+            fail(msg);
         }
     }
 
     /**
-     * Test method for
-     * <code>{@link FileSystemTokenServiceImpl#commit(Token)}</code>.
+     * Test method for {@link JDBCTokenServiceImpl#commit(Token)}.
      *
      * @throws com.greentree.model.business.exception.TokenServiceException when
      * @throws com.greentree.model.exception.TokenException
@@ -104,5 +108,23 @@ public class JDBCTokenServiceImplTest {
             "service.commit(token) returned false", service.commit(token)
         );
         LOGGER.debug("commit(token) test PASSED");
+    }
+    
+    /**
+     * Test method for {@link JDBCTokenServiceImpl#selectToken(RSAPublicKey)}
+     * @throws com.greentree.model.business.exception.TokenServiceException if 
+     * the static test token does not return a valid {@link RSAPublicKey}.
+     * @throws com.greentree.model.exception.TokenException when the {@link 
+     * Token} retrieved from JDBC returns false from {@link Token#validate()}.
+     */
+    @Test
+    public void testSelectToken() throws TokenServiceException, TokenException, 
+        AssertionError {
+        service.commit(token);
+        key = token.getPublicKey();
+        token = null; // ohnoes, no more Token?!
+        token = service.selectToken(key); // No worries, we can get it back!
+        assertTrue("selectToken(RSAPublicKey) FAILED", token.validate());
+        LOGGER.debug("testSelectToken() PASSED");
     }
 }
