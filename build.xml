@@ -11,7 +11,7 @@
     <property name="prop.dir" value="${home}/config/"/>
     <property name="bin.dir" value="${home}/bin"/>
     <property name="doc.dir" value="${home}/docs"/>
-
+    <property name="uml.dir" value="${home}/uml"/>
     
     <!-- paths -->
     <path id="classpath">
@@ -22,6 +22,9 @@
     </path>
     
     <!-- tasks -->
+    <taskdef name="plantuml" 
+             classname="net.sourceforge.plantuml.ant.PlantUmlTask" 
+             classpath="${lib.dir}/plantuml.jar" />
 
     <!-- targets -->
     <target name="init">
@@ -77,5 +80,14 @@
 
     <target name="testjar" depends="jar">
         <java jar="${build.dir}/greentree.jar" fork="yes" dir="."/>
+    </target>
+    
+    <target name="uml">
+        <!-- output is relative to the uml source file! -->
+        <plantuml>
+            <fileset dir="${uml.dir}">
+                <include name="**/*.uml" />
+            </fileset>
+        </plantuml>
     </target>
 </project>

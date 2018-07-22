@@ -16,7 +16,11 @@ import com.greentree.model.domain.Token;
 import com.greentree.model.exception.TokenException;
 import com.greentree.model.exception.ServiceLoadException;
 import com.greentree.model.services.factory.ServiceFactory;
+import com.greentree.model.services.manager.JDBCPoolManager;
 import com.greentree.model.services.tokenservice.ITokenService;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * GreenTreeManager defines methods used by the presentation layer to manage
@@ -135,8 +139,12 @@ public class GreenTreeManager extends ManagerSuperType {
         this.token.addBlock("logged out at " + dateStamp, this.ciphertext);
         try {
             getTokenService().commit(token);
+            LOGGER.debug("Token commit done");
             this.token = null;
-        } catch (TokenServiceException e) {
+            LOGGER.debug("Token is null");
+            JDBCPoolManager.shutDown();
+            LOGGER.debug("JDBC pool shut down");
+        } catch (TokenServiceException | SQLException e) {
             LOGGER.error(e.getMessage());
         }
     }

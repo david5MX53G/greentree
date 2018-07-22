@@ -1,0 +1,49 @@
+@startuml
+interface IService
+
+class ServiceFactory <<singleton>> {
+    {static} -serviceFactoryInstance : ServiceFactory
+    {static} +getInstance() : ServiceFactory
+    -ServiceFactory()
+    {static} -getImplName(String) : String
+    +getService(String) : IService
+}
+
+class JDBCPoolManager <<singleton>> {
+    {static} -LOGGER : Logger
+    {static} -cpds : ComboPooledDataSource
+    {static} +createPool() : void
+    {static} +shutDown() : void
+}
+
+class PropertyManager <<singleton>> {
+    {static} -PROPSPATH : String
+    {static} -properties : Properties
+    {static} +getProperty(String) : String
+    {static} +loadProperties(String) : void
+    {static} +loadProperties() : void
+}
+
+class FileSystemTokenServiceImpl {
+    +commit(Token) : boolean
+    +getFilename(RSAPublicKey) : String
+    +selectToken(RSAPublicKey) : Token
+}
+
+abstract class ITokenService {
+    {static} +NAME : String
+    {abstract} commit(Token) : boolean
+    {abstract} selectToken(RSAPublicKey) : Token
+}
+
+class JDBCTokenServiceImpl {
+    {static} -LOGGER : Logger
+    +commit(Token) : boolean
+    -getKeyId(RSAPublicKey) : String
+    +selectToken(RSAPublicKey) : Token
+}
+
+IService --|> ITokenService
+ITokenService --|> FileSystemTokenServiceImpl
+ITokenService --|> JDBCTokenServiceImpl
+@enduml

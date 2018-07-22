@@ -1,0 +1,67 @@
+@startuml
+class Token {
+	{static} -serialVersionUID : long
+	-blockChain : ArrayList<Block>
+	-passphrase : String
+	+privateKey : RSAPrivateKey
+	+publicKey : RSAPublicKey
+	+Token() : Token
+	+Token(String) : Token
+	+addBlock(String, String) : void
+	+addBlock(String, String, Claim) : void
+	+checkPassphrase(String) : Boolean
+	+encrypt(String) : String
+	+equals(Object) : boolean
+	+getBlockChain() : ArrayList<Block>
+	+getPublicKey() : RSAPublicKey
+	+hashCode() : int
+	+toString() : String
+	+validate() : boolean
+}
+
+class Claim {
+	{static} -serialVersionUID : long
+	{static} expirationTime : Long
+	{static} issuedAt : Long
+	{static} notBefore : Long
+	{static} token : Token
+	+Claim() : Claim
+	+Claim(Token, long, long) : Claim
+	+equals(Object) : boolean
+	+getExpirationTime() : Long
+	+getIssuedAt() : Long
+	+getNotBefore() : Long
+	+getToken() : Token
+	+hashCode() : int
+	+toString() : String
+	+validate() : boolean
+}
+
+class Block {
+	{static} +ROOT : Block
+	{static} -serialVersionUID : long
+	-data : String
+	-claimSet : ArrayList<Claim>
+	-hash : String
+	-issuer : Token
+	-referee : Block
+	-timeStamp : long
+	-Block(String) : Block
+	+Block(String, Block, Token) : Block
+	+addClaim(Claim, String) : void
+	+equals(Object) : boolean
+	+getData(Token, String) : String
+	+getHash() : String
+	+getIssuer() : Token
+	+getReferee() : Block
+	+getTimeStamp() : Long
+	-hash(String) : String
+	+hashCode() : int
+	+toString() : String
+	+validate() : boolean
+        +compareTo(Object) : int
+}
+
+Token --o Block
+Block --o Claim
+@enduml

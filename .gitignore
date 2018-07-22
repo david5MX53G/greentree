@@ -2,3 +2,4 @@ build/
 bin/
 **/private/
 *.swp
+uml/*.png
