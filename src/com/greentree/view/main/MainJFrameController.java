@@ -11,7 +11,7 @@ import java.util.Iterator;
 
 import javax.swing.JFileChooser;
 
-import com.greentree.model.business.exception.GreenTreeManagerException;
+import com.greentree.model.business.manager.GreenTreeManagerException;
 import com.greentree.model.business.manager.GreenTreeManager;
 import com.greentree.view.addmsg.AddMsgJInternalController;
 import com.greentree.view.addmsg.AddMsgJInternalFrame;

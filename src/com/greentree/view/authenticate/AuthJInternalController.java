@@ -2,26 +2,23 @@ package com.greentree.view.authenticate;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
+
 import java.security.interfaces.RSAPublicKey;
 
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 import org.apache.commons.codec.binary.Base64;
 
 import com.greentree.model.business.manager.GreenTreeManager;
-import com.greentree.model.exception.InvalidPassException;
 import com.greentree.view.main.MainJFrameController;
-import javax.swing.JOptionPane;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -143,14 +140,15 @@ public class AuthJInternalController implements ActionListener {
                     );
                 }
             } else {
-                throw new InvalidPassException("TokenPromptController encrypted pass is null");
+                throw new Exception(
+                    "TokenPromptController encrypted pass is null"
+                );
             }
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException
-            | IllegalBlockSizeException | BadPaddingException | InvalidPassException ex) {
-            logger.debug(ex.getMessage());
+        } catch (Exception ex) {
+            logger.debug(ex.getClass().getSimpleName() + " " + ex.getMessage());
             JOptionPane.showInternalMessageDialog(
                 this.mainController.getDesktop().getDesktopPane(),
-                "error encrypting pass with key",
+                "Error encrypting pass with key",
                 ex.getClass().getName(),
                 JOptionPane.ERROR_MESSAGE
             );
