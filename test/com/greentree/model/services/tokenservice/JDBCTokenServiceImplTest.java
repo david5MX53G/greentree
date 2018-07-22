@@ -23,7 +23,7 @@
  */
 package com.greentree.model.services.tokenservice;
 
-import com.greentree.model.business.exception.TokenServiceException;
+import com.greentree.model.exception.TokenServiceException;
 import com.greentree.model.domain.Token;
 import com.greentree.model.exception.TokenException;
 import java.security.interfaces.RSAPublicKey;
@@ -79,7 +79,7 @@ public class JDBCTokenServiceImplTest {
     /**
      * Test method for {@link JDBCTokenServiceImpl#commit(Token)}.
      *
-     * @throws com.greentree.model.business.exception.TokenServiceException when
+     * @throws com.greentree.model.exception.TokenServiceException when
      * @throws com.greentree.model.exception.TokenException
      */
     @Test
@@ -105,7 +105,7 @@ public class JDBCTokenServiceImplTest {
     
     /**
      * Test method for {@link JDBCTokenServiceImpl#selectToken(RSAPublicKey)}
-     * @throws com.greentree.model.business.exception.TokenServiceException if 
+     * @throws com.greentree.model.exception.TokenServiceException if 
      * the static test token does not return a valid {@link RSAPublicKey}.
      * @throws com.greentree.model.exception.TokenException when the {@link 
      * Token} retrieved from JDBC returns false from {@link Token#validate()}.

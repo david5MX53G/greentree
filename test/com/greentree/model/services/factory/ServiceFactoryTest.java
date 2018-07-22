@@ -5,7 +5,7 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.greentree.model.services.exception.ServiceLoadException;
+import com.greentree.model.exception.ServiceLoadException;
 import com.greentree.model.services.tokenservice.FileSystemTokenServiceImpl;
 import com.greentree.model.services.tokenservice.ITokenService;
 

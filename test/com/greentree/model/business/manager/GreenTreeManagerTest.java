@@ -1,6 +1,6 @@
 package com.greentree.model.business.manager;
 
-import com.greentree.model.business.exception.TokenServiceException;
+import com.greentree.model.exception.TokenServiceException;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 

@@ -1,6 +1,6 @@
 package com.greentree.model.services.tokenservice;
 
-import com.greentree.model.business.exception.TokenServiceException;
+import com.greentree.model.exception.TokenServiceException;
 import static org.junit.Assert.*;
 
 import java.security.interfaces.RSAPublicKey;
@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import com.greentree.model.domain.Token;
 import com.greentree.model.exception.TokenException;
-import com.greentree.model.services.exception.ServiceLoadException;
+import com.greentree.model.exception.ServiceLoadException;
 import com.greentree.model.services.factory.ServiceFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

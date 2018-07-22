@@ -7,5 +7,11 @@ import com.greentree.model.domain.AllDomainTests;
 import com.greentree.model.services.AllServicesTests;
 
 @RunWith(Suite.class)
-@SuiteClasses({AllBusinessTests.class, AllServicesTests.class, AllDomainTests.class})
+
+@SuiteClasses({
+    AllBusinessTests.class, 
+    AllServicesTests.class, 
+    AllDomainTests.class
+})
+
 public class ApplicationTestSuite {}
