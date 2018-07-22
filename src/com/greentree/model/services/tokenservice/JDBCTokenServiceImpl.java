@@ -26,6 +26,7 @@ package com.greentree.model.services.tokenservice;
 import com.greentree.model.business.exception.TokenServiceException;
 import com.greentree.model.domain.Token;
 import com.greentree.model.exception.TokenException;
+import com.greentree.model.services.manager.PropertyManager;
 import com.mysql.cj.jdbc.JdbcPreparedStatement;
 import com.mysql.cj.jdbc.JdbcConnection;
 import java.io.ByteArrayInputStream;
@@ -231,42 +232,37 @@ public class JDBCTokenServiceImpl implements ITokenService {
      * TODO: move this into a SQL Connection manager class
      *
      * @return {@link java.sql.Connection} to the database
+     * @throws {@link IOException} when the {@link PropertyManager} is unable to 
+     * read necessary values from the properties file
      */
-    private JdbcConnection getConn() throws SQLException {
+    private JdbcConnection getConn() throws SQLException, IOException {
         /**
          * This identifies the database to use for storing and retrieving
-         * {@link com.greentree.model.domain.Token} objects. TODO: pull this
-         * value from the .properties file
-         *
-         * TODO: set server timezone a a key/value pair in java.util.Properties
-         * passed to DriverManager.getConnection() or Driver.connect() as
-         * described in connector-j-reference-configuration-properties.html
+         * {@link com.greentree.model.domain.Token} objects.
          */
-        String url = "jdbc:mysql://localhost:3306/greentree?serverTimezone=UTC";
+        String url = PropertyManager.getProperty("jdbcUrl");
 
         /**
          * This identifies the user for connecting with the database. This user
-         * needs read/write access to the database. TODO: pull this value from
-         * the .properties file
+         * needs read/write access to the database.
          */
-        String userid = "ITokenService";
+        String userid = PropertyManager.getProperty("jdbcUser");
 
         /**
-         * This is used to authenticate the user against the database. TODO:
-         * pull this value from the .properties file
+         * This is used to authenticate the user against the database.
          */
-        String password = "SSBhbSB0aGUgZXZlci1saXZpbmcgd29tYmF0Lg==";
+        String password = PropertyManager.getProperty("jdbcPass");
 
         /**
          * This stores the JDBC connection object for storing and retrieving {@link
          * com.greentree.model.domain.Token} objects from the database.
          */
         DriverManager.registerDriver(new com.mysql.cj.jdbc.Driver());
-        LOGGER.debug("Registering MySQL Driver successful");
+        LOGGER.debug("Registering DriverManager Driver successful");
 
         JdbcConnection conn
             = (JdbcConnection) DriverManager.getConnection(url, userid, password);
-        LOGGER.debug("Retrieving MySQL connection successful");
+        LOGGER.debug("Retrieving JdbcConnection successful");
         return conn;
     }
 }
