@@ -21,9 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.greentree.model.business.exception;
+package com.greentree.model.exception;
 
-import java.sql.SQLException;
 import org.apache.logging.log4j.Logger;
 
 /**

@@ -1,7 +1,4 @@
-/**
- * 
- */
-package com.greentree.model.services.exception;
+package com.greentree.model.exception;
 
 /**
  * This is used to handle <code>{@link Exception}</code> objects thrown in the 
@@ -12,7 +9,6 @@ package com.greentree.model.services.exception;
  */
 @SuppressWarnings("serial")
 public class ServiceLoadException extends Exception {
-
 	/**
 	 * @param msg sent to the <code>{@link Exception}</code> constructor
 	 * @param exc re-thrown to the <code>Exception</code> constructor

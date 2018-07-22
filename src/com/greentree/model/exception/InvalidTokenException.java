@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.greentree.model.services.exception;
+package com.greentree.model.exception;
 
 /**
  * This <code>Exception</code> should be thrown when <code>{@link Token#validate()}</code> returns

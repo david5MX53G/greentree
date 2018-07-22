@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.greentree.model.services.exception;
+package com.greentree.model.exception;
 
 /**
  * This should be thrown when a <code>{@link Block}</code> fails to validate.

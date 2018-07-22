@@ -1,4 +1,4 @@
-package com.greentree.model.business.exception;
+package com.greentree.model.business.manager;
 
 import org.apache.logging.log4j.Logger;
 
