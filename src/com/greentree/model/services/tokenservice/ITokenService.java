@@ -1,7 +1,7 @@
 package com.greentree.model.services.tokenservice;
 
 import java.security.interfaces.RSAPublicKey;
-import com.greentree.model.business.exception.TokenServiceException;
+import com.greentree.model.exception.TokenServiceException;
 import com.greentree.model.domain.Token;
 import com.greentree.model.services.IService;
 
@@ -27,7 +27,7 @@ public interface ITokenService extends IService {
      *
      * @param token {@link com.greentree.model.domain.Token} to be saved in
      * storage
-     * @throws com.greentree.model.business.exception.TokenServiceException when
+     * @throws com.greentree.model.exception.TokenServiceException when
      * the underlying implementation class has trouble.
      */
     public boolean commit(Token token) throws TokenServiceException;
@@ -40,7 +40,7 @@ public interface ITokenService extends IService {
      * @return the {@link com.greentree.model.domain.Token} corresponding with
      * the given {@link java.security.interfaces.RSAPublicKey}
      *
-     * @throws com.greentree.model.business.exception.TokenServiceException when
+     * @throws com.greentree.model.exception.TokenServiceException when
      * the underlying implementation class has trouble.
      */
     public Token selectToken(RSAPublicKey key) throws TokenServiceException;

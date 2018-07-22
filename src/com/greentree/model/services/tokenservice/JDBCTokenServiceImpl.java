@@ -23,22 +23,21 @@
  */
 package com.greentree.model.services.tokenservice;
 
-import com.greentree.model.business.exception.TokenServiceException;
+import com.greentree.model.exception.TokenServiceException;
 import com.greentree.model.domain.Token;
 import com.greentree.model.exception.TokenException;
-import com.greentree.model.services.manager.PropertyManager;
-import com.mysql.cj.jdbc.JdbcPreparedStatement;
-import com.mysql.cj.jdbc.JdbcConnection;
+import com.greentree.model.services.manager.JDBCPoolManager;
+import java.beans.PropertyVetoException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.security.interfaces.RSAPublicKey;
-import java.sql.DriverManager;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -104,7 +103,7 @@ public class JDBCTokenServiceImpl implements ITokenService {
                         = new ByteArrayInputStream(byteArray)) {
                         LOGGER.debug("ByteArrayInputStream created from Token");
 
-                        try (JdbcConnection conn = this.getConn()) {
+                        try (Connection conn = JDBCPoolManager.getConn()) {
                             LOGGER.debug("JDBC Connection acquired");
                             conn.setAutoCommit(false);
 
@@ -113,23 +112,23 @@ public class JDBCTokenServiceImpl implements ITokenService {
                                 = "INSERT INTO token (keyId) VALUES (?) "
                                 + "ON DUPLICATE KEY UPDATE keyId=keyId";
 
-                            try (JdbcPreparedStatement stmt
-                                = (JdbcPreparedStatement) conn.prepareStatement(sqlIns)) {
+                            try (PreparedStatement stmt
+                                = conn.prepareStatement(sqlIns)) {
 
                                 stmt.setString(
                                     1, this.getKeyId(token.getPublicKey())
                                 );
-                                
+
                                 stmt.executeUpdate();
 
                                 conn.commit();
                             }
-                            
+
                             LOGGER.debug(
-                                "keyId upsert complete " 
-                                    + String.valueOf(
-                                        this.getKeyId(token.getPublicKey())
-                                    )
+                                "keyId upsert complete "
+                                + String.valueOf(
+                                    this.getKeyId(token.getPublicKey())
+                                )
                             );
 
                             // update the new key record with Token binary
@@ -137,8 +136,8 @@ public class JDBCTokenServiceImpl implements ITokenService {
                                 = "UPDATE token SET token = ? "
                                 + "WHERE keyId = ?";
 
-                            try (JdbcPreparedStatement stmt
-                                = (JdbcPreparedStatement) conn.prepareStatement(sqlUpd)) {
+                            try (PreparedStatement stmt
+                                = conn.prepareStatement(sqlUpd)) {
                                 stmt.setBinaryStream(1, boas);
 
                                 stmt.setString(
@@ -158,7 +157,8 @@ public class JDBCTokenServiceImpl implements ITokenService {
                 valid = false;
                 throw new TokenException("Token param did not validate");
             }
-        } catch (TokenException | SQLException | IOException ex) {
+        } catch (TokenException | SQLException | IOException
+            | PropertyVetoException ex) {
             valid = false;
             throw new TokenServiceException(
                 ex.getClass().getSimpleName() + " " + ex.getMessage(),
@@ -187,12 +187,12 @@ public class JDBCTokenServiceImpl implements ITokenService {
         String keyId = this.getKeyId(key);
         LOGGER.debug("fetching token KeyId " + keyId);
 
-        try (JdbcConnection conn = this.getConn()) {
+        try (Connection conn = JDBCPoolManager.getConn()) {
             LOGGER.debug("Connection initialized");
             String sql = "SELECT token FROM token WHERE keyId = ?";
 
-            try (JdbcPreparedStatement stmt
-                = (JdbcPreparedStatement) conn.prepareStatement(sql)) {
+            try (PreparedStatement stmt
+                = conn.prepareStatement(sql)) {
                 LOGGER.debug("PreparedStatement initialized: " + sql);
 
                 stmt.setString(1, keyId);
@@ -215,7 +215,8 @@ public class JDBCTokenServiceImpl implements ITokenService {
                     }
                 }
             }
-        } catch (SQLException | IOException | ClassNotFoundException ex) {
+        } catch (SQLException | IOException | ClassNotFoundException
+            | PropertyVetoException ex) {
             throw new TokenServiceException(ex.getMessage(), LOGGER, ex);
         }
         return token;
@@ -232,47 +233,5 @@ public class JDBCTokenServiceImpl implements ITokenService {
         String result = String.valueOf(key.getModulus());
         result = result.substring(0, 9) + result.substring(result.length() - 9);
         return result;
-    }
-
-    /**
-     * This uses {@link java.sql.DriverManager} to build a new {@link
-     * java.sql.Connection} using connection parameters that should be specified
-     * in the .properties file of the application.
-     *
-     * TODO: move this into a SQL Connection manager class
-     *
-     * @return {@link java.sql.Connection} to the database
-     * @throws {@link IOException} when the {@link PropertyManager} is unable to
-     * read necessary values from the properties file
-     */
-    private JdbcConnection getConn() throws SQLException, IOException {
-        /**
-         * This identifies the database to use for storing and retrieving
-         * {@link com.greentree.model.domain.Token} objects.
-         */
-        String url = PropertyManager.getProperty("jdbcUrl");
-
-        /**
-         * This identifies the user for connecting with the database. This user
-         * needs read/write access to the database.
-         */
-        String userid = PropertyManager.getProperty("jdbcUser");
-
-        /**
-         * This is used to authenticate the user against the database.
-         */
-        String password = PropertyManager.getProperty("jdbcPass");
-
-        /**
-         * This stores the JDBC connection object for storing and retrieving {@link
-         * com.greentree.model.domain.Token} objects from the database.
-         */
-        DriverManager.registerDriver(new com.mysql.cj.jdbc.Driver());
-        LOGGER.debug("Registering DriverManager Driver successful");
-
-        JdbcConnection conn
-            = (JdbcConnection) DriverManager.getConnection(url, userid, password);
-        LOGGER.debug("Retrieving JdbcConnection successful");
-        return conn;
     }
 }

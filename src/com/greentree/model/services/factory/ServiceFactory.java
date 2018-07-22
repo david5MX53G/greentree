@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import com.greentree.model.services.manager.PropertyManager;
 import com.greentree.model.services.IService;
-import com.greentree.model.services.exception.ServiceLoadException;
+import com.greentree.model.exception.ServiceLoadException;
 
 /**
  * Defines methods for returning <code>com.greentree.model.services</code>

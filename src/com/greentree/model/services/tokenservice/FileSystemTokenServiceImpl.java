@@ -1,6 +1,6 @@
 package com.greentree.model.services.tokenservice;
 
-import com.greentree.model.business.exception.TokenServiceException;
+import com.greentree.model.exception.TokenServiceException;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -34,7 +34,7 @@ public class FileSystemTokenServiceImpl implements ITokenService {
      * overrides {@link ITokenService#commit(Token)}
      *
      * @return boolean to indicate success or failure
-     * @throws com.greentree.model.business.exception.TokenServiceException 
+     * @throws com.greentree.model.exception.TokenServiceException 
      * when the input {@link com.greentree.model.domain.Token} does not validate
      */
     @Override
