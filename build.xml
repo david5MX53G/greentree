@@ -21,21 +21,9 @@
         <pathelement location="${bin.dir}"/>
     </path>
     
-    
     <!-- tasks -->
-    <taskdef name="plantuml" classname="net.sourceforge.plantuml.ant.PlantUmlTask" classpath="${lib.dir}/plantuml.jar" />
-
 
     <!-- targets -->
-    <target name="uml">
-        <!-- output is relative to the uml source file! -->
-        <plantuml output="." >
-            <fileset dir="${doc.dir}/uml">
-                <include name="**/*.uml" />
-            </fileset>
-        </plantuml>
-    </target>
-
     <target name="init">
         <mkdir dir="${bin.dir}"/>
     </target>
@@ -64,15 +52,21 @@
             <fileset dir="${basedir}">
                 <include name="config/*"/>
             </fileset>
+            
             <fileset dir="${bin.dir}">
                 <include name="**/*.class"/>
             </fileset>
+            
             <manifest>
                 <attribute name="Main-Class" value="com.greentree.view.ViewDriver"/>
             </manifest>
+            
             <zipfileset excludes="META-INF/*.SF" src="${lib.dir}/commons-codec-1.9.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${lib.dir}/log4j-core-2.11.0.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${lib.dir}/log4j-api-2.11.0.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${lib.dir}/c3p0-0.9.5.2.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${lib.dir}/mchange-commons-java-0.2.11.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${lib.dir}/mysql-connector-java-8.0.11.jar"/>
         </jar>
         <copy todir="${build.dir}">
             <fileset dir="${basedir}">
