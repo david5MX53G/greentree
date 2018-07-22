@@ -64,7 +64,7 @@ public class ServiceFactoryTest {
         try {
             tokenService
                 = (ITokenService) ServiceFactoryTest.factory.getService(ITokenService.NAME);
-            assertTrue(tokenService instanceof FileSystemTokenServiceImpl);
+            assertTrue(tokenService instanceof ITokenService);
             logger.debug("testGetService() PASSED");
         } catch (ServiceLoadException e) {
             fail("Failed with ServiceLoadException " + e.getMessage());
