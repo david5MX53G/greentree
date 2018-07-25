@@ -1,7 +1,7 @@
 Installation requires Apache Ant and Java JDK. Install as follows once these 
 are installed.
 
-Run build.sh (*nix) or build.cmd (Windows) from the root dir of this project, 
+Run scripts/build.sh (*nix) or scripts/build.cmd (Windows) from the root dir of this project, 
 then execute "ant jar" to generate an executable .jar file.
 
 The application can be launched from the .jar file which will be saved to the 
