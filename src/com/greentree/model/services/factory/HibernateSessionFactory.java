@@ -47,12 +47,6 @@ public class HibernateSessionFactory {
     private static final Logger LOGGER = LogManager.getLogger();
 
     /**
-     * This {@link java.lang.ThreadLocal} stores the
-     * {@link org.hibernate.Session} Singleton.
-     */
-    private static final ThreadLocal threadLocal = new ThreadLocal();
-
-    /**
      * This {@link org.hibernate.SessionFactory} will create
      * {@link org.hibernate.Session} instances.
      */

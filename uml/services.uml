@@ -1,6 +1,13 @@
 @startuml
 interface IService
 
+class HibernateSEssionFactory <<singleton>> {
+    {static} -LOGGER : Logger
+    {static} -sessionFactory : SessionFactory
+    {static} +closeFactory() : void
+    {static} +currentSession() : Session
+}
+
 class ServiceFactory <<singleton>> {
     {static} -serviceFactoryInstance : ServiceFactory
     {static} +getInstance() : ServiceFactory
@@ -28,6 +35,12 @@ class FileSystemTokenServiceImpl {
     +commit(Token) : boolean
     +getFilename(RSAPublicKey) : String
     +selectToken(RSAPublicKey) : Token
+}
+
+class HibernateTokenServiceImpl {
+    {static} -LOGGER : Logger
+    +commit(Token) : boolean
+    +selectToken(RSAPublicKey key) : Token
 }
 
 abstract class ITokenService {
