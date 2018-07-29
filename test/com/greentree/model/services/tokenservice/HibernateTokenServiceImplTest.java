@@ -34,12 +34,10 @@ import static org.junit.Assert.fail;
 import org.junit.Test;
 
 /**
- * This class tests the class
- * {@link com.greentree.model.services.tokenservice.JDBCTokenServiceImpl}
  *
  * @author david5MX53G
  */
-public class JDBCTokenServiceImplTest {
+public class HibernateTokenServiceImplTest {
     /**
      * This logs messages using {@link org.apache.logging.log4j.Logger}.
      */
@@ -54,7 +52,7 @@ public class JDBCTokenServiceImplTest {
     private static ITokenService service;
 
     private static final String CLASSNAME = 
-        "com.greentree.model.services.tokenservice.JDBCTokenServiceImpl";
+        "com.greentree.model.services.tokenservice.HibernateTokenServiceImpl";
 
     /**
      * This static initializer block sets up static variables for testing. The
@@ -75,51 +73,31 @@ public class JDBCTokenServiceImplTest {
             fail(ex.getClass().getSimpleName() + " " + ex.getMessage());
         }
     }
-
-    /**
-     * Test method for {@link JDBCTokenServiceImpl#commit(Token)}.
-     *
-     * @throws com.greentree.model.exception.TokenServiceException when
-     * @throws com.greentree.model.exception.TokenException
-     */
-    @Test
-    public void testCommit()
-        throws AssertionError, TokenServiceException, TokenException {        
-        Token token = new Token("Ase's Death by Edvard Grieg");
-        LOGGER.debug("Token 0 initialized");
-        
-        // insert initial Token record
-        assertTrue(
-            "service.commit(token) returned false", service.commit(token)
-        );
-        
-        // update previous Token record
-        assertTrue(
-            "service.commit(token) returned false", service.commit(token)
-        );
-        
-        // TODO: validate the db has only one record for the Token
-        
-        LOGGER.debug("commit(token) test PASSED");
-    }
     
     /**
-     * Test method for {@link JDBCTokenServiceImpl#selectToken(RSAPublicKey)}
-     * @throws com.greentree.model.exception.TokenServiceException if 
-     * the static test token does not return a valid {@link RSAPublicKey}.
-     * @throws com.greentree.model.exception.TokenException when the {@link 
-     * Token} retrieved from JDBC returns false from {@link Token#validate()}.
+     * This method tests {@link HibernateTokenServiceImpl#commit(Token)}.
+     * 
+     * @throws com.greentree.model.exception.TokenException when the 
+     * {@link Token} object fails to initialize.
+     * 
+     * @throws com.greentree.model.exception.TokenServiceException when  
+     * {@link ITokenService#commit(com.greentree.model.domain.Token)} fails.
      */
     @Test
-    public void testSelectToken() throws TokenServiceException, TokenException, 
-        AssertionError {
-        Token token = new Token("Turandot, Act III by Giacomo Puccini");
-        LOGGER.debug("Token initialized");
-        service.commit(token);
-        RSAPublicKey key = token.getPublicKey();
-        token = null; // ohnoes, no more Token?!
-        token = service.selectToken(key); // No worries, we can get it back!
-        assertTrue("selectToken(RSAPublicKey) FAILED", token.validate());
-        LOGGER.debug("testSelectToken() PASSED");
+    public void testCommit() throws TokenException, TokenServiceException {
+        Token tk = new Token("The Rift");
+        LOGGER.debug("Token initialized with keyId: " + tk.getKeyId());
+        
+        // insert
+        assertTrue(
+            "service.commit(Token) returned false", service.commit(tk)
+        );
+        LOGGER.debug("ITokenService insert done");
+        
+        // update
+        assertTrue(
+            "service.commit(Token) returned false", service.commit(tk)
+        );
+        LOGGER.debug("ITokenService update done");
     }
 }
