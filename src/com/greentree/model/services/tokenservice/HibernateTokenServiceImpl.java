@@ -27,6 +27,7 @@ import com.greentree.model.domain.Token;
 import com.greentree.model.exception.TokenServiceException;
 import com.greentree.model.services.factory.HibernateSessionFactory;
 import java.security.interfaces.RSAPublicKey;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
@@ -64,6 +65,50 @@ public class HibernateTokenServiceImpl implements ITokenService {
 
     @Override
     public Token selectToken(RSAPublicKey key) throws TokenServiceException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+        Token result = null;
+        String keyId = String.valueOf(key.getModulus());
+        keyId = keyId.substring(0, 9) + keyId.substring(keyId.length() - 9);
+        Session sess = null;
+        Transaction tx;
+        try {
+            sess = HibernateSessionFactory.currentSession();            
+            tx = sess.beginTransaction();            
+
+            // behold! the "Named Parameter", as seen on https://www.mkyong.com/hibernate/hibernate-parameter-binding-examples/
+            String query 
+                = "from Token t where t.keyId = :keyId";
+            
+            List resultList = sess.createQuery(query)
+                .setParameter("keyId", keyId)
+                .list();
+            
+            for (Token tk : (List<Token>) resultList) {
+                if (tk instanceof Token) {
+                    result = tk;
+                    LOGGER.debug("returned Token keyId: " + tk.getKeyId());
+                } else {
+                    throw new TokenServiceException(
+                        "A Token was not returned from Token where keyId = " 
+                            + keyId, 
+                        LOGGER
+                    );
+                }
+            }
+            
+            tx.commit();
+            LOGGER.debug("transaction committed");
+        } 
+        
+        catch (Exception e) {
+            LOGGER.error(e.getMessage());
+        } 
+        
+        finally {
+            if (sess != null) {
+                sess.close();
+                LOGGER.debug("session closed");
+            }
+        }
+        return result;
+    };
 }

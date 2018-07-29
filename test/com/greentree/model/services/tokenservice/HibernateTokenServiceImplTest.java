@@ -100,4 +100,35 @@ public class HibernateTokenServiceImplTest {
         );
         LOGGER.debug("ITokenService update done");
     }
+    
+    /**
+     * Test method for {@link HibernateTokenServiceImpl#selectToken(java.security.interfaces.RSAPublicKey)}
+     * 
+     * @throws com.greentree.model.exception.TokenServiceException if 
+     * the static test token does not return a valid {@link RSAPublicKey}.
+     * 
+     * @throws com.greentree.model.exception.TokenException when the {@link 
+     * Token} retrieved from JDBC returns false from {@link Token#validate()}.
+     */
+    @Test
+    public void testSelectToken() throws TokenServiceException, TokenException, 
+        AssertionError {
+        Token token = new Token("Divinity Coast");
+        LOGGER.debug("Token initialized with keyId: " + token.getKeyId());
+        
+        service.commit(token);
+        LOGGER.debug("service.commit(Token) done");
+        
+        RSAPublicKey key = token.getPublicKey();
+        LOGGER.debug("RSAPublicKey: " + key.getModulus().toString());
+        
+        token = null;
+        LOGGER.debug("ohnoes, no more Token?!");
+        
+        token = service.selectToken(key);
+        LOGGER.debug("service.selectToken(RSAPublicKey) done");
+        
+        assertTrue("selectToken(RSAPublicKey) FAILED", token.validate());
+        LOGGER.debug("token.validate() PASSED");
+    }
 }
