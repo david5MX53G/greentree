@@ -27,63 +27,78 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.registry.StandardServiceRegistry;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.cfg.Configuration;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
- * This class is a {@link org.hibernate.SessionFactory} 
- * implementation that builds and returns {@link org.hibernate.Session} 
- * instances.
- * 
+ * This class is a {@link org.hibernate.SessionFactory} implementation that
+ * builds and returns {@link org.hibernate.Session} instances.
+ *
  * @author david5MX53G
  */
 public class HibernateSessionFactory {
+
     /**
      * This {@link org.apache.logging.log4j.Logger} is for log messaging.
      */
     private static final Logger LOGGER = LogManager.getLogger();
-    
+
     /**
-     * This {@link java.lang.ThreadLocal} stores the 
+     * This {@link java.lang.ThreadLocal} stores the
      * {@link org.hibernate.Session} Singleton.
      */
     private static final ThreadLocal threadLocal = new ThreadLocal();
-    
+
     /**
-     * This {@link org.hibernate.SessionFactory} will create 
+     * This {@link org.hibernate.SessionFactory} will create
      * {@link org.hibernate.Session} instances.
      */
     private static org.hibernate.SessionFactory sessionFactory;
-    
+
     /**
-     * This returns the Hibernate <code>Session</code> Singleton.
-     * 
+     * This returns the Hibernate <code>Session</code> Singleton. See
+     * <a href="http://docs.jboss.org/hibernate/orm/current/quickstart/html_single/">
+     * Hibernate Getting Started Guide</a>. This class relies heavily on config/
+     * hibernate.cfg.xml.
+     *
      * @return {@link org.hibernate.Session} Singleton
-     * @throws HibernateException 
      */
-    public static Session currentSession() throws HibernateException {
-        throw new NotImplementedException();
+    public static Session currentSession() {
+        if (sessionFactory == null) {
+            try {
+                StandardServiceRegistryBuilder builder = 
+                    new StandardServiceRegistryBuilder()
+                        .configure("hibernate.cfg.xml");
+                
+                StandardServiceRegistry reg = builder.build();
+                
+                sessionFactory = new MetadataSources(reg).buildMetadata().buildSessionFactory();
+                LOGGER.debug("new SessionFactory: " + sessionFactory.toString());
+            } catch (Exception e) {
+                LOGGER.error(e.getMessage());
+            }
+        }
+
+        LOGGER.debug("returning sessionFactory.getCurrentSession()");
+        return sessionFactory.getCurrentSession();
     }
-    
-    /**
-     * Runs {@link java.io.Closeable#close()} on the 
-     * {@link org.hibernate.Session} Singleton
-     * 
-     * @throws HibernateException 
-     */
-    public static void closeSession() throws HibernateException {
-        throw new NotImplementedException();
-    }
-    
+
     /**
      * Closes the {@link org.hibernate.SessionFactory} of this class
      */
-    public static void closeFactory() throws HibernateException {
-        throw new NotImplementedException();
+    public static void closeFactory() {
+        if (sessionFactory != null) {
+            sessionFactory.close();
+        }
     }
-    
+
     /**
-     * Private constructor for building the {@link HibernateSessionFactory} 
+     * Private constructor for building the {@link HibernateSessionFactory}
      * Singleton
      */
-    private HibernateSessionFactory() {}
+    private HibernateSessionFactory() {
+    }
 }

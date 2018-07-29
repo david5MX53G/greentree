@@ -33,9 +33,20 @@ public class TokenTest {
     @Before
     public void setUp() {
         try {
-            token0 = new Token(PASSPHRASE);
-            token1 = token0;
-            token2 = new Token(PASSPHRASE);
+            if (token0 == null) {
+                token0 = new Token(PASSPHRASE);
+                logger.debug("token0: " + token0.getKeyId());
+            }
+            
+            if (token1 == null) {
+                token1 = token0;
+                logger.debug("token1: " + token1.getKeyId());
+            }
+            
+            if (token2 == null) {
+                token2 = new Token(PASSPHRASE);
+                logger.debug("token2: " + token2.getKeyId());
+            }
         } catch (TokenException e) {
             logger.error("setUp() TokenException: " + e.getMessage());
         }
