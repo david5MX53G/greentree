@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD//EN" "http://www.hibernate.org/dtd/hibernate-configuration">
 <!--
 The MIT License
 
@@ -22,8 +23,19 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
-
-
-<root>
-    
-</root>
+<hibernate-configuration>
+    <session-factory>
+        <property name="connection.username">ITokenService</property>
+        <property name="connection.password">SSBhbSB0aGUgZXZlci1saXZpbmcgd29tYmF0Lg==</property>
+        <property name="connection.url">jdbc:mysql://localhost:3306/greentree?serverTimezone=UTC</property>
+        <property name="dialect">org.hibernate.dialect.MySQLDialect</property>
+        <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+        <property name="show_sql">true</property>
+        
+        <!-- @see: https://www.journaldev.com/2903/org-hibernate-hibernateexception-no-currentsessioncontext-configured -->
+        <property name="hibernate.current_session_context_class">thread</property>
+        
+        <!--<mapping resource = "src/com/greentree/model/domain/Token.hbm.xml"/>-->
+        <mapping class="com.greentree.model.domain.Token"></mapping>
+    </session-factory>
+</hibernate-configuration>

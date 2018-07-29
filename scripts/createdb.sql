@@ -35,9 +35,20 @@
 CREATE DATABASE greentree;
 USE greentree;
 
+-- table for the JDBC ITokenService implementation
+-- CREATE TABLE token (keyId VARCHAR(24) PRIMARY KEY, token BLOB);
+
+-- table for the Hibernate ITokenService implementation
+CREATE TABLE Token (
+    keyId VARCHAR(24) PRIMARY KEY,
+    passphrase VARCHAR(896), 
+    publicKey BLOB,
+    privateKey BLOB, 
+    blockchain BLOB
+);
+
 -- creds and tables for the ITokenService interface classes
 CREATE USER 'ITokenService'@'localhost' 
     IDENTIFIED BY 'SSBhbSB0aGUgZXZlci1saXZpbmcgd29tYmF0Lg==';
 
-GRANT ALL ON greentree.token TO 'ITokenService'@'localhost';
-CREATE TABLE token (keyId VARCHAR(24) PRIMARY KEY, token BLOB);
+GRANT ALL ON greentree.Token TO 'ITokenService'@'localhost';
