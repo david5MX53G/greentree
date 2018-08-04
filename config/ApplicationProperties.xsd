@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This is an XML "schema", which you can learn how to write at 
+https://www.w3.org/TR/xmlschema-0/ -->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <!-- This is a "type definition", which creates a new element type. 
+    Specifically, this once defines a "complexType" element. These, "allow 
+    elements in their content and may carry attributes", unlike simple types -->
+    <xsd:complexType name="jdbctype">
+        <xsd:all>
+            <xsd:element name="url" type="xsd:string"/>
+            <xsd:element name="user" type="xsd:string"/>
+            <xsd:element name="pass" type="xsd:string"/>
+            <xsd:element name="minpoolsize" type="xsd:integer"/>
+            <xsd:element name="maxpoolsize" type="xsd:integer"/>
+        </xsd:all>
+    </xsd:complexType>
+    <!-- below is a "type declaration". These, "are not themselves types, but 
+    rather an association between a name and the constraints which govern the 
+    appearance of that name in documents governed by the associated schema" -->
+    <xsd:element name="jdbc" type="jdbctype"/>
+    
+    <xsd:complexType name="servicetype">
+        <xsd:all>
+            <xsd:element name="interface" type="xsd:string"/>
+            <xsd:element name="impl" type="xsd:string"/>
+        </xsd:all>
+    </xsd:complexType>
+    <xsd:element name="service" type="servicetype"/>
+    
+    <xsd:element name="tokenfilepath" type="xsd:string"/>
+    
+    <xsd:element name="applicationproperties">
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element ref="service"/>
+                <xsd:element ref="jdbc"/>
+                <xsd:element ref="tokenfilepath"/>
+            </xsd:all>
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>
