@@ -7,12 +7,13 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.security.interfaces.RSAPublicKey;
-
 import com.greentree.model.domain.Token;
 import com.greentree.model.exception.TokenException;
 import com.greentree.model.services.manager.PropertyManager;
+import javax.xml.parsers.ParserConfigurationException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.xml.sax.SAXException;
 
 /**
  * Implements <code>{@link ITokenService}</code> using the local filesystem for
@@ -28,7 +29,7 @@ public class FileSystemTokenServiceImpl implements ITokenService {
     /**
      * {@link org.apache.logging.log4j.Logger} is for logging logs to the log
      */
-    Logger logger = LogManager.getLogger();
+    private static final Logger LOG = LogManager.getLogger();
 
     /**
      * overrides {@link ITokenService#commit(Token)}
@@ -51,15 +52,13 @@ public class FileSystemTokenServiceImpl implements ITokenService {
                     out.writeObject(token);
                 result = true;
                 } catch (IOException e) {
-                    logger.error("Error writing to file " + filename + ": " + e.getMessage());
+                    LOG.error("Error writing to file " + filename + ": " 
+                        + e.getMessage());
                 }
             }
-        } catch (TokenException e) {
-            throw new TokenServiceException(e.getMessage(), e);
-        } catch (IOException e) {
-            throw new TokenServiceException(
-                "commit(Token token) failed to load Properties file", e
-            );
+        } catch (TokenException | IOException | ParserConfigurationException | 
+            SAXException e) {
+            throw new TokenServiceException(e.getMessage(), LOG, e);
         }
         return result;
     }
@@ -74,11 +73,24 @@ public class FileSystemTokenServiceImpl implements ITokenService {
      * @param key used to generate the filename
      * @return the unique, consistent filename of this <code>RSAPublicKey</code>
      * @throws IOException when the {@link Properties} file does not load
+     * 
+     * @throws javax.xml.parsers.ParserConfigurationException when {@link 
+     *         PropertyManager#getProperty(java.lang.String)} fails
+     * 
+     * @throws org.xml.sax.SAXException when {@link 
+     *         PropertyManager#getProperty(java.lang.String)} fails
      */
-    public String getFilename(RSAPublicKey key) throws IOException {
+    public String getFilename(RSAPublicKey key) 
+        throws IOException, ParserConfigurationException, SAXException {
         String filename = String.valueOf(key.getModulus());
-        filename = filename.substring(0, 9) + filename.substring(filename.length() - 9);
-        filename = PropertyManager.getProperty("TokenFilesLocation") + "/" + filename + ".token";
+        
+        filename = filename.substring(0, 9) 
+                 + filename.substring(filename.length() - 9);
+        
+        filename = 
+            PropertyManager.getProperty("tokenfilepath") 
+            + "/" + filename + ".token";
+        
         return filename;
     }
 
@@ -88,23 +100,20 @@ public class FileSystemTokenServiceImpl implements ITokenService {
     @Override
     public Token selectToken(RSAPublicKey key) throws TokenServiceException {
         String filename;
+        Token token = null;
+        
         try {
             filename = this.getFilename(key);
-        } catch (IOException e) {
-            throw new TokenServiceException(
-                "selectToken(RSAPublicKey key) PropertyFileNotFoundException", e
-            );
-        }
-
-        Token token = null;
-        try (
             ObjectInputStream input = 
-                new ObjectInputStream(new FileInputStream(filename))
-        ) {
+                new ObjectInputStream(new FileInputStream(filename));
             token = (Token) input.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            throw new TokenServiceException(e);
-        };
+        } 
+        
+        catch (IOException | ClassNotFoundException | 
+            ParserConfigurationException | SAXException e) {
+            throw new TokenServiceException(e.getMessage(), LOG, e);
+        }
+        
         return token;
     }
 }

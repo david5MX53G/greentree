@@ -5,6 +5,8 @@ import java.io.IOException;
 import com.greentree.model.services.manager.PropertyManager;
 import com.greentree.model.services.IService;
 import com.greentree.model.exception.ServiceLoadException;
+import javax.xml.parsers.ParserConfigurationException;
+import org.xml.sax.SAXException;
 
 /**
  * Defines methods for returning <code>com.greentree.model.services</code>
@@ -63,7 +65,8 @@ public class ServiceFactory {
      * @name used to look up the fully-qualified class in
      * <code>application.properties</code>
      */
-    private String getImplName(String name) throws IOException {
+    private String getImplName(String name) 
+        throws IOException, ParserConfigurationException, SAXException {
         return PropertyManager.getProperty(name);
     }
 }

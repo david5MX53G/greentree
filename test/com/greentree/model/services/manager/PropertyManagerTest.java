@@ -1,10 +1,12 @@
 package com.greentree.model.services.manager;
 
 import java.io.IOException;
+import javax.xml.parsers.ParserConfigurationException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
+import org.xml.sax.SAXException;
 
 /**
  * PropertyManagerTest tests the {@link 
@@ -19,17 +21,20 @@ public class PropertyManagerTest {
     Logger logger = LogManager.getLogger();
     
     /**
-     * loadPropertiesTest() tests {@link PropertyManager#loadProperties()} and 
-     * {@link PropertyManager#loadProperties(java.lang.String)}.
+     * This tests {@link PropertyManager#loadProperties()}.
      * 
      * @throws IOException when "config/application.properties" cannot be loaded
+     * 
+     * @throws javax.xml.parsers.ParserConfigurationException if {@link 
+     *         PropertyManager#loadProperties()} fails
+     * 
+     * @throws org.xml.sax.SAXException if {@link 
+     *         PropertyManager#loadProperties()} fails
      */
     @Test
-    public void loadPropertiesTest() throws IOException {
-        PropertyManager.loadProperties();
-        PropertyManager.loadProperties("config/application.properties");
-        loadPropertiesTest = true;
-        assertTrue(loadPropertiesTest);
+    public void loadPropertiesTest() 
+        throws IOException, ParserConfigurationException, SAXException {
+        assertTrue(PropertyManager.loadProperties());
         logger.debug("loadPropertiesTest() PASSED");
     }
     
@@ -38,16 +43,35 @@ public class PropertyManagerTest {
      * PropertyManager#getProperty(java.lang.String)}.
      * 
      * @throws IOException from {@link PropertyManager#loadProperties()}
+     * @throws javax.xml.parsers.ParserConfigurationException
+     * @throws org.xml.sax.SAXException
      */
-    @Test public void getPropertyTest() throws IOException {
-        if (loadPropertiesTest == false) {
-            loadPropertiesTest();
-        }
+    @Test public void getPropertyTest() 
+        throws IOException, ParserConfigurationException, SAXException {
+        assertTrue(PropertyManager.getProperty("service.interface")
+                   instanceof String);
         
-        assertTrue(PropertyManager.getProperty("ITokenService") 
+        assertTrue(PropertyManager.getProperty("service.impl") 
                    instanceof String);
-        assertTrue(PropertyManager.getProperty("TokenFilesLocation")
+        
+        assertTrue(PropertyManager.getProperty("tokenfilepath")
                    instanceof String);
+        
+        assertTrue(PropertyManager.getProperty("jdbc.url")
+                   instanceof String);
+        
+        assertTrue(PropertyManager.getProperty("jdbc.user")
+                   instanceof String);
+        
+        assertTrue(PropertyManager.getProperty("jdbc.pass")
+                   instanceof String);
+        
+        assertTrue(PropertyManager.getProperty("jdbc.minpoolsize")
+                   instanceof String);
+        
+        assertTrue(PropertyManager.getProperty("jdbc.maxpoolsize")
+                   instanceof String);
+        
         logger.debug("getPropertyTest() PASSED");
     }
 }

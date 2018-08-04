@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<applicationproperties>
+    
+    <!-- see the package com.greentree.model.services for more impl classes -->
+    <service>
+        <interface>ITokenService</interface>
+        <impl>com.greentree.model.services.tokenservice.HibernateTokenServiceImpl</impl>
+    </service>
+    
+    <!-- FileSystemTokenServiceImpl uses this -->
+    <tokenfilepath>/home/david/.greentree</tokenfilepath>
+    
+    <!-- not all services require jdbc connections -->
+    <jdbc>	
+        <url>jdbc:mysql://localhost:3306/greentree?serverTimezone=UTC</url>
+        <user>ITokenService</user>
+        <pass>SSBhbSB0aGUgZXZlci1saXZpbmcgd29tYmF0Lg==</pass>
+        <minpoolsize>3</minpoolsize>
+        <maxpoolsize>10</maxpoolsize>
+    </jdbc>
+</applicationproperties>

@@ -29,8 +29,10 @@ import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import javax.xml.parsers.ParserConfigurationException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -65,7 +67,9 @@ public class JDBCPoolManager {
      *
      * @throws IOException when the properties file cannot be read
      */
-    private static void createPool() throws PropertyVetoException, IOException {
+    private static void createPool() 
+        throws PropertyVetoException, IOException, SAXException, 
+        ParserConfigurationException {
         cpds = new ComboPooledDataSource();
 
         try {
@@ -75,20 +79,20 @@ public class JDBCPoolManager {
              * This identifies the database to use for storing and retrieving
              * {@link com.greentree.model.domain.Token} objects.
              */
-            String url = PropertyManager.getProperty("jdbcUrl");
+            String url = PropertyManager.getProperty("jdbc.url");
             cpds.setJdbcUrl(url);
 
             /**
              * This identifies the user for connecting with the database. This
              * user needs read/write access to the database.
              */
-            String userid = PropertyManager.getProperty("jdbcUser");
+            String userid = PropertyManager.getProperty("jdbc.user");
             cpds.setUser(userid);
 
             /**
              * This is used to authenticate the user against the database.
              */
-            String password = PropertyManager.getProperty("jdbcPass");
+            String password = PropertyManager.getProperty("jdbc.pass");
             cpds.setPassword(password);
             
             /**
@@ -96,14 +100,14 @@ public class JDBCPoolManager {
              * {@link ComboPooledDataSource}.
              */
             int poolSizeMin =
-                Integer.valueOf(PropertyManager.getProperty("jdbcMinPoolSize"));
+                Integer.valueOf(PropertyManager.getProperty("jdbc.minpoolsize"));
             cpds.setMinPoolSize(poolSizeMin);
             
             int poolSizeMax = 
-                Integer.valueOf(PropertyManager.getProperty("jdbcMaxPoolSize"));
+                Integer.valueOf(PropertyManager.getProperty("jdbc.maxpoolsize"));
             cpds.setMaxPoolSize(poolSizeMax);
             
-        } catch (PropertyVetoException ex) {
+        } catch (PropertyVetoException | ParserConfigurationException ex) {
             LOGGER.error(ex.getClass().getSimpleName() + " " + ex.getMessage());
             throw ex;
         }
@@ -124,8 +128,16 @@ public class JDBCPoolManager {
      *
      * @throws java.sql.SQLException when
      * {@link ComboPooledDataSource#getConnection()} fails.
+     * 
+     * @throws org.xml.sax.SAXException when {@link 
+     *         PropertyManager#getProperty(java.lang.String)} fails
+     * 
+     * @throws javax.xml.parsers.ParserConfigurationException when {@link 
+     *         PropertyManager#getProperty(java.lang.String)} fails
      */
-    public static Connection getConn() throws PropertyVetoException, IOException, SQLException {
+    public static Connection getConn() 
+        throws PropertyVetoException, IOException, SQLException, SAXException, 
+        ParserConfigurationException {
         // populate the connection pool singleton, if necessary
         if (cpds == null) {
             createPool();

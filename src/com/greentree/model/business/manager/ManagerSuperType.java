@@ -4,8 +4,10 @@ import java.io.IOException;
 
 import com.greentree.model.services.IService;
 import com.greentree.model.services.manager.PropertyManager;
+import javax.xml.parsers.ParserConfigurationException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.xml.sax.SAXException;
 
 /**
  * provides behavior for getting <code>{@link IService}</class> objects.
@@ -39,7 +41,7 @@ public abstract class ManagerSuperType {
         try {
             PropertyManager.loadProperties();
             success = true;
-        } catch (IOException e) {
+        } catch (IOException | SAXException | ParserConfigurationException e) {
             String msg = e.getClass().getSimpleName() + ": " + e.getMessage();
             LOGGER.debug(msg);
             success = false;
