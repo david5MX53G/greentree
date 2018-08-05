@@ -24,7 +24,6 @@
 package com.greentree.model.services.factory;
 
 import com.greentree.model.domain.Token;
-import com.greentree.model.exception.TokenException;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -62,13 +61,9 @@ public class HibernateSessionFactoryTest {
      * finally {
      *     sess.close();
      * }
-     *
-     *
-     * @throws com.greentree.model.exception.TokenException when the
-     * {@link com.greentree.model.domain.Token} fails to build
      */
     @Test
-    public void testCurrentSession() throws TokenException {
+    public void testCurrentSession() {
         Session sess = null;
         Transaction tx;
         try {
@@ -104,9 +99,6 @@ public class HibernateSessionFactoryTest {
                 sess.close();
                 LOGGER.debug("session closed");
             }
-            
-            HibernateSessionFactory.closeFactory();
-            LOGGER.debug("HibernateSessionFactory closed");
         }
     }
 }

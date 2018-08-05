@@ -25,7 +25,6 @@ package com.greentree.model.services.tokenservice;
 
 import com.greentree.model.exception.TokenServiceException;
 import com.greentree.model.domain.Token;
-import com.greentree.model.exception.TokenException;
 import java.security.interfaces.RSAPublicKey;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -84,9 +83,14 @@ public class HibernateTokenServiceImplTest {
      * {@link ITokenService#commit(com.greentree.model.domain.Token)} fails.
      */
     @Test
-    public void testCommit() throws TokenException, TokenServiceException {
+    public void testCommit() throws TokenServiceException {
         Token tk = new Token("The Rift");
-        LOGGER.debug("Token initialized with keyId: " + tk.getKeyId());
+        
+        if (tk instanceof Token) {
+            LOGGER.debug("Token initialized with keyId: " + tk.getKeyId());
+        } else {
+            fail("testCommit() failed to initialize Token");
+        }
         
         // insert
         assertTrue(
@@ -106,15 +110,17 @@ public class HibernateTokenServiceImplTest {
      * 
      * @throws com.greentree.model.exception.TokenServiceException if 
      * the static test token does not return a valid {@link RSAPublicKey}.
-     * 
-     * @throws com.greentree.model.exception.TokenException when the {@link 
-     * Token} retrieved from JDBC returns false from {@link Token#validate()}.
      */
     @Test
-    public void testSelectToken() throws TokenServiceException, TokenException, 
+    public void testSelectToken() throws TokenServiceException, 
         AssertionError {
         Token token = new Token("Divinity Coast");
-        LOGGER.debug("Token initialized with keyId: " + token.getKeyId());
+        
+        if (token instanceof Token) {
+            LOGGER.debug("Token initialized with keyId: " + token.getKeyId());
+        } else {
+            fail("testSelectToken() failed to initialize Token");
+        }
         
         service.commit(token);
         LOGGER.debug("service.commit(Token) done");

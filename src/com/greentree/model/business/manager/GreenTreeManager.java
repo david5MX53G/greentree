@@ -13,14 +13,11 @@ import com.greentree.model.exception.TokenServiceException;
 import com.greentree.model.domain.Block;
 import com.greentree.model.domain.Claim;
 import com.greentree.model.domain.Token;
-import com.greentree.model.exception.TokenException;
 import com.greentree.model.exception.ServiceLoadException;
 import com.greentree.model.services.factory.ServiceFactory;
 import com.greentree.model.services.manager.JDBCPoolManager;
 import com.greentree.model.services.tokenservice.ITokenService;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * GreenTreeManager defines methods used by the presentation layer to manage
@@ -115,9 +112,16 @@ public class GreenTreeManager extends ManagerSuperType {
 
         try {
             this.token = new Token(plaintext);
-            success = this.getTokenService().commit(this.token);
-            this.ciphertext = token.encrypt(plaintext);
-        } catch (TokenException | TokenServiceException e) {
+            
+            if (this.token instanceof Token) {
+                success = this.getTokenService().commit(this.token);
+                this.ciphertext = token.encrypt(plaintext);
+            } else {
+                LOGGER.error("registerToken(" + plaintext + ") "
+                    + "failed to initialize Token");
+                success = false;
+            }
+        } catch (TokenServiceException e) {
             LOGGER.error(
                 e.getClass().getSimpleName() + ": "
                 + e.getMessage()

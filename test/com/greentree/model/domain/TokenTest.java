@@ -4,9 +4,6 @@ import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import com.greentree.model.exception.TokenException;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -16,46 +13,22 @@ import org.apache.logging.log4j.LogManager;
  * @author david5MX53G
  */
 public class TokenTest {
-    /** log4j 2 logger */
+
+    /**
+     * log4j 2 logger
+     */
     Logger logger = LogManager.getLogger();
 
     /**
      * passphrase used to instantiate <code>Token</code> objects for testing.
      */
     private static final String PASSPHRASE = "We\'re all mad here.";
-    Token token0;
-    Token token1;
-    Token token2;
-    
-    /**
-     * This ensures we have {@link Token} objects for the test cases.
-     */
-    @Before
-    public void setUp() {
-        try {
-            if (token0 == null) {
-                token0 = new Token(PASSPHRASE);
-                logger.debug("token0: " + token0.getKeyId());
-            }
-            
-            if (token1 == null) {
-                token1 = token0;
-                logger.debug("token1: " + token1.getKeyId());
-            }
-            
-            if (token2 == null) {
-                token2 = new Token(PASSPHRASE);
-                logger.debug("token2: " + token2.getKeyId());
-            }
-        } catch (TokenException e) {
-            logger.error("setUp() TokenException: " + e.getMessage());
-        }
-    }
+    Token token0 = new Token(PASSPHRASE);
+    Token token1 = token0;
+    Token token2 = new Token(PASSPHRASE);
 
     /**
      * Tests whether two <code>{@link Token}</code> objects are identical.
-     *
-     * @throws TokenException
      */
     @Test
     public void testEqualsToken() {
@@ -76,8 +49,8 @@ public class TokenTest {
     /**
      * Validates each <code>{@link Token}</code> object returns a consistent,
      * unique <code>{@link
-     * Object#hashCode()}</code> 
-	 *
+     * Object#hashCode()}</code>
+     *
      */
     @Test
     public void testHashCode() {
@@ -88,8 +61,6 @@ public class TokenTest {
             assertTrue("testHashCode() FAILED", token0.hashCode() != token2.hashCode());
             assertTrue("testHashCode() FAILED", token1.hashCode() == token1.hashCode());
             logger.debug("testHashCode() PASSED");
-        } catch (TokenException e) {
-            logger.debug("testHashCode() Exception " + e.getMessage());
         } catch (AssertionError e) {
             logger.debug(e.getMessage());
         }
@@ -131,7 +102,7 @@ public class TokenTest {
         try {
             assertTrue("testValidate() FAILED", token0.validate());
             logger.debug("testValidate() PASSED");
-        } catch (AssertionError | TokenException e) {
+        } catch (AssertionError e) {
             logger.error(e.getMessage());
         }
     }

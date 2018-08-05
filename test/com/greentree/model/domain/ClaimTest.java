@@ -9,50 +9,56 @@ import java.util.GregorianCalendar;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.greentree.model.exception.TokenException;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
 /**
  * This defines methods for testing the <code>{@link Claim}</code> class.
- * 
+ *
  * @author david5MX53G
  *
  */
 public class ClaimTest {
-    /** passphrase used to instantiate <code>Token</code> objects in test methods. */
+
+    /**
+     * passphrase used to instantiate <code>Token</code> objects in test
+     * methods.
+     */
     private static final String PASSPHRASE = "We\'re all mad here.";
     Token token;
     Long now;
     Long then;
     Claim claim0;
 
-    /** log4j 2 logger */
+    /**
+     * log4j 2 logger
+     */
     Logger logger = LogManager.getLogger();
 
-    /** instantiates attributes needed for testing */
+    /**
+     * instantiates attributes needed for testing
+     */
     @Before
     public void setUp() {
-        try {
-            if (token == null) {
-                token = new Token(PASSPHRASE);
-            }
-            if (now == null | then == null) {
-                Calendar cal = new GregorianCalendar();
-                now = cal.getTimeInMillis();
-                cal.add(Calendar.HOUR, 1);
-                then = cal.getTimeInMillis();
-            }
-            if (claim0 == null) {
-                claim0 = new Claim(token, now, then);
-            }
-        } catch (TokenException e) {
-            logger.error("setUp() " + e.getClass().getName() + ": " + e.getMessage());
+        if (token == null) {
+            token = new Token(PASSPHRASE);
+        }
+        
+        if (now == null | then == null) {
+            Calendar cal = new GregorianCalendar();
+            now = cal.getTimeInMillis();
+            cal.add(Calendar.HOUR, 1);
+            then = cal.getTimeInMillis();
+        }
+        
+        if (claim0 == null) {
+            claim0 = new Claim(token, now, then);
         }
     }
 
-    /** Happy test method for {@link Claim#equals(Object)}. */
+    /**
+     * Happy test method for {@link Claim#equals(Object)}.
+     */
     @Test
     public void testEquals() {
         try {
@@ -64,7 +70,9 @@ public class ClaimTest {
         }
     }
 
-    /** Negative test method for {@link Claim#equals(Object)}. */
+    /**
+     * Negative test method for {@link Claim#equals(Object)}.
+     */
     @Test
     public void testNotEquals() {
         try {
@@ -73,10 +81,12 @@ public class ClaimTest {
             logger.debug("testNotEquals() PASSED");
         } catch (AssertionError e) {
             logger.debug("testNotEquals() FAILED");
-        } 
+        }
     }
 
-    /** Happy path test method for {@link Claim#hashCode()}. */
+    /**
+     * Happy path test method for {@link Claim#hashCode()}.
+     */
     @Test
     public void testHashCode() {
         try {
@@ -90,7 +100,9 @@ public class ClaimTest {
         }
     }
 
-    /** Negative test method for {@link Claim#hashCode()} */
+    /**
+     * Negative test method for {@link Claim#hashCode()}
+     */
     @Test
     public void testNotHashCode() {
         try {
@@ -101,10 +113,12 @@ public class ClaimTest {
             logger.debug("testNotHashCode() PASSED");
         } catch (AssertionError e) {
             logger.debug("testNotHashCode() FAILED");
-        } 
+        }
     }
 
-    /** Tests <code>{@link Claim#toString()}</code> */
+    /**
+     * Tests <code>{@link Claim#toString()}</code>
+     */
     @Test
     public void testToString() {
         String claimString = null;
@@ -117,7 +131,9 @@ public class ClaimTest {
         }
     }
 
-    /** Happy path test method for {@link Claim#validate()}. */
+    /**
+     * Happy path test method for {@link Claim#validate()}.
+     */
     @Test
     public void testValidate() {
         try {
@@ -125,15 +141,17 @@ public class ClaimTest {
             logger.debug("testValidate() PASSED");
         } catch (AssertionError e) {
             logger.debug(e.getMessage());
-        } 
+        }
     }
 
-    /** Negative test method for {@link Claim#validate()}. */
+    /**
+     * Negative test method for {@link Claim#validate()}.
+     */
     @Test
     public void testNotValidate() {
         try {
             assertFalse("testNotValidate() FAILED", claim0.validate() == false);
-            logger.debug("testNotValidate() PASSED"); 
+            logger.debug("testNotValidate() PASSED");
         } catch (AssertionError e) {
             logger.debug(e.getMessage());
         }

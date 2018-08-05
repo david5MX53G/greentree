@@ -12,7 +12,6 @@ import org.apache.logging.log4j.Logger;
  *
  */
 public class GreenTreeManagerException extends Exception {
-
     /**
      * Eclipse generated this long so this class can implement
      * {@link java.io.Serializable}

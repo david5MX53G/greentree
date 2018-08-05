@@ -25,7 +25,6 @@ package com.greentree.model.services.tokenservice;
 
 import com.greentree.model.exception.TokenServiceException;
 import com.greentree.model.domain.Token;
-import com.greentree.model.exception.TokenException;
 import java.security.interfaces.RSAPublicKey;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -80,11 +79,10 @@ public class JDBCTokenServiceImplTest {
      * Test method for {@link JDBCTokenServiceImpl#commit(Token)}.
      *
      * @throws com.greentree.model.exception.TokenServiceException when
-     * @throws com.greentree.model.exception.TokenException
      */
     @Test
     public void testCommit()
-        throws AssertionError, TokenServiceException, TokenException {        
+        throws AssertionError, TokenServiceException {        
         Token token = new Token("Ase's Death by Edvard Grieg");
         LOGGER.debug("Token 0 initialized");
         
@@ -105,16 +103,22 @@ public class JDBCTokenServiceImplTest {
     
     /**
      * Test method for {@link JDBCTokenServiceImpl#selectToken(RSAPublicKey)}
+     * 
      * @throws com.greentree.model.exception.TokenServiceException if 
-     * the static test token does not return a valid {@link RSAPublicKey}.
-     * @throws com.greentree.model.exception.TokenException when the {@link 
-     * Token} retrieved from JDBC returns false from {@link Token#validate()}.
+     *         the static test token does not return a valid {@link 
+     *         RSAPublicKey}.
      */
     @Test
-    public void testSelectToken() throws TokenServiceException, TokenException, 
+    public void testSelectToken() throws TokenServiceException, 
         AssertionError {
         Token token = new Token("Turandot, Act III by Giacomo Puccini");
-        LOGGER.debug("Token initialized");
+        
+        if (token instanceof Token) {
+            LOGGER.debug("Token initialized");
+        } else {
+            fail("testSelectToken() failed to initialize Token");
+        }
+        
         service.commit(token);
         RSAPublicKey key = token.getPublicKey();
         token = null; // ohnoes, no more Token?!

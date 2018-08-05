@@ -25,7 +25,6 @@ package com.greentree.model.services.tokenservice;
 
 import com.greentree.model.exception.TokenServiceException;
 import com.greentree.model.domain.Token;
-import com.greentree.model.exception.TokenException;
 import com.greentree.model.services.manager.JDBCPoolManager;
 import java.beans.PropertyVetoException;
 import java.io.ByteArrayInputStream;
@@ -38,8 +37,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import javax.xml.parsers.ParserConfigurationException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.xml.sax.SAXException;
 
 /**
  * This class provides the {@link java.sql} implementation necessary to
@@ -77,88 +79,82 @@ public class JDBCTokenServiceImpl implements ITokenService {
         boolean valid;
         try {
             valid = token.validate();
+
             if (valid) {
                 LOGGER.debug("Token is valid");
-
-                // serialize the Token to a byte[]
-                byte[] byteArray = null;
-                try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
-                    ObjectOutputStream out = new ObjectOutputStream(bos);
-                    out.writeObject(token);
-                    out.flush();
-                    byteArray = bos.toByteArray();
-                    LOGGER.debug("byte[] created from token");
-                } catch (IOException e) {
-                    valid = false;
-                    throw new TokenServiceException(
-                        "ByteArrayOutputStream error",
-                        LOGGER
-                    );
-                }
-
-                // serialize the byte[] in an InputStream
-                if (byteArray != null) {
-                    try (
-                        ByteArrayInputStream boas
-                        = new ByteArrayInputStream(byteArray)) {
-                        LOGGER.debug("ByteArrayInputStream created from Token");
-
-                        try (Connection conn = JDBCPoolManager.getConn()) {
-                            LOGGER.debug("JDBC Connection acquired");
-                            conn.setAutoCommit(false);
-
-                            // create a new keyId, if none exists
-                            String sqlIns
-                                = "INSERT INTO token (keyId) VALUES (?) "
-                                + "ON DUPLICATE KEY UPDATE keyId=keyId";
-
-                            try (PreparedStatement stmt
-                                = conn.prepareStatement(sqlIns)) {
-
-                                stmt.setString(
-                                    1, this.getKeyId(token.getPublicKey())
-                                );
-
-                                stmt.executeUpdate();
-
-                                conn.commit();
-                            }
-
-                            LOGGER.debug(
-                                "keyId upsert complete "
-                                + String.valueOf(
-                                    this.getKeyId(token.getPublicKey())
-                                )
-                            );
-
-                            // update the new key record with Token binary
-                            String sqlUpd
-                                = "UPDATE token SET token = ? "
-                                + "WHERE keyId = ?";
-
-                            try (PreparedStatement stmt
-                                = conn.prepareStatement(sqlUpd)) {
-                                stmt.setBinaryStream(1, boas);
-
-                                stmt.setString(
-                                    2, this.getKeyId(token.getPublicKey())
-                                );
-
-                                stmt.executeUpdate();
-
-                                conn.commit();
-                            }
-
-                            LOGGER.debug("token binary upsert complete");
-                        }
-                    }
-                }
             } else {
                 valid = false;
-                throw new TokenException("Token param did not validate");
+                LOGGER.error("Token param did not validate");
             }
-        } catch (TokenException | SQLException | IOException
-            | PropertyVetoException ex) {
+
+            // serialize the Token to a byte[]
+            byte[] byteArray = null;
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            ObjectOutputStream out = new ObjectOutputStream(bos);
+            out.writeObject(token);
+            out.flush();
+            byteArray = bos.toByteArray();
+            bos.close();
+            out.close();
+            
+            // serialize the byte[] in an InputStream
+            if (byteArray == null) {
+                LOGGER.error("failed to initialized byteArray");
+            } else {
+                LOGGER.debug("byte[] created from token");
+            }
+
+            ByteArrayInputStream boas = new ByteArrayInputStream(byteArray);
+            LOGGER.debug("ByteArrayInputStream created from Token");
+
+            Connection conn = JDBCPoolManager.getConn();
+            LOGGER.debug("JDBC Connection acquired");
+            conn.setAutoCommit(false);
+
+            // create a new keyId, if none exists
+            String sqlIns = "INSERT INTO token (keyId) VALUES (?) "
+                + "ON DUPLICATE KEY UPDATE keyId=keyId";
+
+            PreparedStatement stmtIns
+                = conn.prepareStatement(sqlIns);
+
+            stmtIns.setString(
+                1, this.getKeyId(token.getPublicKey())
+            );
+
+            stmtIns.executeUpdate();
+            stmtIns.close();
+
+            conn.commit();
+
+            LOGGER.debug(
+                "keyId upsert complete "
+                + String.valueOf(
+                    this.getKeyId(token.getPublicKey())
+                )
+            );
+
+            // update the new key record with Token binary
+            String sqlUpd = "UPDATE token SET token = ? WHERE keyId = ?";
+
+            PreparedStatement stmtUpd = conn.prepareStatement(sqlUpd);
+            stmtUpd.setBinaryStream(1, boas);
+
+            stmtUpd.setString(
+                2, this.getKeyId(token.getPublicKey())
+            );
+
+            stmtUpd.executeUpdate();
+
+            conn.commit();
+            
+            stmtUpd.close();
+            conn.close();
+            boas.close();
+
+            LOGGER.debug("token binary upsert complete");
+        } catch (IOException | SQLException | PropertyVetoException 
+            | SAXException | ParserConfigurationException ex) {
             valid = false;
             throw new TokenServiceException(
                 ex.getClass().getSimpleName() + " " + ex.getMessage(),
@@ -215,9 +211,10 @@ public class JDBCTokenServiceImpl implements ITokenService {
                     }
                 }
             }
-        } catch (SQLException | IOException | ClassNotFoundException
-            | PropertyVetoException ex) {
+        } catch (ClassNotFoundException ex) {
             throw new TokenServiceException(ex.getMessage(), LOGGER, ex);
+        } catch (PropertyVetoException | IOException | SQLException | SAXException | ParserConfigurationException ex) {
+            java.util.logging.Logger.getLogger(JDBCTokenServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
         return token;
     }

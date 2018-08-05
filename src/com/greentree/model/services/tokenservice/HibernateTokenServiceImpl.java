@@ -72,7 +72,7 @@ public class HibernateTokenServiceImpl implements ITokenService {
         Transaction tx;
         try {
             sess = HibernateSessionFactory.currentSession();            
-            tx = sess.beginTransaction();            
+            tx = sess.beginTransaction();
 
             // behold! the "Named Parameter", as seen on https://www.mkyong.com/hibernate/hibernate-parameter-binding-examples/
             String query 

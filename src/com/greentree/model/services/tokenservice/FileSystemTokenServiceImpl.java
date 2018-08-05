@@ -8,7 +8,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.security.interfaces.RSAPublicKey;
 import com.greentree.model.domain.Token;
-import com.greentree.model.exception.TokenException;
 import com.greentree.model.services.manager.PropertyManager;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.logging.log4j.LogManager;
@@ -43,8 +42,7 @@ public class FileSystemTokenServiceImpl implements ITokenService {
         boolean result = false;
         try {
             if (token.validate() == false) {
-                throw new TokenServiceException("The given Token does not validate",
-                    new Exception());
+                LOG.error("commit(Token) could not validate Token");
             } else {
                 String filename = this.getFilename(token.getPublicKey());
                 try (ObjectOutputStream out
@@ -56,7 +54,7 @@ public class FileSystemTokenServiceImpl implements ITokenService {
                         + e.getMessage());
                 }
             }
-        } catch (TokenException | IOException | ParserConfigurationException | 
+        } catch (IOException | ParserConfigurationException | 
             SAXException e) {
             throw new TokenServiceException(e.getMessage(), LOG, e);
         }
