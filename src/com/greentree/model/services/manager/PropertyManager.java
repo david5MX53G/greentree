@@ -205,8 +205,8 @@ public class PropertyManager extends DefaultHandler {
         String eleName;
         String eleVal;
 
-        if (qName.equals("interface")) {
-            eleName = "service.interface";
+        if (qName.equals("ITokenService")) {
+            eleName = "ITokenService";
             eleVal = BUFFER.toString().trim();
             LOG.debug(eleName + ": " + eleVal);
             properties.setProperty(eleName, eleVal);

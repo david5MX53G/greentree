@@ -19,20 +19,13 @@ https://www.w3.org/TR/xmlschema-0/ -->
     appearance of that name in documents governed by the associated schema" -->
     <xsd:element name="jdbc" type="jdbctype"/>
     
-    <xsd:complexType name="servicetype">
-        <xsd:all>
-            <xsd:element name="interface" type="xsd:string"/>
-            <xsd:element name="impl" type="xsd:string"/>
-        </xsd:all>
-    </xsd:complexType>
-    <xsd:element name="service" type="servicetype"/>
-    
     <xsd:element name="tokenfilepath" type="xsd:string"/>
+    <xsd:element name="ITokenService" type="xsd:string"/>
     
     <xsd:element name="applicationproperties">
         <xsd:complexType>
             <xsd:all>
-                <xsd:element ref="service"/>
+                <xsd:element ref="ITokenService"/>
                 <xsd:element ref="jdbc"/>
                 <xsd:element ref="tokenfilepath"/>
             </xsd:all>

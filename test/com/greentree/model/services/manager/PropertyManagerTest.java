@@ -48,10 +48,7 @@ public class PropertyManagerTest {
      */
     @Test public void getPropertyTest() 
         throws IOException, ParserConfigurationException, SAXException {
-        assertTrue(PropertyManager.getProperty("service.interface")
-                   instanceof String);
-        
-        assertTrue(PropertyManager.getProperty("service.impl") 
+        assertTrue(PropertyManager.getProperty("ITokenService")
                    instanceof String);
         
         assertTrue(PropertyManager.getProperty("tokenfilepath")

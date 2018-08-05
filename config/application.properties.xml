@@ -2,10 +2,7 @@
 <applicationproperties>
     
     <!-- see the package com.greentree.model.services for more impl classes -->
-    <service>
-        <interface>ITokenService</interface>
-        <impl>com.greentree.model.services.tokenservice.HibernateTokenServiceImpl</impl>
-    </service>
+    <ITokenService>com.greentree.model.services.tokenservice.HibernateTokenServiceImpl</ITokenService>
     
     <!-- FileSystemTokenServiceImpl uses this -->
     <tokenfilepath>/home/david/.greentree</tokenfilepath>
