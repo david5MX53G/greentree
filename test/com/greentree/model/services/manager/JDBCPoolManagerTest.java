@@ -30,10 +30,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import javax.xml.parsers.ParserConfigurationException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -51,12 +53,22 @@ public class JDBCPoolManagerTest {
      *
      * @throws java.beans.PropertyVetoException when <code>getConn()</code>
      * fails
+     * 
      * @throws java.io.IOException when <code>getConn()</code> fails
      * @throws java.sql.SQLException when <code>getConn()</code> fails
+     * 
+     * @throws org.xml.sax.SAXException when {@link 
+     * java.sql.PreparedStatement#setString(int, java.lang.String)} or {@link 
+     * java.sql.PreparedStatement#executeUpdate()} fails.
+     * 
+     * @throws javax.xml.parsers.ParserConfigurationException when {@link 
+     * java.sql.PreparedStatement#setString(int, java.lang.String)} or {@link 
+     * java.sql.PreparedStatement#executeUpdate()} fails.
      */
     @Test
-    public void getConnTest() throws PropertyVetoException, IOException,
-        SQLException, AssertionError {
+    public void getConnTest() 
+        throws PropertyVetoException, IOException, SQLException, 
+        AssertionError, SAXException, ParserConfigurationException {
         Connection conn = JDBCPoolManager.getConn();
         LOGGER.debug("JdbcConnection initialized from JDBCPoolManager");
 
@@ -80,7 +92,6 @@ public class JDBCPoolManagerTest {
                 result = rs.getString("keyId");
                 assertTrue(result instanceof String);
                 LOGGER.debug("retrieved result: " + result);
-                result = null;
             }
             LOGGER.debug("JdbcStatement complete: " + sqlSel);
         }

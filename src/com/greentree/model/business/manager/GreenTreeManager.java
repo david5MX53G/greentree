@@ -28,8 +28,8 @@ import java.sql.SQLException;
  *
  */
 public class GreenTreeManager extends ManagerSuperType {
-
-    /** <code>{@link ServiceFactory}</code> for building services.
+    /** 
+     * <code>{@link ServiceFactory}</code> for building services.
      */
     private final ServiceFactory factory = ServiceFactory.getInstance();
 
@@ -160,8 +160,10 @@ public class GreenTreeManager extends ManagerSuperType {
      *
      * @param key used to locate the <code>Token</code> and decrypt the
      * passphrase
+     * 
      * @param ciphertext used to authenticate ownership of the
      * <code>Token</code>
+     * 
      * @return {@link boolean} for success (true) or failure (false)
      */
     public boolean registerToken(RSAPublicKey key, String ciphertext) {
