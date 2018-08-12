@@ -1,7 +1,7 @@
 @startuml
 interface IService
 
-class HibernateSEssionFactory <<singleton>> {
+class HibernateSessionFactory <<singleton>> {
     {static} -LOGGER : Logger
     {static} -sessionFactory : SessionFactory
     {static} +closeFactory() : void
@@ -9,54 +9,90 @@ class HibernateSEssionFactory <<singleton>> {
 }
 
 class ServiceFactory <<singleton>> {
-    {static} -serviceFactoryInstance : ServiceFactory
-    {static} +getInstance() : ServiceFactory
     -ServiceFactory()
-    {static} -getImplName(String) : String
+    -getImplName(String) : String
+    {static} +getInstance() : ServiceFactory
+    {static} -serviceFactoryInstance : ServiceFactory
     +getService(String) : IService
 }
 
 class JDBCPoolManager <<singleton>> {
+    {static} +createPool() : void
+    {static} +getConn() : Connection
+    {static} +shutDown() : void
     {static} -LOGGER : Logger
     {static} -cpds : ComboPooledDataSource
-    {static} +createPool() : void
-    {static} +shutDown() : void
 }
 
+class DefaultHandler {
+    +characters(char[], int, int) : void
+    +endElement(String, String, String) : void
+    +error(SAXPArserException) : void
+    +warning(SAXParserException) : void
+}
+
+DefaultHandler --|> PropertyManager
 class PropertyManager <<singleton>> {
-    {static} -PROPSPATH : String
-    {static} -properties : Properties
+    +characters(char[], int, int) : void
+    +endElement(String, String, String) : void
+    +error(SAXPArserException) : void
     {static} +getProperty(String) : String
-    {static} +loadProperties(String) : void
-    {static} +loadProperties() : void
+    {static} +loadProperties() : boolean
+    +warning(SAXParserException) : void
+    {static} -BUFFER : StringBuffer
+    {static} -JAXP_SCHEMA_LANGUAGE : String
+    {static} -JAXP_SCHEMA_SOURCE : String
+    {static} -LOG : Logger
+    {static} -PROPSPATH : String
+    {static} -SAXFACT : SAXParserFactory
+    {static} -W3C_XML_SCHEMA : String
+    {static} -properties : Properties
 }
 
+ITokenService --|> FileSystemTokenServiceImpl
 class FileSystemTokenServiceImpl {
     +commit(Token) : boolean
     +getFilename(RSAPublicKey) : String
     +selectToken(RSAPublicKey) : Token
+    {static} -LOG : Logger
 }
 
+ITokenService --|> HibernateTokenServiceImpl
 class HibernateTokenServiceImpl {
-    {static} -LOGGER : Logger
     +commit(Token) : boolean
     +selectToken(RSAPublicKey key) : Token
-}
-
-abstract class ITokenService {
-    {static} +NAME : String
-    {abstract} commit(Token) : boolean
-    {abstract} selectToken(RSAPublicKey) : Token
-}
-
-class JDBCTokenServiceImpl {
     {static} -LOGGER : Logger
-    +commit(Token) : boolean
-    -getKeyId(RSAPublicKey) : String
-    +selectToken(RSAPublicKey) : Token
 }
 
 IService --|> ITokenService
-ITokenService --|> FileSystemTokenServiceImpl
+abstract class ITokenService {
+    {abstract} commit(Token) : boolean
+    {abstract} selectToken(RSAPublicKey) : Token
+    {static} +NAME : String
+}
+
 ITokenService --|> JDBCTokenServiceImpl
+class JDBCTokenServiceImpl {
+    +commit(Token) : boolean
+    -getKeyId(RSAPublicKey) : String
+    +selectToken(RSAPublicKey) : Token
+    {static} -LOGGER : Logger
+}
+
+class GreenTreeServer {
+    {static} -LOG : Logger
+    {static} -PORT : int
+    -GreenTreeServer() : GreenTreeServer
+    {static} +main(String[]) : void
+    {static} +start() : void
+}
+
+class GreenTreeServerHandler {
+    {static} -LOG : Logger
+    {static} -MGR : GreenTreeManager
+    {static} -methodName : String
+    -socket : Socket
+    +GreenTreeServerHandler(Socket) : GreenTreeServerHandler
+    +run() : void
+}
 @enduml
