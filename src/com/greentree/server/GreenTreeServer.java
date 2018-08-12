@@ -41,21 +41,32 @@ public class GreenTreeServer {
     /** This {@link org.apache.logging.log4j.Logger} is good for logging! */
     private static final Logger LOG = LogManager.getLogger();
     
+    /** TODO: move this into a properties file */
+    private static final int PORT = 8189;
+    
     /** This private constructor is used by {@link GreenTreeServer#start()}. */
     private GreenTreeServer() {}
     
     /** This opens a new {@link java.net.ServerSocket}. */
     public static void start() {
-        LOG.debug("starting...");
+        LOG.info("started");
+        ServerSocket s;
+        GreenTreeServerHandler handler;
         try {
-            ServerSocket s = new ServerSocket(8189);
-            Socket socket = s.accept();
-            GreenTreeServerHandler handler = new GreenTreeServerHandler(socket);
-            handler.run();
+            s = new ServerSocket(PORT);
+            LOG.debug("listening on port " + String.valueOf(PORT));
+            while (true) {
+                Socket socket = s.accept();
+                LOG.debug("connection accepted");
+                handler = new GreenTreeServerHandler(socket);
+                handler.run();
+                LOG.debug("GreenTreeServerHandler done");
+            }
         } catch (IOException ex) {
             LOG.error("start() threw " + ex.getClass().getSimpleName() + ": " 
                 + ex.getMessage());
         }
+        LOG.info("stopped");
     }
     
     /**

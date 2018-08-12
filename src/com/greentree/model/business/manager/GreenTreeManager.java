@@ -89,7 +89,7 @@ public class GreenTreeManager extends ManagerSuperType {
         } catch (ServiceLoadException e) {
             String msg = "ServiceFactory failed to get " + ITokenService.NAME + ": "
                 + e.getMessage();
-            LOGGER.debug(this.getClass().getSimpleName() + ": "
+            LOG.debug(this.getClass().getSimpleName() + ": "
                 + e.getClass().getSimpleName() + ": " + msg);
         }
         return success;
@@ -117,12 +117,12 @@ public class GreenTreeManager extends ManagerSuperType {
                 success = this.getTokenService().commit(this.token);
                 this.ciphertext = token.encrypt(plaintext);
             } else {
-                LOGGER.error("registerToken(" + plaintext + ") "
+                LOG.error("registerToken(" + plaintext + ") "
                     + "failed to initialize Token");
                 success = false;
             }
         } catch (TokenServiceException e) {
-            LOGGER.error(
+            LOG.error(
                 e.getClass().getSimpleName() + ": "
                 + e.getMessage()
             );
@@ -143,13 +143,13 @@ public class GreenTreeManager extends ManagerSuperType {
         this.token.addBlock("logged out at " + dateStamp, this.ciphertext);
         try {
             getTokenService().commit(token);
-            LOGGER.debug("Token commit done");
+            LOG.debug("Token commit done");
             this.token = null;
-            LOGGER.debug("Token is null");
+            LOG.debug("Token is null");
             JDBCPoolManager.shutDown();
-            LOGGER.debug("JDBC pool shut down");
+            LOG.debug("JDBC pool shut down");
         } catch (TokenServiceException | SQLException e) {
-            LOGGER.error(e.getMessage());
+            LOG.error(e.getMessage());
         }
     }
 
@@ -168,19 +168,19 @@ public class GreenTreeManager extends ManagerSuperType {
      */
     public boolean registerToken(RSAPublicKey key, String ciphertext) {
         boolean success = registerService("TokenService");
-        LOGGER.debug(
+        LOG.debug(
             "registerService(\"TokenServce\") returned "
             + String.valueOf(success)
         );
         if (!success) {
-            LOGGER.debug("registerService(\"TokenService\") FAILED");
+            LOG.debug("registerService(\"TokenService\") FAILED");
         } else {
             try {
                 this.token = this.tokenService.selectToken(key);
                 if (this.token == null) {
-                    LOGGER.error("getTokenService().selectToken(key) FAILED");
+                    LOG.error("getTokenService().selectToken(key) FAILED");
                 } else if (token.checkPassphrase(ciphertext)) {
-                    LOGGER.debug("token.checkPassphrase(ciphertext) is true");
+                    LOG.debug("token.checkPassphrase(ciphertext) is true");
                     this.ciphertext = ciphertext;
                     token.addBlock(
                         "authenticated at " + new Date().toString(), ciphertext
@@ -188,11 +188,11 @@ public class GreenTreeManager extends ManagerSuperType {
                     tokenService.commit(token);
                     success = true;
                 } else {
-                    LOGGER.debug("token.checkPassphrase(ciphertext) is false");
+                    LOG.debug("token.checkPassphrase(ciphertext) is false");
                     success = false;
                 }
             } catch (TokenServiceException e) {
-                LOGGER.error(e.getMessage());
+                LOG.error(e.getMessage());
                 success = false;
             }
         }
@@ -212,7 +212,7 @@ public class GreenTreeManager extends ManagerSuperType {
             if (!success) {
                 String msg
                     = this.getClass().getSimpleName() + ": registerTokenService() failed";
-                LOGGER.debug(msg);
+                LOG.debug(msg);
             } else {
                 success = true;
             }
@@ -263,17 +263,12 @@ public class GreenTreeManager extends ManagerSuperType {
      *     model.domain.Token} where at least one
      * {@link com.greentree.model.domain.Claim} exists matching the
      * <code>Token</code> of the active <code>GreenTreeManager</code>.
-     * @throws GreenTreeManagerException when there is an error selecting a
-     * <code>Token</code> for the given <code>RSAPublicKey</code> or when the
-     * current <code>GreenTreeManager</code> does not have a <code>Token</code>
      */
-    public ArrayList<String> getData(RSAPublicKey key)
-        throws GreenTreeManagerException {
+    public ArrayList<String> getData(RSAPublicKey key) {
+        String methodName = "public ArrayList<String> getData(RSAPublicKey)";
         ArrayList<String> stringData = new ArrayList<>();
         if (this.token == null) {
-            String msg = ("getData(Token token) throws TokenException because GreenTreeManager"
-                + " missing token");
-            throw new GreenTreeManagerException(msg, LOGGER);
+            LOG.error(methodName + " missing token for given key");
         } else {
             try {
                 Token server = getTokenService().selectToken(key);
@@ -301,7 +296,7 @@ public class GreenTreeManager extends ManagerSuperType {
                     }
                 }
             } catch (TokenServiceException e) {
-                throw new GreenTreeManagerException(e.getMessage(), LOGGER);
+                LOG.error(e.getClass().getSimpleName() + " " + e.getMessage());
             }
         }
         return stringData;
@@ -318,7 +313,7 @@ public class GreenTreeManager extends ManagerSuperType {
      * @param notBefore <code>long</code> specifies the earliest time in the
      * number of millis since January 1, 1970, 00:00:00 GMT that access to this
      * <code>Block</code> will be allowed
-     * @param expirationDate <code>long</code> specifies the time after which
+     * @param notAfter <code>long</code> specifies the time after which
      * access to this <code>
      *     Block</code> will be denied in the number of millis since January 1,
      * 1970, 00:00:00 GMT
@@ -326,24 +321,24 @@ public class GreenTreeManager extends ManagerSuperType {
      * false
      */
     public boolean addBlock(String data, RSAPublicKey clientKey, long notBefore,
-        long expirationDate) {
-        boolean success = false;
+        long notAfter) {
+        boolean result;
         try {
             Token clientToken = getTokenService().selectToken(clientKey);
 
-            Claim claim = new Claim(clientToken, notBefore, expirationDate);
+            Claim claim = new Claim(clientToken, notBefore, notAfter);
 
             this.token.addBlock(data, this.ciphertext, claim);
             getTokenService().commit(this.token);
 
-            LOGGER.debug("getTokenService().commit(this.token) PASSED");
-            success = true;
+            LOG.debug("getTokenService().commit(this.token) PASSED");
+            result = true;
         } catch (TokenServiceException e) {
-            LOGGER.debug(this.getClass().getSimpleName() + ": " + e.getClass().getName()
+            LOG.debug(this.getClass().getSimpleName() + ": " + e.getClass().getName()
                 + ": " + e.getMessage());
-            success = false;
+            result = false;
         }
-        return success;
+        return result;
     }
 
     /**

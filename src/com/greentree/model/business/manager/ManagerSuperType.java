@@ -19,7 +19,7 @@ public abstract class ManagerSuperType {
     /** 
      * {@link org.apache.logging.log4j.Logger} is for logging logs to the log
      */
-    protected static Logger LOGGER = LogManager.getLogger();
+    protected static Logger LOG = LogManager.getLogger();
 
     /**
      * static initializer block for getting <code>{@link Properties}</code>
@@ -43,7 +43,7 @@ public abstract class ManagerSuperType {
             success = true;
         } catch (IOException | SAXException | ParserConfigurationException e) {
             String msg = e.getClass().getSimpleName() + ": " + e.getMessage();
-            LOGGER.debug(msg);
+            LOG.debug(msg);
             success = false;
         }
         return success;
