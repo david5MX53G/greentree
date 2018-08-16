@@ -23,11 +23,14 @@
  */
 package com.greentree.server;
 
+import com.greentree.model.services.manager.PropertyManager;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import javax.xml.parsers.ParserConfigurationException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.xml.sax.SAXException;
 
 /**
  * This class initializes a {@link java.net.ServerSocket} to manage 
@@ -40,10 +43,10 @@ public class GreenTreeServer {
     /** This {@link org.apache.logging.log4j.Logger} is good for logging! */
     private static final Logger LOG = LogManager.getLogger();
     
-    /** TODO: move this into a properties file */
-    private static final int PORT = 8189;
-    
-    /** This private constructor is used by {@link GreenTreeServer#start()}. */
+    /** 
+     * This private constructor is not used because the class has only a 
+     * single static method, and static methods do not require constructors. 
+     */
     private GreenTreeServer() {}
     
     /** This opens a new {@link java.net.ServerSocket}. */
@@ -52,9 +55,11 @@ public class GreenTreeServer {
         int i = 1;
         ServerSocket s;
         GreenTreeServerHandler handler;
-        try {
-            s = new ServerSocket(PORT);
-            LOG.debug("listening on port " + String.valueOf(PORT));
+        int port;
+        try {            
+            port = Integer.valueOf(PropertyManager.getProperty("port"));
+            s = new ServerSocket(port);
+            LOG.debug("listening on port " + String.valueOf(port));
             while (true) {
                 Socket socket = s.accept();
                 LOG.debug("Spawning thread " + i);
@@ -63,7 +68,7 @@ public class GreenTreeServer {
                 LOG.debug("GreenTreeServerHandler done");
                 i++;
             }
-        } catch (IOException ex) {
+        } catch (IOException | ParserConfigurationException | SAXException ex) {
             LOG.error("start() threw " + ex.getClass().getSimpleName() + ": " 
                 + ex.getMessage());
         }

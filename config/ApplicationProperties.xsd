@@ -3,8 +3,8 @@
 https://www.w3.org/TR/xmlschema-0/ -->
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
     <!-- This is a "type definition", which creates a new element type. 
-    Specifically, this once defines a "complexType" element. These, "allow 
-    elements in their content and may carry attributes", unlike simple types -->
+    Specifically, this defines a "complexType" element. complexType elements 
+    "allow elements in their content and may carry attributes". -->
     <xsd:complexType name="jdbctype">
         <xsd:all>
             <xsd:element name="url" type="xsd:string"/>
@@ -21,6 +21,7 @@ https://www.w3.org/TR/xmlschema-0/ -->
     
     <xsd:element name="tokenfilepath" type="xsd:string"/>
     <xsd:element name="ITokenService" type="xsd:string"/>
+    <xsd:element name="port" type="xsd:integer"/>
     
     <xsd:element name="applicationproperties">
         <xsd:complexType>
@@ -28,6 +29,7 @@ https://www.w3.org/TR/xmlschema-0/ -->
                 <xsd:element ref="ITokenService"/>
                 <xsd:element ref="jdbc"/>
                 <xsd:element ref="tokenfilepath"/>
+                <xsd:element ref="port"/>
             </xsd:all>
         </xsd:complexType>
     </xsd:element>

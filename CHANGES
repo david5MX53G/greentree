@@ -1,6 +1,2 @@
-* remodeled the project into client/server architecture using Java Socket and ServerSocket classes
-* moved view classes into separated GreenTreeServerClient project and renamed main project to "GreenTreeServer"
-* added new GreenTreeServer and GreenTreeServerHandler classes to new com.greentree.server package
-* updated GreenTreeServerHandler to handle all GreenTreeManager methods requested by GreenTreeServerClient
-* tested all new class methods and confirmed they work
-* updated test, execution, and design documentation to reflect new classes and test results
+* refactored GreenTreeServer such that SocketServer executes in the main thread and the GreenTreeServerHandler processing of each Socket is run in a separate, dedicated thread
+* moved GreenTreeServer port assignment out of the class and into application.properties.xml, accessing it via PropertyManager.getProperty(String)

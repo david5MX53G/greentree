@@ -15,4 +15,7 @@
         <minpoolsize>3</minpoolsize>
         <maxpoolsize>10</maxpoolsize>
     </jdbc>
+    
+    <!-- com.greentree.server.GreenTreeServer listens on this Port -->
+    <port>8189</port>
 </applicationproperties>

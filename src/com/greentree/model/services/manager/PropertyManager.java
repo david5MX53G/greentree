@@ -65,7 +65,7 @@ public class PropertyManager extends DefaultHandler {
      * PropertyManager#PROPSPATH} .
      *
      * @throws IOException when application.properties.xml at 
-     * <code>PROPSPATH</code> cannot be read
+     *         <code>PROPSPATH</code> cannot be read
      *
      * @throws javax.xml.parsers.ParserConfigurationException when
      *         {@link javax.xml.parsers.SAXParserFactory} has trouble building a
@@ -87,8 +87,7 @@ public class PropertyManager extends DefaultHandler {
          */
         SAXParser saxParser;
 
-        try (java.io.FileInputStream fis
-            = new java.io.FileInputStream(PROPSPATH 
+        try (java.io.FileInputStream fis = new java.io.FileInputStream(PROPSPATH 
                 + "application.properties.xml")) {
 
             /**
@@ -212,13 +211,6 @@ public class PropertyManager extends DefaultHandler {
             properties.setProperty(eleName, eleVal);
         }
 
-        if (qName.equals("impl")) {
-            eleName = "service.impl";
-            eleVal = BUFFER.toString().trim();
-            LOG.debug(eleName + ": " + eleVal);
-            properties.setProperty(eleName, eleVal);
-        }
-
         if (qName.equals("tokenfilepath")) {
             eleName = "tokenfilepath";
             eleVal = BUFFER.toString().trim();
@@ -256,6 +248,13 @@ public class PropertyManager extends DefaultHandler {
 
         if (qName.equals("maxpoolsize")) {
             eleName = "jdbc.maxpoolsize";
+            eleVal = BUFFER.toString().trim();
+            LOG.debug(eleName + ": " + eleVal);
+            properties.setProperty(eleName, eleVal);
+        }
+
+        if (qName.equals("port")) {
+            eleName = "port";
             eleVal = BUFFER.toString().trim();
             LOG.debug(eleName + ": " + eleVal);
             properties.setProperty(eleName, eleVal);
