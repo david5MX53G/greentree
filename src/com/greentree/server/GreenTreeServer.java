@@ -49,6 +49,7 @@ public class GreenTreeServer {
     /** This opens a new {@link java.net.ServerSocket}. */
     public static void start() {
         LOG.info("started");
+        int i = 1;
         ServerSocket s;
         GreenTreeServerHandler handler;
         try {
@@ -56,10 +57,11 @@ public class GreenTreeServer {
             LOG.debug("listening on port " + String.valueOf(PORT));
             while (true) {
                 Socket socket = s.accept();
-                LOG.debug("connection accepted");
+                LOG.debug("Spawning thread " + i);
                 handler = new GreenTreeServerHandler(socket);
-                handler.run();
+                handler.start();
                 LOG.debug("GreenTreeServerHandler done");
+                i++;
             }
         } catch (IOException ex) {
             LOG.error("start() threw " + ex.getClass().getSimpleName() + ": " 

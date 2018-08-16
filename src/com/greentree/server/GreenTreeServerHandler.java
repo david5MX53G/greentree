@@ -37,7 +37,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author david5MX53G
  */
-class GreenTreeServerHandler {
+class GreenTreeServerHandler extends Thread {
 
     /**
      * This {@link org.apache.logging.log4j.Logger} is good for logging!
@@ -69,7 +69,8 @@ class GreenTreeServerHandler {
      * This string is checked against a series of conditions, and one of the
      * {@link GreenTreeManager} methods is invoked accordingly.
      */
-    void run() {
+    @Override
+    public void run() {
         methodName = "void run() ";
         LOG.debug(methodName + "started");
         ObjectInputStream in = null;
