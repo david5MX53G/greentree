@@ -18,6 +18,8 @@ import com.greentree.model.services.factory.ServiceFactory;
 import com.greentree.model.services.manager.JDBCPoolManager;
 import com.greentree.model.services.tokenservice.ITokenService;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /**
  * GreenTreeManager defines methods used by the presentation layer to manage
@@ -271,30 +273,31 @@ public class GreenTreeManager extends ManagerSuperType {
             LOG.error(methodName + " missing token for given key");
         } else {
             try {
-                Token server = getTokenService().selectToken(key);
-                ArrayList<Block> list = server.getBlockChain();
-                Iterator<Block> it = list.iterator();
-                Block block;
-                Claim claim;
-                Long start;
-                String data;
-                while (it.hasNext()) {
-                    block = it.next();
-                    if (server.equals(this.token)) {
-                        /**
-                         * if it's the current token we're reading from, add
-                         * claims to ensure every block is readable
-                         */
-                        start = new GregorianCalendar().getTimeInMillis();
-                        claim = new Claim(token, start, start + 60000);
-                        block.addClaim(claim, this.ciphertext);
-                    }
-                    // the hash can be used to id each message when adding claims
-                    data = block.getData(token, this.ciphertext);
-                    if (data != null) {
-                        stringData.add(data);
-                    }
-                }
+                // get the Token for the given RSAPublicKey
+                Token keyToken = getTokenService().selectToken(key);
+                
+                // get the list of Block objects for the given Token
+                ArrayList<Block> list = keyToken.getBlockChain();
+                
+                // set the current time
+                final Long start = new GregorianCalendar().getTimeInMillis();
+                
+                // get the data of each Block, assigning Claims as needed
+                list.stream()
+                   .map(blck -> {
+                       if (keyToken.equals(this.token)) { 
+                           blck.addClaim(
+                               new Claim(this.token, start, start + 60000), 
+                               this.ciphertext
+                           );
+                       }
+                       return blck.getData(token, this.ciphertext);
+                   })
+                   .forEach(str -> {
+                       if (str != null) {
+                           stringData.add(str);
+                       }
+                   });
             } catch (TokenServiceException e) {
                 LOG.error(e.getClass().getSimpleName() + " " + e.getMessage());
             }
