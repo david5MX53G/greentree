@@ -1,2 +1,6 @@
-* refactored GreenTreeServer such that SocketServer executes in the main thread and the GreenTreeServerHandler processing of each Socket is run in a separate, dedicated thread
+* extended Thread class in GreenTreeServerHandler by overriding the run() method
+* GreenTreeServer now invokes handlers in multiple threads by calling the start() Thread method
 * moved GreenTreeServer port assignment out of the class and into application.properties.xml, accessing it via PropertyManager.getProperty(String)
+* implemented test for GreenTreeManager.getData(RSAPublicKey) using a simple Java Stream with a lambda expression
+* refactored GreenTreeManager.getData(RSAPublicKey) to use lambda expressions within a Stream pipeline
+* ran tests and updated HWExecution.pdf and HWUnitTestExecution.pdf accordingly
