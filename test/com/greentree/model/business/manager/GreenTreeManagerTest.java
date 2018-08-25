@@ -1,5 +1,6 @@
 package com.greentree.model.business.manager;
 
+import com.greentree.model.services.config.AppConfig;
 import com.greentree.model.exception.TokenServiceException;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -15,14 +16,15 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import org.apache.commons.codec.binary.Base64;
-import org.junit.Before;
 import org.junit.Test;
 
 import com.greentree.model.domain.Token;
-import java.io.IOException;
 import java.util.ArrayList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.Before;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
  * This class has methods to test the <code>{@link GreentreeManager}</code>
@@ -36,7 +38,7 @@ public class GreenTreeManagerTest {
     /**
      * {@link GreenTreeManager} object for testing.
      */
-    private static final GreenTreeManager MGR = GreenTreeManager.getInstance();
+    private static GreenTreeManager mngr;
 
     /**
      * {@link RSAPublicKey} for testing <code>Token</code>.
@@ -58,6 +60,36 @@ public class GreenTreeManagerTest {
     private static final Logger LOG = LogManager.getLogger();
 
     /**
+     * This ensures that {@link GreenTreeManager} is initialized before every 
+     * test in this class.
+     */
+    @Before
+    public void setUp() {
+        if (mngr instanceof GreenTreeManager == false) {
+            getBeanTest();
+        }
+    }
+    
+    /**
+     * Instantiate the {@link GreenTreeManager} singleton using the Spring 
+     * Inversion of Control (IoC) Container <a href="https://docs.spring.io/spring/docs/5.1.0.RC2/spring-framework-reference/core.html#beans-java-instantiating-container">
+     * AnnotationConfigApplicationContext</a>.
+     */
+    @Test
+    public void getBeanTest() {
+        String methodName = "getBeanTest()";
+        
+        ApplicationContext ctx = 
+            new AnnotationConfigApplicationContext(AppConfig.class);
+        
+        mngr = ctx.getBean(GreenTreeManager.class);
+        
+        assertTrue(methodName + " FAILED", mngr instanceof GreenTreeManager);
+        
+        LOG.debug(methodName + " PASSED");
+    }
+    
+    /**
      * Tests {@link GreenTreeManager#loadProperties()}
      */
     @Test
@@ -75,10 +107,10 @@ public class GreenTreeManagerTest {
      */
     @Test
     public void registerServiceTest() {
-        if (GreenTreeManagerTest.MGR.getTokenService() == null) {
+        if (GreenTreeManagerTest.mngr.getTokenService() == null) {
             try {
-                GreenTreeManagerTest.MGR.registerService("TokenService");
-                assertTrue(GreenTreeManagerTest.MGR.getTokenService() != null);
+                GreenTreeManagerTest.mngr.registerService("TokenService");
+                assertTrue(GreenTreeManagerTest.mngr.getTokenService() != null);
                 LOG.debug("registerServiceTest() PASSED");
             } catch (AssertionError e) {
                 fail("registerServiceTest() " + e.getClass().getSimpleName()
@@ -93,8 +125,8 @@ public class GreenTreeManagerTest {
     @Test
     public void registerTokenTest() {
         if (GreenTreeManagerTest.key == null) {
-            MGR.registerToken(GreenTreeManagerTest.PASS);
-            GreenTreeManagerTest.key = MGR.getPublicKey();
+            mngr.registerToken(GreenTreeManagerTest.PASS);
+            GreenTreeManagerTest.key = mngr.getPublicKey();
             assertTrue(GreenTreeManagerTest.key != null);
             LOG.debug("registerTokenTest() PASSED");
         }
@@ -111,7 +143,7 @@ public class GreenTreeManagerTest {
                 registerTokenTest();
             }
 
-            MGR.logOut();
+            mngr.logOut();
             assertTrue(true);
             LOG.debug("logOutTest() PASSED");
         } catch (TokenServiceException e) {
@@ -135,9 +167,9 @@ public class GreenTreeManagerTest {
             );
 
             if (ciphertext != null) {
-                MGR.registerToken(key, ciphertext);
+                mngr.registerToken(key, ciphertext);
                 assertTrue(
-                    MGR.getPublicKey() instanceof RSAPublicKey
+                    mngr.getPublicKey() instanceof RSAPublicKey
                 );
                 LOG.debug("authTest() PASSED");
             } else {
@@ -165,7 +197,7 @@ public class GreenTreeManagerTest {
             registerTokenTest();
         }
         
-        ArrayList<String> aList = MGR.getData(key);
+        ArrayList<String> aList = mngr.getData(key);
         
         aList.stream()
             .map(s -> s.length() + ": " + s)
