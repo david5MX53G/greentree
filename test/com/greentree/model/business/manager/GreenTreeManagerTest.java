@@ -23,8 +23,11 @@ import java.util.ArrayList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Before;
+import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 /**
  * This class has methods to test the <code>{@link GreentreeManager}</code>
@@ -60,7 +63,7 @@ public class GreenTreeManagerTest {
     private static final Logger LOG = LogManager.getLogger();
 
     /**
-     * This ensures that {@link GreenTreeManager} is initialized before every 
+     * This ensures that {@link GreenTreeManager} is initialized before every
      * test in this class.
      */
     @Before
@@ -69,26 +72,31 @@ public class GreenTreeManagerTest {
             getBeanTest();
         }
     }
-    
+
     /**
-     * Instantiate the {@link GreenTreeManager} singleton using the Spring 
-     * Inversion of Control (IoC) Container <a href="https://docs.spring.io/spring/docs/5.1.0.RC2/spring-framework-reference/core.html#beans-java-instantiating-container">
+     * Instantiate the {@link GreenTreeManager} singleton using the Spring
+     * Inversion of Control (IoC) Container
+     * <a href="https://docs.spring.io/spring/docs/5.1.0.RC2/spring-framework-reference/core.html#beans-java-instantiating-container">
      * AnnotationConfigApplicationContext</a>.
      */
     @Test
     public void getBeanTest() {
         String methodName = "getBeanTest()";
-        
-        ApplicationContext ctx = 
-            new AnnotationConfigApplicationContext(AppConfig.class);
-        
-        mngr = ctx.getBean(GreenTreeManager.class);
-        
-        assertTrue(methodName + " FAILED", mngr instanceof GreenTreeManager);
-        
-        LOG.debug(methodName + " PASSED");
+        try {
+            ApplicationContext ctx
+                = new FileSystemXmlApplicationContext("config/applicationContext.xml");
+
+            mngr = ctx.getBean(GreenTreeManager.class);
+
+            assertTrue(methodName + " FAILED", mngr instanceof GreenTreeManager);
+
+            LOG.debug(methodName + " PASSED");
+        } catch (BeansException e) {
+            LOG.error(methodName + " threw " + e.getClass().getSimpleName() 
+                + ": " + e.getMessage());
+        }
     }
-    
+
     /**
      * Tests {@link GreenTreeManager#loadProperties()}
      */
@@ -185,9 +193,9 @@ public class GreenTreeManagerTest {
             LOG.error("authTest() FAILED");
         }
     }
-    
+
     /**
-     * Tests {@link 
+     * Tests {@link
      * GreenTreeManager#getData(java.security.interfaces.RSAPublicKey)}
      */
     @Test
@@ -196,13 +204,13 @@ public class GreenTreeManagerTest {
         if (key == null) {
             registerTokenTest();
         }
-        
+
         ArrayList<String> aList = mngr.getData(key);
-        
+
         aList.stream()
             .map(s -> s.length() + ": " + s)
             .forEach(t -> LOG.info(t));
-        
+
         assertTrue(aList instanceof ArrayList);
         LOG.info("getDataTest() PASSED");
     }
