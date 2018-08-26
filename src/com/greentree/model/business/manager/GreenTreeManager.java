@@ -20,6 +20,8 @@ import com.greentree.model.services.tokenservice.ITokenService;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.stream.Collectors;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * GreenTreeManager defines methods used by the presentation layer to manage
@@ -30,6 +32,11 @@ import java.util.stream.Collectors;
  *
  */
 public class GreenTreeManager extends ManagerSuperType {
+    /**
+     * This {@link org.apache.logging.log4j.Logger} is good for logging!
+     */
+    private static final Logger LOG = LogManager.getLogger();
+    
     /** 
      * <code>{@link ServiceFactory}</code> for building services.
      */
@@ -50,7 +57,7 @@ public class GreenTreeManager extends ManagerSuperType {
      * Stores the <code>{@link ITokenService}</code> for storing and retrieving
      * <code>{@link Token}</code> objects
      */
-    private ITokenService tokenService = null;
+    private ITokenService tokenService;
 
     /**
      * Stores the singleton instance of this class.
@@ -73,7 +80,20 @@ public class GreenTreeManager extends ManagerSuperType {
         if (_instance == null) {
             _instance = new GreenTreeManager();
         }
+        LOG.debug("GreenTreeManager getInstance() returned _instance");
         return _instance;
+    }
+    
+    /**
+     * This sets the {@link ITokenService} member of the class. This member is 
+     * used to create or modify {@link Token} objects.
+     * 
+     * @param tokenService to set on this class
+     */
+    public void setTokenService (ITokenService tokenService) {
+        this.tokenService = tokenService;
+        LOG.debug("setTokenService (ITokenService) " 
+            + (this.tokenService instanceof ITokenService));
     }
 
     /**

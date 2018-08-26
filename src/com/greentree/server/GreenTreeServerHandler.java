@@ -24,6 +24,7 @@
 package com.greentree.server;
 
 import com.greentree.model.business.manager.GreenTreeManager;
+import com.greentree.model.services.config.AppConfig;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -31,6 +32,9 @@ import java.net.Socket;
 import java.security.interfaces.RSAPublicKey;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 /**
  * This class connects {@link GreenTreeServer} to {@link GreenTreeManager}.
@@ -58,10 +62,18 @@ class GreenTreeServerHandler extends Thread {
      * This {@link GreenTreeManager} interfaces with all other layers of the
      * application.
      */
-    private static final GreenTreeManager MGR = GreenTreeManager.getInstance();
+    private final GreenTreeManager mngr;
 
-    GreenTreeServerHandler(Socket socket) {
+    /**
+     * This initializes a {@link GreenTreeManager} to handle requests from 
+     * the given {@link Socket}. 
+     * 
+     * @param socket sending client requests into this handler
+     */
+    GreenTreeServerHandler(Socket socket, GreenTreeManager mngr) {
+        methodName = "reenTreeServerHandler(Socket)";
         this.socket = socket;
+        this.mngr = mngr;
     }
 
     /**
@@ -95,7 +107,7 @@ class GreenTreeServerHandler extends Thread {
             if ("registerToken(RSAPublicKey, String)".equals(command)) {
                 RSAPublicKey key = (RSAPublicKey) in.readObject();
                 String ciphertext = (String) in.readObject();
-                out.writeObject(MGR.registerToken(key, ciphertext));
+                out.writeObject(mngr.registerToken(key, ciphertext));
                 out.flush();
                 LOG.info(methodName + "returned "
                     + "GreenTreeManager.registerToken(RSAPublicKey, String)");
@@ -103,7 +115,7 @@ class GreenTreeServerHandler extends Thread {
 
             else if ("registerService(String)".equals(command)) {
                 String service = (String) in.readObject();
-                out.writeObject(MGR.registerService(service));
+                out.writeObject(mngr.registerService(service));
                 out.flush();
                 LOG.info(methodName + "returned "
                     + "GreenTreeManager.registerService(String)");
@@ -111,14 +123,14 @@ class GreenTreeServerHandler extends Thread {
 
             else if ("registerToken(String)".equals(command)) {
                 String plaintext = (String) in.readObject();
-                out.writeObject(MGR.registerToken(plaintext));
+                out.writeObject(mngr.registerToken(plaintext));
                 out.flush();
                 LOG.info(methodName + "returned "
                     + "GreenTreeManager.registerToken(String)");
             }
 
             else if ("getPublicKey()".equals(command)) {
-                out.writeObject(MGR.getPublicKey());
+                out.writeObject(mngr.getPublicKey());
                 out.flush();
                 LOG.info(methodName + "returned "
                     + "GreenTreeManager.getPublicKey()");
@@ -126,7 +138,7 @@ class GreenTreeServerHandler extends Thread {
             
             else if ("getData(RSAPublicKey)".equals(command)) {
                 RSAPublicKey key = (RSAPublicKey) in.readObject();
-                out.writeObject(MGR.getData(key));
+                out.writeObject(mngr.getData(key));
                 LOG.info(methodName + " returned " 
                     + "GreenTreeManager.getData(RSAPublicKey)");
             }
@@ -136,7 +148,7 @@ class GreenTreeServerHandler extends Thread {
                 RSAPublicKey key = (RSAPublicKey) in.readObject();
                 long notBefore = (long) in.readObject();
                 long notAfter = (long) in.readObject();
-                out.writeObject(MGR.addBlock(msg, key, notBefore, notAfter));
+                out.writeObject(mngr.addBlock(msg, key, notBefore, notAfter));
                 LOG.info(methodName + " returned " 
                     + "GreenTreeManager.addBlock(msg, key, notBefore, notAfter)");
             }
